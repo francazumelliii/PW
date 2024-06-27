@@ -9,13 +9,15 @@ import { SidebarComponent } from './Components/sidebar/sidebar.component';
 import { MatDrawer, matDrawerAnimations, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { AuthenticationsComponent } from './Components/authentications/authentications.component';
 import { ButtonComponent } from './Tools/button/button.component';
+import { LoginFormComponent } from './Tools/login-form/login-form.component';
 @NgModule({
   declarations: [
     AppComponent,
     HomepageComponent,
     SidebarComponent,
     AuthenticationsComponent,
-    ButtonComponent
+    ButtonComponent,
+    LoginFormComponent
   ],
   imports: [
     BrowserModule,
