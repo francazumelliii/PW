@@ -7,11 +7,15 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { HomepageComponent } from './Components/homepage/homepage.component';
 import { SidebarComponent } from './Components/sidebar/sidebar.component';
 import { MatDrawer, matDrawerAnimations, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
+import { AuthenticationsComponent } from './Components/authentications/authentications.component';
+import { ButtonComponent } from './Tools/button/button.component';
 @NgModule({
   declarations: [
     AppComponent,
     HomepageComponent,
-    SidebarComponent
+    SidebarComponent,
+    AuthenticationsComponent,
+    ButtonComponent
   ],
   imports: [
     BrowserModule,

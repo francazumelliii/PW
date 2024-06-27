@@ -1,11 +1,13 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './Components/homepage/homepage.component';
 import { SidebarComponent } from './Components/sidebar/sidebar.component';
+import { AuthenticationsComponent } from './Components/authentications/authentications.component';
 
 const routes: Routes = [
   {path: "", redirectTo: "/homepage", pathMatch:"full"},
-  {path: "homepage", component: SidebarComponent}
+  {path: 'homepage', component: SidebarComponent,children: [{ path: '', component: AuthenticationsComponent }]
+}
 ];
 
 @NgModule({

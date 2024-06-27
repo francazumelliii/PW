@@ -1,0 +1,18 @@
+
+<div class="input-group mb-3 "[ngClass]="classes" >
+    <div class="input-group-prepend "   >
+      <span 
+            *ngIf="icon"
+            [ngClass]="icon" 
+            class="btn btn-outline-secondary {{ iconClasses }}"
+            [ngStyle]="{'background-color': bgColor, 'color': color, 'border-color': borderColor}"
+            
+        ></span>
+    </div>
+    <button 
+        type="button"
+        (click) = "click()"
+        [ngClass]="{'rounded' : !icon}"
+        [ngStyle]="{'background-color': bgColor, 'border-color': borderColor}"
+        class="form-control {{ btnClasses }}">{{label}}</button>
+  </div>
