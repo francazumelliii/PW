@@ -1,6 +1,9 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches" >
     <mat-toolbar color="primary" class="example-toolbar">
-      <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+      <button mat-icon-button (click)="snav.toggle()" class="btn-burger">
+        <i class="bi bi-list fs-2 "></i>
+        <!-- <mat-icon>menu</mat-icon> -->
+        </button>
       <h1 class="example-app-name">Responsive App</h1>
     </mat-toolbar>
   
@@ -9,7 +12,13 @@
       <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
         <mat-nav-list>
-          <a mat-list-item routerLink="." *ngFor="let nav of fillerNav">{{nav}}</a>
+            <a  
+                [routerLink]="['/homepage']" routerLinkActive="router-active" 
+                class="d-flex row align-items-center">
+
+                <i class="bi bi-house-door-fill col-3"></i>
+                <span class="col-9">Home</span>
+            </a>
         </mat-nav-list>
       </mat-sidenav>
   
