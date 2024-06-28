@@ -1,17 +1,24 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HomepageComponent } from './Components/homepage/homepage.component';
 import { SidebarComponent } from './Components/sidebar/sidebar.component';
-import { MatDrawer, matDrawerAnimations, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { AuthenticationsComponent } from './Components/authentications/authentications.component';
 import { ButtonComponent } from './Tools/button/button.component';
 import { LoginFormComponent } from './Tools/login-form/login-form.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {MatList, MatListModule} from '@angular/material/list';
+
+
+// Import Angular Material modules
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatToolbarModule } from '@angular/material/toolbar'; // Import MatToolbarModule
+import { MatIcon, MatIconModule } from '@angular/material/icon'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,17 +31,20 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MatDrawerContent,
-    MatDrawerContainer,
-    MatDrawer,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSidenavModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatListModule
+    
   ],
-  providers: [
-    provideClientHydration(),
-    provideAnimationsAsync()
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
+
