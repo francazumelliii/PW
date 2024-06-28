@@ -1,5 +1,5 @@
-<form [formGroup] = "loginForm">
-    <h1 class="text-center text-bolder"><strong>LOGIN</strong></h1>
+<form [formGroup] = "loginForm" >
+    <h1 class="text-center text-bolder"><strong>{{view}}</strong></h1>
 
 
     <div class="d-flex flex-column align-items-center col-10 m-auto">
@@ -39,4 +39,10 @@
         (onClick)="onSubmit()"
         [disabled]="!loginForm.valid && loginForm.touched"
     ></t-button>
+
+
+    <span 
+    (click)="switchView()"
+    class="text-primary text-center d-block pointer text-decoration-underline"
+    >{{view === "LOGIN" ? "Don't have an account yet?" : "Already registered?"}}</span>
 </form>

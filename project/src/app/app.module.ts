@@ -11,6 +11,7 @@ import { AuthenticationsComponent } from './Components/authentications/authentic
 import { ButtonComponent } from './Tools/button/button.component';
 import { LoginFormComponent } from './Tools/login-form/login-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,6 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatDrawer,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
     provideClientHydration(),

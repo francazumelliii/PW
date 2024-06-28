@@ -5,8 +5,9 @@ import { SidebarComponent } from './Components/sidebar/sidebar.component';
 import { AuthenticationsComponent } from './Components/authentications/authentications.component';
 
 const routes: Routes = [
-  {path: "", redirectTo: "/homepage", pathMatch:"full"},
-  {path: 'homepage', component: SidebarComponent,children: [{ path: '', component: AuthenticationsComponent }]
+  {path: "", redirectTo: "/authentication", pathMatch:"full"},
+  {path: 'authentication', component: SidebarComponent,children: [{ path: '', component: AuthenticationsComponent }]},
+  {path: 'homepage', component: SidebarComponent,children: [{ path: '', component: HomepageComponent }]
 }
 ];
 
