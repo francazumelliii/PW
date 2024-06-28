@@ -14,6 +14,7 @@ export class ButtonComponent {
   @Input() label: string = "LABEL";
   @Input() bgColor: string = "";
   @Input() color: string = "";
+  @Input() disabled: boolean = false;
   @Input() borderColor: string = "";
   @Output() onClick = new EventEmitter<any>();
 

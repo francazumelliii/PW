@@ -10,6 +10,7 @@
         ></span>
     </div>
     <button 
+        [disabled]="disabled"
         type="button"
         (click) = "click()"
         [ngClass]="{'rounded' : !icon}"

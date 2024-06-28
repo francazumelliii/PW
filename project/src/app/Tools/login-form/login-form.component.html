@@ -1,4 +1,4 @@
-<form>
+<form [formGroup] = "loginForm">
     <h1 class="text-center text-bolder"><strong>LOGIN</strong></h1>
 
 
@@ -9,7 +9,7 @@
                 <i class="bi bi-person"></i>
               </span>
             </div>
-            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            <input type="text" class="form-control" placeholder="Email" formControlName="email" >
         </div>
 
         <div class="input-group mb-3">
@@ -18,8 +18,13 @@
                 <i class="bi bi-key"></i>
               </span>
             </div>
-            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            <input type="text" class="form-control" placeholder="Password" formControlName ="password">
         </div>
+
+        <small 
+          *ngIf="loginForm.invalid && loginForm.touched"
+          class="text-danger">Invalid {{loginForm.controls['email'].invalid ? 'email' : 'password'}}
+        </small>
     </div>
 
     <t-button
@@ -31,5 +36,7 @@
         iconClasses="py-3 rounded-start-4"
         label="LOGIN"
         classes="w-75 m-auto"
+        (onClick)="onSubmit()"
+        [disabled]="!loginForm.valid && loginForm.touched"
     ></t-button>
 </form>
