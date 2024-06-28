@@ -12,11 +12,7 @@ from mysql.connector import Error as MySQLError
 import logging
 from functools import wraps
 from pydantic import BaseModel
-import sqlite3
 import secrets
-import os
-
-
 app = FastAPI()
 
 # Configurazione OAuth2
