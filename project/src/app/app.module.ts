@@ -10,6 +10,7 @@ import { MatDrawer, matDrawerAnimations, MatDrawerContainer, MatDrawerContent } 
 import { AuthenticationsComponent } from './Components/authentications/authentications.component';
 import { ButtonComponent } from './Tools/button/button.component';
 import { LoginFormComponent } from './Tools/login-form/login-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,14 +18,16 @@ import { LoginFormComponent } from './Tools/login-form/login-form.component';
     SidebarComponent,
     AuthenticationsComponent,
     ButtonComponent,
-    LoginFormComponent
+    LoginFormComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatDrawerContent,
     MatDrawerContainer,
-    MatDrawer
+    MatDrawer,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [
     provideClientHydration(),
