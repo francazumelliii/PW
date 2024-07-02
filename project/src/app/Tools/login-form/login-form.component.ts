@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControlService } from '../../Services/form-control.service';
 import { FormGroup } from '@angular/forms';
 import { AuthenticationService } from '../../Services/authentication.service';
-import { Router } from '@angular/router';
+import { Router, RouterLinkWithHref } from '@angular/router';
+import { RoleService } from '../../Services/role.service';
 
 @Component({
   selector: 'app-login-form',
@@ -14,7 +15,8 @@ export class LoginFormComponent implements OnInit{
   constructor(
     private fcService: FormControlService,
     private authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private roleService: RoleService
   ){}
   loginForm !: FormGroup
   view: "LOGIN" | "SIGNUP" = "LOGIN"
@@ -49,7 +51,11 @@ export class LoginFormComponent implements OnInit{
     this.authService.signIn(email,password)
     .subscribe((response: any) => {
       response.access_token ? 
-        (this.authService.setToken(response.access_token)): console.log("response") //TO FINISH
+        (
+          this.roleService.setUserType(response.user_type),
+          this.authService.setToken(response.access_token)
+          )
+          : console.log("response") //TO FINISH
     })
   }
 
@@ -58,7 +64,10 @@ export class LoginFormComponent implements OnInit{
     this.authService.signUp(name,surname,email,password)
       .subscribe((response: any) => {
         console.log(response)
-        response.access_token ? (this.authService.setToken(response.access_token)) : null
+        response.access_token ? (
+          this.roleService.setUserType("customer"),
+          this.authService.setToken(response.access_token)
+          ) : null
         response.error ? this.error = response.error : null
       })
   }

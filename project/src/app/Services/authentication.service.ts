@@ -27,7 +27,7 @@ export class AuthenticationService {
     return this.http.post(`${this.domain}/api/v1/signin`, body)
       .pipe(
         catchError((error: any) => {
-          return throwError(() => new Error(error))
+          return error
         })
       )
 
@@ -56,6 +56,7 @@ export class AuthenticationService {
     console.log("STORED: ", token)
     this.router.navigate(['homepage'])
   }
+ 
 
 
   logOut(){ 
