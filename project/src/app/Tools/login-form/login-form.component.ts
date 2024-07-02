@@ -18,6 +18,7 @@ export class LoginFormComponent implements OnInit{
   ){}
   loginForm !: FormGroup
   view: "LOGIN" | "SIGNUP" = "LOGIN"
+  error: string = ""
 
   ngOnInit(){
     this.loginForm = this.fcService.loginForm
@@ -26,7 +27,16 @@ export class LoginFormComponent implements OnInit{
   onSubmit(){
     const email = this.loginForm.get("email")?.value
     const password = this.loginForm.get("password")?.value
-    this.view === "LOGIN" ? this.signIn(email,password) : this.signUp(email,password)
+
+    if (this.view === "SIGNUP"){
+      const name = this.loginForm.get("name")?.value
+      const surname = this.loginForm.get("surname")?.value
+
+      this.signUp(name,surname,email,password)
+    }else{
+      console.log("SIGNIN")
+      this.signIn(email,password)
+    }
 
   }
 
@@ -39,14 +49,21 @@ export class LoginFormComponent implements OnInit{
     this.authService.signIn(email,password)
     .subscribe((response: any) => {
       response.access_token ? 
-        (localStorage.setItem("token", response.accessToken),
-          this.router.navigate(['homepage'])
-        )
-          : null //TO FINISH
+        (this.authService.setToken(response.access_token)): console.log("response") //TO FINISH
     })
   }
 
-  signUp(email:string, password: string){
-    
+  signUp(name: string, surname:string, email:string, password: string){
+    this.error = ""
+    this.authService.signUp(name,surname,email,password)
+      .subscribe((response: any) => {
+        console.log(response)
+        response.access_token ? (this.authService.setToken(response.access_token)) : null
+        response.error ? this.error = response.error : null
+      })
   }
+
+
+
+
 }

@@ -1,5 +1,5 @@
 
-<div class="input-group mb-3 "[ngClass]="classes" >
+<div class="input-group mb-3 "[ngClass]="{'disabled' : disabled}" class=" {{classes}}" >
     <div class="input-group-prepend "   >
       <span 
             *ngIf="icon"
