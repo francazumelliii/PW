@@ -17,7 +17,10 @@ import {MatList, MatListModule} from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar'; // Import MatToolbarModule
-import { MatIcon, MatIconModule } from '@angular/material/icon'
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { CardComponent } from './Tools/card/card.component';
+import { CardContainerComponent } from './Tools/card-container/card-container.component';
+
 
 @NgModule({
   declarations: [
@@ -27,6 +30,8 @@ import { MatIcon, MatIconModule } from '@angular/material/icon'
     AuthenticationsComponent,
     ButtonComponent,
     LoginFormComponent,
+    CardComponent,
+    CardContainerComponent,
   ],
   imports: [
     BrowserModule,
