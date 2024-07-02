@@ -253,14 +253,63 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
             raise HTTPException(status_code=500, detail="Database connection failed")
         
         cursor = conn.cursor(dictionary=True)
-        cursor.execute(baseSQL + "GROUP BY restaurant.restaurant_id")
+        query= """
+        SELECT 
+            restaurant.name AS restaurant_name, restaurant.rating, restaurant.street, restaurant.street_number, restaurant.latitude,
+            restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,
+            admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname,
+            company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
+            village.name AS village_name,
+            county.name AS county_name, county.code AS county_code,
+            region.name AS region_name
+        FROM restaurant 
+        INNER JOIN admin ON admin.restaurant_id = restaurant.restaurant_id 
+        INNER JOIN company ON company.company_id = restaurant.company_id 
+        INNER JOIN village ON village.village_id = restaurant.village_id 
+        INNER JOIN county ON county.county_id = village.county_id 
+        INNER JOIN region ON region.region_id = county.region_id group by 
+        restaurant.restaurant_id"""
+        
+        cursor.execute(query)   
         results = cursor.fetchall()
+        response = []
+        for row in results: 
+            restaurant_data = {
+                "restaurant": {
+                    "name": row["restaurant_name"],
+                    "rating": row["rating"],
+                    "street": row["street"],
+                    "street_number": row["street_number"],
+                    "max_chairs": row['max_chairs'],
+                    "description": row['description'],
+                    "banner": row['banner']
+                },
+                "admin": {
+                    "id": row['admin_id'],
+                    "name": row['admin_name'],
+                    "surname": row['admin_surname']
+                },
+                "company": {
+                    "name": row['company_name'],
+                    "vat": row["vat_n"],
+                    "address": row['company_address'],
+                    "telephone": row['company_telephone']
+                },
+                "coords": {
+                    "latitude": row["latitude"],
+                    "longitude": row['longitude'],
+                    "village": row["village_name"],
+                    "county": row["county_name"],
+                    "county_code": row["county_code"],
+                    "region": row["region_name"]
+                }
+            }
+            response.append(restaurant_data)
+           
+
+        logging.info(results)
         
-        if not results:
-            logger.info("No restaurants found")
-            return JSONResponse(content={"message": "No restaurants found"}, status_code=200)
-        
-        return JSONResponse(content=results, status_code=200)
+        return JSONResponse(content=response, status_code=200)
     except mysql.connector.Error as err:
         logger.error(f"Database error: {err}")
         raise HTTPException(status_code=500, detail="Database error")
