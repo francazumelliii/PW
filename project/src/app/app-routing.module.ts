@@ -3,12 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './Components/homepage/homepage.component';
 import { SidebarComponent } from './Components/sidebar/sidebar.component';
 import { AuthenticationsComponent } from './Components/authentications/authentications.component';
+import { authGuard } from './Guards/auth-guard.guard';
 
 const routes: Routes = [
   {path: "", redirectTo: "/authentication", pathMatch:"full"},
   {path: 'authentication', component: SidebarComponent,children: [{ path: '', component: AuthenticationsComponent }]},
-  {path: 'homepage', component: SidebarComponent,children: [{ path: '', component: HomepageComponent }]
-}
+  {path: 'homepage', component: SidebarComponent,children: [{ path: '', component: HomepageComponent }], canActivate:[authGuard]}
 ];
 
 @NgModule({
