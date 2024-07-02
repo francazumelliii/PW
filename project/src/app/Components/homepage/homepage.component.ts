@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RoleService } from '../../Services/role.service';
+import { Restaurant } from '../../Interfaces/general';
 
 @Component({
   selector: 'app-homepage',
@@ -13,6 +14,6 @@ export class HomepageComponent implements OnInit{
 
 
   ngOnInit(){
-    this.roleService.getAllRestaurants().subscribe((res:any) => console.log(res))
+    this.roleService.getAllRestaurants().subscribe((res:Restaurant) => console.log(res))
   }
 }
