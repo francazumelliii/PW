@@ -153,8 +153,16 @@ async def signin(request: SignInRequest):
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor(dictionary=True)
-        query = "SELECT password FROM customer WHERE mail = %s"
-        cursor.execute(query, (request.email,))
+        
+        # Query per ottenere password e tipo di utente
+        query = """
+        SELECT password, 'entrepreneur' AS user_type FROM entrepreneur WHERE mail = %s
+        UNION
+        SELECT password, 'admin' AS user_type FROM admin WHERE mail = %s
+        UNION
+        SELECT password, 'customer' AS user_type FROM customer WHERE mail = %s
+        """
+        cursor.execute(query, (request.email, request.email, request.email))
         user = cursor.fetchone()
 
         if not user or not pwd_context.verify(request.password, user['password']):
@@ -162,7 +170,7 @@ async def signin(request: SignInRequest):
 
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(data={"sub": request.email}, expires_delta=access_token_expires)
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "token_type": "bearer", "user_type": user['user_type']}
 
     except mysql.connector.Error as db_err:
         logger.error(f"Database error: {db_err}")
@@ -172,7 +180,7 @@ async def signin(request: SignInRequest):
             cursor.close()
         if conn:
             conn.close()
-
+            
 #post for token verification frontend
 @app.get("/api/v1/token")
 async def verify_token_route(authorization: str = Header(None)):
@@ -240,7 +248,18 @@ INNER JOIN menu m ON m.id_locale = l.id
 INNER JOIN piatto pi ON pi.id_menu = m.id
 
 """
-#get all restaurants in db
+#
+#---------------- GET ALL RESTAURANTS IN DB -----------------
+#
+
+@app.get("/admin")
+async def tes(request:Request, token: str = Depends(verify_token)):
+    return JSONResponse(content="ADMIN")
+    
+@app.get("/user")
+async def test(request:Request,token:str = Depends(verify_token)): 
+    return JSONResponse(content ="USER")
+
 @app.get("/api/v1/restaurant/all")
 async def get_all_restaurants(request: Request, token: str = Depends(verify_token)):
     logger.info("Attempting to retrieve all restaurants...")
