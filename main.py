@@ -36,8 +36,8 @@ logger = logging.getLogger(__name__)
 db_config = {
     'host': "localhost",
     'user': "root",
-    'password': "",
-    'database': "ristoranti",
+    'password': "MysqlRoot24",
+    'database': "restaurants",
     'port': 3306
 }
 
@@ -116,17 +116,17 @@ async def signup(request: Request):
 
         cursor = conn.cursor(dictionary=True)
         #check if user already exist
-        check_user_query = "SELECT * FROM cliente WHERE mail = %s"
+        check_user_query = "SELECT * FROM customer WHERE mail = %s"
         cursor.execute(check_user_query, (email,))
         existing_user = cursor.fetchone()
 
         if existing_user:
-            return JSONResponse(content={"error": "User with this email already exists"}, status_code=405)
+            return JSONResponse(content={"error": "User with this email already exists"},status_code=202)
 
         hashed_password = pwd_context.hash(password)
 
         #if not exist, insert new user
-        insert_user_query = "INSERT INTO cliente (nome, cognome, mail, password) VALUES (%s, %s, %s, %s)"
+        insert_user_query = "INSERT INTO customer (name, surname, mail, password) VALUES (%s, %s, %s, %s)"
         cursor.execute(insert_user_query, (name, surname, email, hashed_password))
         conn.commit()
 
@@ -153,7 +153,7 @@ async def signin(request: SignInRequest):
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor(dictionary=True)
-        query = "SELECT password FROM cliente WHERE mail = %s"
+        query = "SELECT password FROM customer WHERE mail = %s"
         cursor.execute(query, (request.email,))
         user = cursor.fetchone()
 
@@ -174,7 +174,7 @@ async def signin(request: SignInRequest):
             conn.close()
 
 #post for token verification frontend
-@app.post("/api/v1/verify_token")
+@app.get("/api/v1/token")
 async def verify_token_route(authorization: str = Header(None)):
     if authorization is None:
         raise HTTPException(status_code=401, detail="Missing Authorization header")
@@ -190,13 +190,11 @@ async def verify_token_route(authorization: str = Header(None)):
         if scheme.lower() != "bearer":
             raise HTTPException(status_code=401, detail="Invalid authorization scheme")
         
-        # Verifica la firma del token e ottieni il payload
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
         if email is None:
             raise HTTPException(status_code=401, detail="Invalid token")
         
-        # Se il token è valido, restituisci una risposta positiva
         return {"valid": True}
     except JWTError as e:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -205,23 +203,23 @@ async def verify_token_route(authorization: str = Header(None)):
 baseSQL = """
 SELECT 
     l.id AS id_locale,
-    l.nome AS nome_locale,
+    l.name AS nome_locale,
     l.via AS via_locale,
     l.civico AS civico_locale,
     l.posti_max AS posti_max_locale,
     l.descrizione AS descrizione_locale,
     l.banner AS banner_locale,
     c.id AS id_comune,
-    c.nome AS nome_comune,
+    c.name AS nome_comune,
     p.id AS id_provincia,
-    p.nome AS nome_provincia,
+    p.name AS nome_provincia,
     p.sigla AS sigla_provincia,
     r.id AS id_regione,
-    r.nome AS nome_regione,
+    r.name AS nome_regione,
     a.cf AS cf_admin,
     a.password AS password_admin,
-    a.nome AS nome_admin,
-    a.cognome AS cognome_admin,
+    a.name AS nome_admin,
+    a.cogname AS cognome_admin,
     a.email AS email_admin,
     az.piva AS piva_azienda,
     az.nome AS nome_azienda,
@@ -255,7 +253,7 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
             raise HTTPException(status_code=500, detail="Database connection failed")
         
         cursor = conn.cursor(dictionary=True)
-        cursor.execute(baseSQL + "GROUP BY l.id")
+        cursor.execute(baseSQL + "GROUP BY restaurant.restaurant_id")
         results = cursor.fetchall()
         
         if not results:
