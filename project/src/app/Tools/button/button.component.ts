@@ -16,7 +16,12 @@ export class ButtonComponent {
   @Input() color: string = "";
   @Input() disabled: boolean = false;
   @Input() borderColor: string = "";
+  @Input() hoverColor: string = "";
   @Output() onClick = new EventEmitter<any>();
+
+
+  ngOnInit(){
+  }
 
   click() {
     this.onClick.emit("");
