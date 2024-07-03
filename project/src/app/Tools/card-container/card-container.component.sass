@@ -1,48 +1,29 @@
-.card-container
-    box-shadow: inset 0 0 5vh 0.5vh #d6d6d6
+$light-gray: #ededed
+$highlight: #3C82F6
+
+
+    
+::ng-deep .p-carousel-indicators 
+    display: flex !important
+    justify-content: center !important
     width: 100%
-
-.container
-    max-width: 100%
-    margin: auto
-
-.carousel
-    position: relative
-    width: 100%
-    overflow: hidden
-
-.card-carousel
-    display: flex
-    flex-wrap: nowrap
-    transition: transform 0.3s ease
-    overflow-x: hidden 
-    scroll-snap-type: x mandatory
-    -webkit-overflow-scrolling: touch
-
-.card-wrapper
-    flex: 0 0 auto
-    min-width: 19.6rem
-    margin-right: 1rem
-    scroll-snap-align: start
-
-.t-card
+    padding: 0
+    list-style: none
 
 
-.carousel-control
-    position: absolute
-    top: 50%
-    transform: translateY(-50%)
-    background: rgba(255, 255, 255, 0.5)
-    border: none
-    padding: 0.5rem 1rem
-    font-size: 1.5rem
-    color: #333
-    cursor: pointer
+::ng-deep .p-carousel-indicator 
+    width: 2.8rem
+    margin: .5rem
 
-.carousel-control.prev
-    left: 0.5rem
-    transition: left 0.3s ease
+::ng-deep .p-carousel-indicator .p-link
+    width: 2.8rem
+    border-radius: .4rem
+    height: .8rem
+    background-color: white
+    border: 1px solid $light-gray
 
-.carousel-control.next
-    right: 0.5rem
-    transition: right 0.3s ease
+::ng-deep .p-carousel-indicator.p-highlight .p-link 
+    background-color: $highlight
+    border-color: $highlight
+    color: white
+

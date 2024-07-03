@@ -1,12 +1,15 @@
-<div class="container">
-    <div class="carousel">
-      <div class="card-carousel" #cardCarousel>
-        <div *ngFor="let item of list" class="card-wrapper">
-          <t-card [item]="item"></t-card>
-        </div>
-      </div>
-      <button class="carousel-control prev" (click)="prevSlide()">&lt;</button>
-      <button class="carousel-control next" (click)="nextSlide()">&gt;</button>
-    </div>
-  </div>
-  
+<p-carousel 
+    [value]="list" 
+    [numVisible]="4" 
+    [numScroll]="4" 
+    [circular]="true" 
+    [responsiveOptions]="responsiveOptions" 
+    autoplayInterval="3000">
+        <ng-template let-product pTemplate="item">
+                <div class="border-1 surface-border border-round m-2 p-3">
+                    <div>
+                        <t-card [item]="product"></t-card>
+                    </div>
+                </div>
+        </ng-template>
+</p-carousel>

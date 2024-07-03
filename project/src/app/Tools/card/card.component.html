@@ -1,8 +1,8 @@
-<div class="card" style="width: 19.6rem;">
-    <img class="card-img-top" [src]="item.restaurant.banner" alt="Card image cap">
+<div class="card m-0" style="width: 19.6rem;">
+    <img class="card-img-top" [src]="item.restaurant.banner" [alt]="item.restaurant.name">
     <div class="card-body">
-      <h5 class="card-title fw-bold fs-6">{{item.restaurant.name}}</h5>
-      <p class="card-text">{{item.restaurant.description}}</p>
+      <h5 class="card-title fw-bold fs-6 my-0 ">{{item.restaurant.name}}</h5>
+      <p class="card-text my-1 text-secondary">{{item.restaurant.description}}</p>
       <a href="#" class="btn btn-primary">SHOW MORE</a>
     </div>
 </div>

@@ -9,22 +9,25 @@ export class CardContainerComponent {
   @ViewChild('cardCarousel') cardCarousel!: ElementRef;
   @Input() list: any[] = []
 
-
-
-
-
-  cardWidth = 19.6; 
-  cardMargin = 1; 
-
   constructor() { }
 
-  prevSlide(): void {
-    const scrollAmount = (this.cardWidth + this.cardMargin) * Math.floor(this.cardCarousel.nativeElement.offsetWidth / (this.cardWidth + this.cardMargin));
-    this.cardCarousel.nativeElement.scrollLeft -= scrollAmount;
-  }
+  responsiveOptions: any[] = [
+    {
+      breakpoint: '1024px',
+      numVisible: 3,
+      numScroll: 3
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 2,
+      numScroll: 2
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1,
+      numScroll: 1
+    }
+  ];
 
-  nextSlide(): void {
-    const scrollAmount = (this.cardWidth + this.cardMargin) * Math.floor(this.cardCarousel.nativeElement.offsetWidth / (this.cardWidth + this.cardMargin));
-    this.cardCarousel.nativeElement.scrollLeft += scrollAmount;
-  }
+
 }
