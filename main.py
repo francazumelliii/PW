@@ -326,9 +326,8 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
             response.append(restaurant_data)
            
 
-        logging.info(results)
         
-        return JSONResponse(content=response, status_code=200)
+        return JSONResponse(content={"success": True, "data": response}, status_code=200)
     except mysql.connector.Error as err:
         logger.error(f"Database error: {err}")
         raise HTTPException(status_code=500, detail="Database error")
