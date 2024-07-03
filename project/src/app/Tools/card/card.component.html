@@ -2,7 +2,30 @@
     <img class="card-img-top" [src]="item.restaurant.banner" [alt]="item.restaurant.name">
     <div class="card-body">
       <h5 class="card-title fw-bold fs-6 my-0 ">{{item.restaurant.name}}</h5>
-      <p class="card-text my-1 text-secondary">{{item.restaurant.description}}</p>
-      <a href="#" class="btn btn-primary">SHOW MORE</a>
+
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title  class="text-secondary-emphasis ">
+
+            <div class="d-flex flex-row justify-content-between w-100 align-items-center m-0">
+              <small class="col"><i class="bi bi-geo-alt-fill"></i></small>
+              <span class="col-10">
+                {{ item.coords.village }}
+                {{item.coords.village !== item.coords.county ? ' - ' + item.coords.county : null}}
+                ( {{item.coords.county_code}} )
+              </span>
+              <i class="bi bi-caret-down-fill col"></i>
+            </div>
+          
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p class="text-secondary">{{item.restaurant.description}}</p>
+      </mat-expansion-panel>
+
+      <t-button
+        label="SHOW MORE"
+        classes="my-1"
+        btnClasses="border bg-primary-subtle hover"
+      ></t-button>
     </div>
 </div>

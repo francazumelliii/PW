@@ -20,7 +20,7 @@ import { MatToolbarModule } from '@angular/material/toolbar'; // Import MatToolb
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { CardComponent } from './Tools/card/card.component';
 import { CardContainerComponent } from './Tools/card-container/card-container.component';
-
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -44,7 +44,8 @@ import { CardContainerComponent } from './Tools/card-container/card-container.co
     MatToolbarModule,
     MatIconModule,
     MatListModule,
-    CarouselModule
+    CarouselModule,
+    MatExpansionModule
     
   ],
   providers: [],
