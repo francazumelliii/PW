@@ -25,7 +25,7 @@ export class DatabaseService {
     return this.http.get(`${this.domain}${endpoint}`, {headers: this.headers})
       .pipe(
         catchError((error: any) => {
-          return throwError(() => new Error(error))
+          throw new Error(error)
         })
       )
   }
@@ -33,7 +33,7 @@ export class DatabaseService {
     return this.http.post(`${this.domain}${endpoint}`, body, {headers: this.headers})
       .pipe(
         catchError((error: any) => {
-          return throwError(() => new Error(error))
+          throw new Error(error)
         })
       )
   }
@@ -41,7 +41,7 @@ export class DatabaseService {
     return this.http.put(`${this.domain}${endpoint}`, body, {headers: this.headers})
       .pipe(
         catchError((error: any) => {
-          return throwError(() => new Error(error))
+          throw new Error(error)
         })
       )
   }
@@ -49,7 +49,7 @@ export class DatabaseService {
     return this.http.patch(`${this.domain}${endpoint}`, body, {headers: this.headers})
       .pipe(
         catchError((error: any) => {
-          return throwError(() => new Error(error))
+          throw new Error(error)
         })
       )
   }
@@ -57,7 +57,7 @@ export class DatabaseService {
     return this.http.delete(`${this.domain}${endpoint}`, {headers: this.headers})
       .pipe(
         catchError((error: any) => {
-          return throwError(() => new Error(error))
+          throw new Error(error)
         })
       )
   }

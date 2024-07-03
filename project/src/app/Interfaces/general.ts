@@ -38,3 +38,8 @@ export interface coords_obj{
     county_code: string,
     region: string
 }
+
+export interface APIResponse{
+    success: boolean,
+    data: any
+}

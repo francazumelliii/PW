@@ -1,5 +1,6 @@
-import { Restaurant } from "./general";
+import { Observable } from "rxjs";
+import { APIResponse, Restaurant } from "./general";
 
 export interface Delegate {
-    getAllRestaurants(): any
+    getAllRestaurants(): Observable<APIResponse>
 }

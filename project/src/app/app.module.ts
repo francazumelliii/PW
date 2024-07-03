@@ -12,7 +12,7 @@ import { ButtonComponent } from './Tools/button/button.component';
 import { LoginFormComponent } from './Tools/login-form/login-form.component';
 import {MatList, MatListModule} from '@angular/material/list';
 
-
+import { CarouselModule } from 'primeng/carousel';
 // Import Angular Material modules
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -43,7 +43,8 @@ import { CardContainerComponent } from './Tools/card-container/card-container.co
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    CarouselModule
     
   ],
   providers: [],

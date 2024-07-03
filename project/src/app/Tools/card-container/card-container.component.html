@@ -1,8 +1,12 @@
-<div class="d-flex flex-nowrap overflow-y-auto py-3 my-2 px-2 column-gap-4 col-8 m-auto card-container rounded">
-    <t-card></t-card>
-    <t-card></t-card>
-    <t-card></t-card>
-    <t-card></t-card>
-    <t-card></t-card>
-    <t-card></t-card>
-</div>
+<div class="container">
+    <div class="carousel">
+      <div class="card-carousel" #cardCarousel>
+        <div *ngFor="let item of list" class="card-wrapper">
+          <t-card [item]="item"></t-card>
+        </div>
+      </div>
+      <button class="carousel-control prev" (click)="prevSlide()">&lt;</button>
+      <button class="carousel-control next" (click)="nextSlide()">&gt;</button>
+    </div>
+  </div>
+  

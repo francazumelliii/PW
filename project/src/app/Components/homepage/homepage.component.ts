@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RoleService } from '../../Services/role.service';
-import { Restaurant } from '../../Interfaces/general';
+import { APIResponse, Restaurant } from '../../Interfaces/general';
 
 @Component({
   selector: 'app-homepage',
@@ -12,8 +12,18 @@ export class HomepageComponent implements OnInit{
     private roleService: RoleService,
   ){}
 
+  restaurantsList: Restaurant[] = [];
+
 
   ngOnInit(){
-    this.roleService.getAllRestaurants().subscribe((res:Restaurant) => console.log(res))
+    this.getAllRestaurants()
+  }
+
+  getAllRestaurants(){
+    this.roleService.getAllRestaurants()
+      .subscribe((response: APIResponse) => {
+        response.success ? this.restaurantsList = response.data : null
+        console.log(response.data)
+      },((error: any) => console.error(error)))
   }
 }
