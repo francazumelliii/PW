@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular
 import Swal from 'sweetalert2';
 import { ApiService } from '../../Services/api.service';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { SweetalertService } from '../../Services/sweetalert.service';
 
 @Component({
   selector: 'app-searchbar',
@@ -12,12 +13,14 @@ export class SearchbarComponent {
   @ViewChild("searchBar") searchBar!: ElementRef
   @Output() location = new EventEmitter<GeolocationPosition>()
   @Output() address = new EventEmitter<any>()
+  @Output() onClear = new EventEmitter<any>()
   position!: GeolocationPosition 
   _isLoading: boolean = false
 
 
   constructor(
     private APIService: ApiService,
+    private swal: SweetalertService
 
   ){
     this.success = this.success.bind(this);
@@ -36,12 +39,7 @@ export class SearchbarComponent {
     this.innerSearchBar(position.coords.latitude, position.coords.longitude)
   }
   error(error: GeolocationPositionError){
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Something went wrong!",
-      footer: error
-    })
+    this.swal.error(null,"Error", "Something went wrong", error.toString())
   }
 
   getCurrentLocation(){
@@ -60,5 +58,6 @@ export class SearchbarComponent {
   }
   clearSearchBar(){
     this.searchBar.nativeElement.value = ""
+    this.onClear.emit("")
   }
 }
