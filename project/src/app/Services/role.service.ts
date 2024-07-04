@@ -53,4 +53,8 @@ export class RoleService {
     }
     return this.delegate.getAllRestaurants()
   }
+
+  getNearestRestaurants(lat:number | string, lon: number | string, county: string){
+    return this.delegate.getNearestRestaurants(lat,lon,county)
+  }
 }
