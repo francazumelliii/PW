@@ -252,14 +252,6 @@ INNER JOIN piatto pi ON pi.id_menu = m.id
 #---------------- GET ALL RESTAURANTS IN DB -----------------
 #
 
-@app.get("/admin")
-async def tes(request:Request, token: str = Depends(verify_token)):
-    return JSONResponse(content="ADMIN")
-    
-@app.get("/user")
-async def test(request:Request,token:str = Depends(verify_token)): 
-    return JSONResponse(content ="USER")
-
 @app.get("/api/v1/restaurant/all")
 async def get_all_restaurants(request: Request, token: str = Depends(verify_token)):
     logger.info("Attempting to retrieve all restaurants...")
@@ -546,7 +538,7 @@ async def get_all_imgs(id: str = Query(..., description="ID locale"), token: str
         conn.close()
         
 # get nearest restaurants by location
-@app.get("/api/v1/restaurant/nearest")
+#@app.get("/api/v1/restaurant/nearest")
 async def get_nearest(village: str = Query(""),county: str = Query(""), state: str = Query(""), token: str = Depends(verify_token)): 
     try: 
         conn = get_db_connection()
@@ -579,6 +571,75 @@ async def get_nearest(village: str = Query(""),county: str = Query(""), state: s
     finally: 
         cursor.close()
         conn.close()
+      
+@app.get("/api/v1/restaurant/nearest")
+async def get_nearest_restaurants(latitude: float = Query(1), longitude: float = Query(), county: str = Query(), token: str = Depends(verify_token)):
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT restaurant.name AS restaurant_name,restaurant.rating,restaurant.street,restaurant.street_number,
+            restaurant.latitude,restaurant.longitude,restaurant.max_chairs,restaurant.description,restaurant.banner,
+            admin.admin_id,admin.name AS admin_name,admin.surname AS admin_surname,company.name AS company_name,
+            company.vat_n,company.address AS company_address,company.telephone AS company_telephone,village.name AS village_name,
+            county.name AS county_name,county.code AS county_code,region.name AS region_name,
+            SQRT(POW(restaurant.latitude - %s, 2) + POW(restaurant.longitude - %s, 2)) AS distance
+            FROM restaurant 
+            INNER JOIN admin ON admin.restaurant_id = restaurant.restaurant_id 
+            INNER JOIN company ON company.company_id = restaurant.company_id 
+            INNER JOIN village ON village.village_id = restaurant.village_id 
+            INNER JOIN county ON county.county_id = village.county_id 
+            INNER JOIN region ON region.region_id = county.region_id
+            WHERE county.name LIKE %s
+            GROUP BY restaurant.restaurant_id 
+            ORDER BY distance"""
+            
+        cursor.execute(query, (latitude, longitude, county))
+        print(latitude,longitude,county)
+        results = cursor.fetchall()
+        response = []
+        for row in results: 
+            restaurant_data = {
+                "restaurant": {
+                    "name": row["restaurant_name"],
+                    "rating": row["rating"],
+                    "street": row["street"],
+                    "street_number": row["street_number"],
+                    "max_chairs": row['max_chairs'],
+                    "description": row['description'],
+                    "banner": row['banner']
+                },
+                "admin": {
+                    "id": row['admin_id'],
+                    "name": row['admin_name'],
+                    "surname": row['admin_surname']
+                },
+                "company": {
+                    "name": row['company_name'],
+                    "vat": row["vat_n"],
+                    "address": row['company_address'],
+                    "telephone": row['company_telephone']
+                },
+                "coords": {
+                    "latitude": row["latitude"],
+                    "longitude": row['longitude'],
+                    "village": row["village_name"],
+                    "county": row["county_name"],
+                    "county_code": row["county_code"],
+                    "region": row["region_name"]
+                }
+            }
+            response.append(restaurant_data)
+    
+        return JSONResponse(content={"success" : True, "data": response}, status_code=200)        
+        
+    except MySQLError as err: 
+        raise HTTPException(status_code=401, detail=f"Error retriving data: {err}")
+    finally: 
+        conn.close()
+      
+      
+      
         
         
 #get others restaurant in same county or village
@@ -606,7 +667,7 @@ async def get_others(request: Request, token: str = Depends(verify_token)):
         cursor.execute(query, params)
         result = cursor.fetchall()
 
-        return JSONResponse(content=result)
+        return JSONResponse(content=result, status_code=200)
     except mysql.connector.Error as err:
         return JSONResponse(content={"Error": f"Error in retrieving data: {err}"}, status_code=400)
     finally:
@@ -686,7 +747,7 @@ async def get_user_from_email(email: str = Depends(get_email_from_token)):
             }
         if result: 
             logging.debug("Utente trovato nel database")
-            return JSONResponse(content=user)
+            return JSONResponse(content=user, status_code=200)
         else:
             logging.error("Utente non trovato nel database")
             raise HTTPException(status_code=404, detail="Utente non trovato")
@@ -714,9 +775,9 @@ async def patch_user(request: Request, token: str = Depends(verify_token)):
         conn.commit()
         
         if cursor.rowcount > 0:
-            return JSONResponse(content={"success": True})
+            return JSONResponse(content={"success": True}, status_code=200)
         else: 
-            return JSONResponse(content={"success": False})
+            return JSONResponse(content={"success": False}, status_code=401)
         
     except MySQLError as err: 
         raise HTTPException(status_code=400, detail=f"Errore nel recupero dei dati: {err}")
@@ -944,15 +1005,3 @@ async def get_menu(id: int | str = Query("")):
         conn.close()
         
         
-        
-        
-        
-        
-        
-        
-        
-#SELECT ristorante_nome, latitudine, longitudine,
-#SQRT(POW(latitudine - :input_lat, 2) + POW(longitudine - :input_long, 2)) AS distanza
-#FROM ristoranti
-#ORDER BY distanza
-#LIMIT 5;
