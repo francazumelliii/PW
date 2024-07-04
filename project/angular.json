@@ -40,8 +40,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.sass",
               "node_modules/primeng/resources/themes/saga-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css"
+              "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": ["./node_modules/bootstrap/dist/js/bootstrap.min.js"],
             "server": "src/main.server.ts",
@@ -109,8 +108,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.sass",
               "node_modules/primeng/resources/themes/saga-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css"
+              "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": ["./node_modules/bootstrap/dist/js/bootstrap.min.js"]
           }

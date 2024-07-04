@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, OnInit } from '@angular/core';
 import { RoleService } from '../../Services/role.service';
 import { APIResponse, Restaurant } from '../../Interfaces/general';
 
@@ -7,7 +7,7 @@ import { APIResponse, Restaurant } from '../../Interfaces/general';
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.sass'
 })
-export class HomepageComponent implements OnInit{
+export class HomepageComponent implements AfterContentInit{
   constructor(
     private roleService: RoleService,
   ){}
@@ -15,7 +15,7 @@ export class HomepageComponent implements OnInit{
   restaurantsList: Restaurant[] = [];
 
 
-  ngOnInit(){
+  ngAfterContentInit(): void {
     this.getAllRestaurants()
   }
 
@@ -25,5 +25,8 @@ export class HomepageComponent implements OnInit{
         response.success ? this.restaurantsList = response.data : null
         console.log(response.data)
       },((error: any) => console.error(error)))
+  }
+  handleLocation(event: GeolocationPosition){
+    console.log(event)
   }
 }

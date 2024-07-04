@@ -21,6 +21,7 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { CardComponent } from './Tools/card/card.component';
 import { CardContainerComponent } from './Tools/card-container/card-container.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { SearchbarComponent } from './Components/searchbar/searchbar.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     LoginFormComponent,
     CardComponent,
     CardContainerComponent,
+    SearchbarComponent,
   ],
   imports: [
     BrowserModule,

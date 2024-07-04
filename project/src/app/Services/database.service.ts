@@ -12,13 +12,16 @@ export class DatabaseService {
 
   constructor(
     private http: HttpClient
-  ) { 
+  ) {
     const token = localStorage.getItem("token")
     token ? this.token = token : null
   }
-
-  private get headers(){
-    return new HttpHeaders({"Authorization" : `Bearer ${this.token}`})
+  
+  private get headers(): HttpHeaders {
+    if (!this.token) {
+      this.token = localStorage.getItem("token") || "";
+    }
+    return new HttpHeaders({ "Authorization": `Bearer ${this.token}` });
   }
 
   public get(endpoint: string): Observable<any>{

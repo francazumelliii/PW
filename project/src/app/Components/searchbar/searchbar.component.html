@@ -1,0 +1,21 @@
+<div class="input-group d-flex flex-row">
+    <div class="input-group-prepend ">
+      <span class="input-group-text border rounded-start-circle rounded-end-0 py-3">
+        <ng-container *ngIf="!_isLoading else loader">
+          <i class="bi bi-geo-alt-fill px-2 location-icon pointer" (click)="getCurrentLocation()"></i>
+        </ng-container>
+      </span>
+    </div>
+    <input type="text" class="form-control" #searchBar>
+    <div class="input-group-append ">
+      <span class="input-group-text rounded-start-0 rounded-end-circle py-3">
+        <i class="bi bi-x pointer clear-icon" (click)="clearSearchBar()"></i>
+      </span>
+    </div>
+  </div>
+
+
+
+  <ng-template #loader>
+    <div class="spinner-border" role="status"></div>
+  </ng-template>
