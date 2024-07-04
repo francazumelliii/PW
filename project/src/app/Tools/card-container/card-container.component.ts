@@ -8,7 +8,7 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 export class CardContainerComponent {
   @ViewChild('cardCarousel') cardCarousel!: ElementRef;
   @Input() list: any[] = []
-
+  @Input() circular: boolean = true
   constructor() { }
 
   responsiveOptions: any[] = [
