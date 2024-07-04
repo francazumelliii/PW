@@ -3,11 +3,11 @@
 <section class=" jumbotron d-flex flex-column justify-content-center m-auto p-4 row-gap-3">
 
     <div class="bg-secondary-subtle" >
-        <t-card-container [list] = "restaurantsList"></t-card-container>
+        <t-card-container [list] = "restaurantsList" #cardContainer></t-card-container>
     </div>
 
 
     <div >
-        <app-searchbar (location)="handleLocation($event)"></app-searchbar>
+        <app-searchbar (address)="handleSearchbarLocation($event)" (onClear)="handleSearchbarClear()"></app-searchbar>
     </div>
 </section>
