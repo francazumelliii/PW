@@ -942,3 +942,17 @@ async def get_menu(id: int | str = Query("")):
         raise HTTPException(status_code=400, detail=f"Error: {err}")
     finally:
         conn.close()
+        
+        
+        
+        
+        
+        
+        
+        
+        
+#SELECT ristorante_nome, latitudine, longitudine,
+#SQRT(POW(latitudine - :input_lat, 2) + POW(longitudine - :input_long, 2)) AS distanza
+#FROM ristoranti
+#ORDER BY distanza
+#LIMIT 5;
