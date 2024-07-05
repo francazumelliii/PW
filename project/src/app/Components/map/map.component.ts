@@ -30,29 +30,10 @@ export class MapComponent implements OnInit {
       return;
     }
   
-    let minLatitude = this.list[0].coords.latitude;
-    let maxLatitude = this.list[0].coords.latitude;
-    let minLongitude = this.list[0].coords.longitude;
-    let maxLongitude = this.list[0].coords.longitude;
   
-    this.list.forEach((res: Restaurant) => {
-      if (res.coords.latitude < minLatitude) {
-        minLatitude = res.coords.latitude;
-      }
-      if (res.coords.latitude > maxLatitude) {
-        maxLatitude = res.coords.latitude;
-      }
-      if (res.coords.longitude < minLongitude) {
-        minLongitude = res.coords.longitude;
-      }
-      if (res.coords.longitude > maxLongitude) {
-        maxLongitude = res.coords.longitude;
-      }
-    });
-  
-    const centerLatitude = (minLatitude + maxLatitude) / 2;
-    const centerLongitude = (minLongitude + maxLongitude) / 2;
-    const zoomLevel = 0;
+    const centerLatitude = 42.9028 
+    const centerLongitude = 12.9999
+    const zoomLevel = 3.5;
    
     this.endpoint = `https://maps.geoapify.com/v1/staticmap?style=osm-bright&center=lonlat:${centerLongitude},${centerLatitude}&zoom=${zoomLevel}`;
   
@@ -71,5 +52,4 @@ export class MapComponent implements OnInit {
     this.mapImage.nativeElement.src = this.endpoint;
     console.log(this.endpoint);
   }
-  
 }
