@@ -10,4 +10,8 @@
     <div >
         <app-searchbar (address)="handleSearchbarLocation($event)" (onClear)="handleSearchbarClear()"></app-searchbar>
     </div>
+    
+    <div class="d-flex flex-row justify-content-center">
+        <t-map [list] = "restaurantsList" #map></t-map>
+    </div>
 </section>
