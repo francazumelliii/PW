@@ -22,6 +22,7 @@ import { CardComponent } from './Tools/card/card.component';
 import { CardContainerComponent } from './Tools/card-container/card-container.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { SearchbarComponent } from './Components/searchbar/searchbar.component';
+import { MapComponent } from './Components/map/map.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SearchbarComponent } from './Components/searchbar/searchbar.component';
     CardComponent,
     CardContainerComponent,
     SearchbarComponent,
+    MapComponent,
   ],
   imports: [
     BrowserModule,
