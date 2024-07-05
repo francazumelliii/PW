@@ -31,8 +31,8 @@ export interface company_obj{
     telephone: string
 }
 export interface coords_obj{
-    latitude: number | string,
-    longitude: number | string,
+    latitude: number ,
+    longitude: number,
     village: string, 
     county: string,
     county_code: string,
@@ -44,3 +44,9 @@ export interface APIResponse{
     data: any
 }
 
+export interface Marker{
+    longitude: number,
+    latitude: number,
+    color: string, 
+    icon: string, 
+}
