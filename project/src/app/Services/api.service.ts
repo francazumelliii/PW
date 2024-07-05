@@ -20,4 +20,9 @@ export class ApiService {
         })
       )
   }
+
+  getStaticMapWithMarkers(markers: any[], lat: number, lon: number){
+    return this.http.get("https://maps.geoapify.com/v1/staticmap?style=osm-bright&center=lonlat:-122.389075,47.336414&zoom=9.8099&marker=lonlat:-122.389075,47.336414;color:%23ab00ff;icon:utensils&scaleFactor=2&width=1000&height=500&apiKey=31274a2ec68e438ebcd9883478bb9d2a")
+  }
+
 }
