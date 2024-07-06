@@ -4,6 +4,7 @@ import { APIResponse, Restaurant } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { CardContainerComponent } from '../../Tools/card-container/card-container.component';
 import { MapComponent } from '../map/map.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-homepage',
@@ -14,7 +15,8 @@ export class HomepageComponent implements OnInit {
   constructor(
     private roleService: RoleService,
     private swal: SweetalertService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ){}
 
   restaurantsList: Restaurant[] = [];
@@ -60,5 +62,9 @@ export class HomepageComponent implements OnInit {
     this.cardContainer.list = this.restaurantsList;
     this.cardContainer.circular = true;
     this.cdr.detectChanges();
+  }
+  handleCardBtnClick(event: any){
+    console.log(event)
+    this.router.navigate(['/restaurant',event])
   }
 }

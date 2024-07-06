@@ -3,7 +3,7 @@
 <section class=" jumbotron d-flex flex-column justify-content-center m-auto p-4 row-gap-3">
 
     <div class="bg-secondary-subtle" >
-        <t-card-container [list] = "restaurantsList" #cardContainer></t-card-container>
+        <t-card-container [list] = "restaurantsList" #cardContainer (cardBtnClick)="handleCardBtnClick($event)"></t-card-container>
     </div>
 
 
