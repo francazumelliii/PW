@@ -52,4 +52,8 @@ export class MapComponent implements OnInit {
     this.mapImage.nativeElement.src = this.endpoint;
     console.log(this.endpoint);
   }
+
+
 }
+
+
