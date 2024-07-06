@@ -8,7 +8,7 @@
         <ng-template let-product pTemplate="item">
                 <div class="border-1 surface-border border-round m-2 p-3">
                     <div>
-                        <t-card [item]="product"></t-card>
+                        <t-card [item]="product" (btnClick)="handleBtnClick($event)"></t-card>
                     </div>
                 </div>
         </ng-template>

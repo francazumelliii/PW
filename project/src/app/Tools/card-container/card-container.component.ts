@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, Output, ViewChild } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 't-card-container',
@@ -9,6 +10,7 @@ export class CardContainerComponent {
   @ViewChild('cardCarousel') cardCarousel!: ElementRef;
   @Input() list: any[] = []
   @Input() circular: boolean = true
+  @Output() cardBtnClick = new EventEmitter<any>()
   constructor() { }
 
   responsiveOptions: any[] = [
@@ -30,4 +32,7 @@ export class CardContainerComponent {
   ];
 
 
+  handleBtnClick(event: any){
+    this.cardBtnClick.emit(event)
+  }
 }
