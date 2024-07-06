@@ -267,19 +267,22 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
         query= """
         SELECT 
             restaurant.name AS restaurant_name, restaurant.rating, restaurant.street, restaurant.street_number, restaurant.latitude,
-            restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,
+            restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,restaurant.restaurant_id,
             admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname,
             company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
             village.name AS village_name,
             county.name AS county_name, county.code AS county_code,
-            region.name AS region_name
+            region.name AS region_name,
+            imgs.path AS img_path
         FROM restaurant 
         INNER JOIN admin ON admin.restaurant_id = restaurant.restaurant_id 
         INNER JOIN company ON company.company_id = restaurant.company_id 
         INNER JOIN village ON village.village_id = restaurant.village_id 
         INNER JOIN county ON county.county_id = village.county_id 
-        INNER JOIN region ON region.region_id = county.region_id group by 
-        restaurant.restaurant_id"""
+        INNER JOIN region ON region.region_id = county.region_id
+        INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id
+        WHERE imgs.priority = 1
+        GROUP BY restaurant.restaurant_id"""
         
         cursor.execute(query)   
         results = cursor.fetchall()
@@ -287,6 +290,7 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
         for row in results: 
             restaurant_data = {
                 "restaurant": {
+                    "id": row['restaurant_id'],
                     "name": row["restaurant_name"],
                     "rating": row["rating"],
                     "street": row["street"],
@@ -313,6 +317,9 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
                     "county": row["county_name"],
                     "county_code": row["county_code"],
                     "region": row["region_name"]
+                },
+                "img": {
+                    "path": row['img_path']
                 }
             }
             response.append(restaurant_data)
@@ -382,35 +389,87 @@ async def search_restaurants(
         if conn:
             conn.close()
 
-
-#get a restaurant from id 
-@app.post("/api/v1/get_restaurant_from_id")
-
-async def get_restaurant_from_id(request: Request, token: str = Depends(verify_token)):
-    conn = get_db_connection()
-    if not conn:
-        return JSONResponse(content={"error": "Could not connect to the database"}, status_code=500)
-
+#get restaurant from id
+@app.get("/api/v1/restaurant")
+async def get_restaurant_from_id(id:str | int = Query(""), token: str = Depends(verify_token)):
+    logger.info("Attempting to retrieve all restaurants...")
+    conn = None
+    cursor = None
     try:
-        data = await request.json()
-        id = data.get("id")
-        if not id:
-            return JSONResponse(content={"error": "Missing parameter: id"}, status_code=400)
-
+        conn = get_db_connection()
+        if not conn:
+            logger.error("Database connection failed")
+            raise HTTPException(status_code=500, detail="Database connection failed")
+        
         cursor = conn.cursor(dictionary=True)
-        query = baseSQL + " WHERE l.id = %s GROUP BY l.id"
-        cursor.execute(query, (id,))
-        result = cursor.fetchone()
-        if result:
-            return JSONResponse(content=result)
-        else:
-            return JSONResponse(content={"message": "No data found"}, status_code=404)
-    except Error as err:
-        logger.error(f"Error retrieving data: {err}")
-        return JSONResponse(content={"error": f"Errore nel recupero dei dati: {err}"}, status_code=500)
+        query= """
+        SELECT 
+            restaurant.name AS restaurant_name, restaurant.rating, restaurant.street, restaurant.street_number, restaurant.latitude,
+            restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,restaurant.restaurant_id,
+            admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname,
+            company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
+            village.name AS village_name,
+            county.name AS county_name, county.code AS county_code,
+            region.name AS region_name,
+            imgs.path AS img_path
+        FROM restaurant 
+        INNER JOIN admin ON admin.restaurant_id = restaurant.restaurant_id 
+        INNER JOIN company ON company.company_id = restaurant.company_id 
+        INNER JOIN village ON village.village_id = restaurant.village_id 
+        INNER JOIN county ON county.county_id = village.county_id 
+        INNER JOIN region ON region.region_id = county.region_id
+        INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id
+        WHERE imgs.priority = 1 AND restaurant.restaurant_id = %s
+        GROUP BY restaurant.restaurant_id"""
+        
+        cursor.execute(query,(id,))   
+        results = cursor.fetchone()
+        restaurant_data = {
+            "restaurant": {
+                "id": results['restaurant_id'],
+                "name": results["restaurant_name"],
+                "rating": results["rating"],
+                "street": results["street"],
+                "street_number": results["street_number"],
+                "max_chairs": results['max_chairs'],
+                "description": results['description'],
+                "banner": results['banner']
+            },
+            "admin": {
+                "id": results['admin_id'],
+                "name": results['admin_name'],
+                "surname": results['admin_surname']
+            },
+            "company": {
+                "name": results['company_name'],
+                "vat": results["vat_n"],
+                "address": results['company_address'],
+                "telephone": results['company_telephone']
+            },
+            "coords": {
+                "latitude": results["latitude"],
+                "longitude": results['longitude'],
+                "village": results["village_name"],
+                "county": results["county_name"],
+                "county_code": results["county_code"],
+                "region": results["region_name"]
+            },
+            "img": {
+                "path": results['img_path']
+            }
+        }      
+
+        
+        return JSONResponse(content={"success": True, "data": restaurant_data}, status_code=200)
+    except mysql.connector.Error as err:
+        logger.error(f"Database error: {err}")
+        raise HTTPException(status_code=500, detail="Database error")
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 
 #test function
 @app.get("/ping")
@@ -579,10 +638,12 @@ async def get_nearest_restaurants(latitude: float = Query(1), longitude: float =
         cursor = conn.cursor(dictionary=True)
         query = """
             SELECT restaurant.name AS restaurant_name,restaurant.rating,restaurant.street,restaurant.street_number,
+            restaurant.restaurant_id,
             restaurant.latitude,restaurant.longitude,restaurant.max_chairs,restaurant.description,restaurant.banner,
             admin.admin_id,admin.name AS admin_name,admin.surname AS admin_surname,company.name AS company_name,
             company.vat_n,company.address AS company_address,company.telephone AS company_telephone,village.name AS village_name,
             county.name AS county_name,county.code AS county_code,region.name AS region_name,
+            imgs.path AS img_path,
             SQRT(POW(restaurant.latitude - %s, 2) + POW(restaurant.longitude - %s, 2)) AS distance
             FROM restaurant 
             INNER JOIN admin ON admin.restaurant_id = restaurant.restaurant_id 
@@ -590,7 +651,8 @@ async def get_nearest_restaurants(latitude: float = Query(1), longitude: float =
             INNER JOIN village ON village.village_id = restaurant.village_id 
             INNER JOIN county ON county.county_id = village.county_id 
             INNER JOIN region ON region.region_id = county.region_id
-            WHERE county.name LIKE %s
+            INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id
+            WHERE county.name LIKE %s AND imgs.priority = '1'
             GROUP BY restaurant.restaurant_id 
             ORDER BY distance"""
             
@@ -601,6 +663,7 @@ async def get_nearest_restaurants(latitude: float = Query(1), longitude: float =
         for row in results: 
             restaurant_data = {
                 "restaurant": {
+                    "id": row['restaurant_id'],
                     "name": row["restaurant_name"],
                     "rating": row["rating"],
                     "street": row["street"],
@@ -627,6 +690,9 @@ async def get_nearest_restaurants(latitude: float = Query(1), longitude: float =
                     "county": row["county_name"],
                     "county_code": row["county_code"],
                     "region": row["region_name"]
+                },
+                "img": {
+                    "path": row['img_path']
                 }
             }
             response.append(restaurant_data)
@@ -736,24 +802,24 @@ async def get_user_from_email(email: str = Depends(get_email_from_token)):
         conn = get_db_connection()
 
         cursor = conn.cursor(dictionary=True)
-        query = "SELECT * FROM CLIENTE WHERE mail = %s"
+        query = "SELECT * FROM customer WHERE mail = %s"
         cursor.execute(query, (email.lower(),))  # email dovrebbe essere una tupla
         result = cursor.fetchone()
         
         user = {
                 "mail" : result["mail"],
-                "nome" : result["nome"],
-                "cognome" : result["cognome"]
+                "name" : result["name"],
+                "surname" : result["surname"]
             }
         if result: 
-            logging.debug("Utente trovato nel database")
-            return JSONResponse(content=user, status_code=200)
+            logging.debug("User not found")
+            return JSONResponse(content={"success": True, "data": {"user": user}}, status_code=200)
         else:
-            logging.error("Utente non trovato nel database")
+            logging.error("User not found")
             raise HTTPException(status_code=404, detail="Utente non trovato")
     except Error as err:
-        logging.error(f"Errore nel recupero dei dati dal database: {err}")
-        raise HTTPException(status_code=400, detail=f"Errore nel recupero dei dati: {err}")
+        logging.error(f"Error retriving data: {err}")
+        raise HTTPException(status_code=400, detail=f"Error retriving data: {err}")
     finally:
         if conn:
             conn.close()
@@ -770,7 +836,7 @@ async def patch_user(request: Request, token: str = Depends(verify_token)):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        query = "UPDATE cliente SET nome = %s, cognome = %s WHERE mail = %s"
+        query = "UPDATE customer SET name = %s, surname = %s WHERE mail = %s"
         cursor.execute(query, (name, surname, mail))
         conn.commit()
         
@@ -862,28 +928,28 @@ async def put_restaurant(request: Request, token:str = Depends(verify_token),id:
         params = []
 
         if name:
-            query_parts.append("nome = %s")
+            query_parts.append("name = %s")
             params.append(name)
         if road:
-            query_parts.append("via = %s")
+            query_parts.append("street = %s")
             params.append(road)
         if hn:
-            query_parts.append("civico = %s")
+            query_parts.append("street_number = %s")
             params.append(hn)
         if max_chairs:
-            query_parts.append("posti_max = %s")
+            query_parts.append("max_chairs = %s")
             params.append(max_chairs)
         if village_id:
-            query_parts.append("id_comune = %s")
+            query_parts.append("village_id = %s")
             params.append(village_id)
         if description:
-            query_parts.append("descrizione = %s")
+            query_parts.append("description = %s")
             params.append(description)
         if banner:
             query_parts.append("banner = %s")
             params.append(banner)
             
-        query = "UPDATE locale SET " + ", ".join(query_parts)
+        query = "UPDATE restaurant SET " + ", ".join(query_parts)
         query += " WHERE id = %s"
         params.append(id)
         cursor.execute(query, params)
