@@ -23,6 +23,7 @@ import { CardContainerComponent } from './Tools/card-container/card-container.co
 import {MatExpansionModule} from '@angular/material/expansion';
 import { SearchbarComponent } from './Components/searchbar/searchbar.component';
 import { MapComponent } from './Components/map/map.component';
+import { RestaurantComponent } from './Components/restaurant/restaurant.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MapComponent } from './Components/map/map.component';
     CardContainerComponent,
     SearchbarComponent,
     MapComponent,
+    RestaurantComponent,
   ],
   imports: [
     BrowserModule,
