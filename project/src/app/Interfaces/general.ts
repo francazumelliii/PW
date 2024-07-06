@@ -6,10 +6,12 @@ export interface Restaurant{
     admin: admin_obj
     company: company_obj
     coords: coords_obj
+    img: img_obj
 }
 
 
 export interface restaurant_obj{
+    id: string | number,
     name: string,
     rating: string | number,
     street: string,
@@ -37,6 +39,9 @@ export interface coords_obj{
     county: string,
     county_code: string,
     region: string
+}
+export interface img_obj{
+    path: string
 }
 
 export interface APIResponse{
