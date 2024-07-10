@@ -486,10 +486,10 @@ async def get_all_turns(request: Request, token: str = Depends(verify_token)):
 
     try:
         cursor = conn.cursor(dictionary=True)
-        query = "SELECT id, TIME_FORMAT(ora_inizio, '%H:%i:%s') AS ora_inizio, TIME_FORMAT(ora_fine, '%H:%i:%s') AS ora_fine FROM turno"
+        query = "SELECT turn_id, TIME_FORMAT(start_time, '%H:%i:%s') AS start_time, TIME_FORMAT(end_time, '%H:%i:%s') AS end_time FROM turn"
         cursor.execute(query)
         result = cursor.fetchall()
-        return JSONResponse(content=result)
+        return JSONResponse(content={"success": True, "data": result})
     except Error as err:
         logger.error(f"Error retrieving data: {err}")
         return JSONResponse(content={"error": f"Errore nel recupero dei dati: {err}"}, status_code=500)
