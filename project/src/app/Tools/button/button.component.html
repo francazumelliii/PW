@@ -1,8 +1,8 @@
 
-<div class="input-group mb-3 "[ngClass]="{'disabled' : disabled}" class=" {{classes}}" >
-    <div class="input-group-prepend "   >
+<div class="input-group mb-3 " [ngClass]="{'disabled' : disabled}" class=" {{classes}}" >
+    <div class="input-group-prepend " >
       <span 
-            *ngIf="icon"
+            *ngIf="icon.length  > 0"
             [ngClass]="icon" 
             class="btn btn-outline-secondary {{ iconClasses }}"
             [ngStyle]="{'background-color': bgColor, 'color': color, 'border-color': borderColor}"
@@ -16,5 +16,6 @@
         (click) = "click()"
         [ngClass]="{'rounded' : !icon}"
         [ngStyle]="{'background': bgColor, 'border-color': borderColor}"
-        class="form-control {{ btnClasses }}">{{label}}</button>
+        class="form-control {{ btnClasses }}">
+        {{label}}</button>
   </div>
