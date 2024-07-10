@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
-
+import {MatSelectModule} from '@angular/material/select';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomepageComponent } from './Components/homepage/homepage.component';
@@ -11,8 +12,10 @@ import { AuthenticationsComponent } from './Components/authentications/authentic
 import { ButtonComponent } from './Tools/button/button.component';
 import { LoginFormComponent } from './Tools/login-form/login-form.component';
 import {MatList, MatListModule} from '@angular/material/list';
-
+import { StepperModule } from 'primeng/stepper';
 import { CarouselModule } from 'primeng/carousel';
+import { ButtonModule } from 'primeng/button';
+import {MatInputModule} from '@angular/material/input';
 // Import Angular Material modules
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,7 +27,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { SearchbarComponent } from './Components/searchbar/searchbar.component';
 import { MapComponent } from './Components/map/map.component';
 import { RestaurantComponent } from './Components/restaurant/restaurant.component';
-
+import { StepperContainerComponent } from './Tools/stepper-container/stepper-container.component';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,6 +43,7 @@ import { RestaurantComponent } from './Components/restaurant/restaurant.componen
     SearchbarComponent,
     MapComponent,
     RestaurantComponent,
+    StepperContainerComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,10 +57,16 @@ import { RestaurantComponent } from './Components/restaurant/restaurant.componen
     MatIconModule,
     MatListModule,
     CarouselModule,
-    MatExpansionModule
-    
+    MatExpansionModule,
+    StepperModule,
+    ButtonModule,
+    CalendarModule,
+    DropdownModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule
   ],
-  providers: [],
+  providers: [{ provide: LOCALE_ID, useValue: 'en-US'},],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
