@@ -61,4 +61,8 @@ export class RoleService {
   getRestaurantFromId(id: number | string){
     return this.delegate.getRestaurantFromId(id)
   }
+
+  getTurns(){
+    return this.delegate.getTurns()
+  }
 }

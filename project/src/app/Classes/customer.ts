@@ -20,4 +20,7 @@ export class Customer implements Delegate{
     getRestaurantFromId(id: number | string): Observable<APIResponse> {
         return this.dbService.get(`/api/v1/restaurant?id=${id}`)
     }
+    getTurns(): Observable<APIResponse>{
+        return this.dbService.get("/api/v1/turns")
+    }
 }

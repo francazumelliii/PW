@@ -3,6 +3,7 @@ import { Delegate } from "../Interfaces/delegate";
 import { DatabaseService } from "../Services/database.service";
 import { Observable } from "rxjs";
 import { APIResponse, Restaurant } from "../Interfaces/general";
+import { ApiService } from "../Services/api.service";
 
 @Injectable({
     providedIn: 'root'
@@ -21,4 +22,8 @@ export class Admin implements Delegate{
     getRestaurantFromId(id: number | string): Observable<APIResponse> {
         return this.dbService.get(`/api/v1/restaurant?id=${id}`)
     }
+    getTurns(): Observable<APIResponse>{
+        return this.dbService.get("/api/v1/turns")
+    }
+
 }
