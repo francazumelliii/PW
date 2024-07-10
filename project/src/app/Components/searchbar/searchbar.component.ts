@@ -39,7 +39,7 @@ export class SearchbarComponent {
     this.innerSearchBar(position.coords.latitude, position.coords.longitude)
   }
   error(error: GeolocationPositionError){
-    this.swal.error(null,"Error", "Something went wrong", error.toString())
+    this.swal.fire(null,"Error", "Something went wrong", error.toString())
   }
 
   getCurrentLocation(){
