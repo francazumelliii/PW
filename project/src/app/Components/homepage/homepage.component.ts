@@ -53,7 +53,7 @@ export class HomepageComponent implements OnInit {
         this.cdr.detectChanges();
       }
     }, (error: any) => {
-      this.swal.error("error", "Error", error.toString(), "");
+      this.swal.fire("error", "Error", error.toString(), "");
     });
   }
 
