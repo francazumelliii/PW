@@ -55,3 +55,9 @@ export interface Marker{
     color: string, 
     icon: string, 
 }
+
+export interface Turn{
+    turn_id: number,
+    start_time: string,
+    end_time: string
+}
