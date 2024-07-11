@@ -23,4 +23,7 @@ export class Customer implements Delegate{
     getTurns(): Observable<APIResponse>{
         return this.dbService.get("/api/v1/turns")
     }
+    checkTablesAvailability(restaurant_id: number, date: string, turn_id: number): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/tables?date=${date}&turn=${turn_id}&id=${restaurant_id}`)
+    }
 }

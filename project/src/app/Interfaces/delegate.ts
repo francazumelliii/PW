@@ -7,4 +7,5 @@ export interface Delegate {
     getNearestRestaurants(lat: number | string, lon: number | string, county: string): Observable<APIResponse>
     getRestaurantFromId(id: number | string): Observable<APIResponse>
     getTurns(): Observable<APIResponse>
+    checkTablesAvailability(restaurant_id: number, date: string, turn_id: number): Observable<APIResponse>
 }

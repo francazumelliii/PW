@@ -65,4 +65,7 @@ export class RoleService {
   getTurns(){
     return this.delegate.getTurns()
   }
+  checkTablesAvailability(restaurant_id: number, date: string, turn_id: number){
+    return this.delegate.checkTablesAvailability(restaurant_id, date, turn_id )
+  }
 }
