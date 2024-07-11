@@ -517,39 +517,37 @@ async def check_tables(date: str, turn: str | int, id: str | int,token: str = De
 
         query = """
         SELECT 
-            SUM(prenota.num_posti) AS total_reserved,
-            locale.posti_max AS max
+            SUM(reservation.quantity) AS total_reserved,
+            restaurant.max_chairs AS max
         FROM 
-            locale 
+            restaurant 
         LEFT JOIN 
-            prenota ON prenota.id_locale = locale.id AND prenota.data = %s AND prenota.id_turno = %s
+            reservation ON reservation.restaurant_id = restaurant.restaurant_id AND reservation.date = %s AND reservation.turn_id = %s
         WHERE 
-            locale.id = %s
+            restaurant.restaurant_id = %s
         GROUP BY 
-            locale.posti_max
+            restaurant.max_chairs
         """
 
         cursor.execute(query, (date,turn,id))
         result = cursor.fetchone()
 
         if not result:
-            # Se non ci sono prenotazioni per questo locale, restituisci solo il numero massimo di posti
             max_seats_query = """
-            SELECT posti_max FROM locale WHERE id = %s
+            SELECT max_chairs FROM restaurant WHERE restaurant_id = %s
             """
-            cursor.execute(max_seats_query, (data.id,))
+            cursor.execute(max_seats_query, (id,))
             max_seats_result = cursor.fetchone()
             if max_seats_result:
                 return JSONResponse(content={"available_seats": max_seats_result[0]}, status_code=200)
             else:
                 return JSONResponse(content={"message": "No results found"}, status_code=200)
 
-        # Calcola i posti disponibili
-        total_reserved = result[0] or 0  # Se total_reserved è None, assegna 0
-        max_seats = result[1] or 0  # Se max_seats è None, assegna 0
+        total_reserved = result[0] or 0  
+        max_seats = result[1] or 0 
         available_seats = max_seats - total_reserved
 
-        return JSONResponse(content={"available_seats": available_seats}, status_code=200)
+        return JSONResponse(content={"success": True, "data":{"available_seats" : available_seats}}, status_code=200)
 
     except MySQLError as err:
         logging.error(f"Error retrieving data: {err}")
