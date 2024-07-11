@@ -1,67 +1,50 @@
-<t-stepper-container 
-    [firstNextDisabled]="reservationForm.invalid && reservationForm.touched || !_isDateInFuture" 
-    [lastNextDisabled]="true"
-    (firstNextCallBack) = "handleFirstNextClick($event)"
-    (lastNextCallBack)="handleLastNextClick($event)"
-    (prevCallBack)="handlePrevClick($event)"
-    
-    >
-    <div step-1 class="bg-secondary-subtle d-flex flex-column jumbotron">
-        <form [formGroup]="reservationForm" class=" d-flex flex-column align-items-center">
-            <h1>MAKE A RESERVATION</h1>
-            <section class=" d-lg-flex flex-row justify-content-between container">
-                <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                    <label for="buttondisplay">Date: </label>
-                    <p-calendar 
-                        [placeholder]="today"
-                        [showIcon]="true" 
-                        [showOnFocus]="false" 
-                        (onSelect)="checkDate($event)"
-                        formControlName="date"
-                        [dateFormat]="'dd/mm/yy'"
-                        inputId="buttondisplay"  
-                    />
-                    <small *ngIf="reservationForm.controls['date'].touched && !_isDateInFuture" class="text-danger mt-1">
-                        Date must be in the future.
-                    </small>
-                </div>
+<div>
+    <form [formGroup]="reservationForm" class="d-flex flex-column align-items-center">
+        <h1>MAKE A RESERVATION</h1>
+        <section class="d-lg-flex flex-row justify-content-between container">
+            <div class="d-flex flex-column justify-content-center align-items-center col-3">
+                <label for="buttondisplay">Date: </label>
+                <p-calendar 
+                    [placeholder]="today"
+                    [showIcon]="true" 
+                    [showOnFocus]="false" 
+                    (onSelect)="checkDate($event)"
+                    formControlName="date"
+                    [dateFormat]="'dd/mm/yy'"
+                    inputId="calendar"  
+                />
 
-                <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                    <label for="buttondisplay">Turn: </label>
-                    <mat-form-field>
-                        <mat-select formControlName="turn" placeholder="10:00:00 - 11:00:00">
-                          @for (turn of turns; track turn) {
-                            <mat-option [value]="turn.turn_id">{{turn.start_time}} - {{turn.end_time}}</mat-option>
-                          }
-                        </mat-select>
-                      </mat-form-field>
-                                        
-                </div>
-                <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                    <label for="buttondisplay">People: </label>
-                    <mat-form-field appearance="fill">
-                        <input
-                          type="number"
-                          matInput
-                          formControlName="quantity"
-                          placeholder="2">
+                <small *ngIf="reservationForm.controls['date'].touched && !_isDateInFuture" class="text-danger mt-1">
+                    Date must be in the future.
+                </small>
+            </div>
+
+            <div class="d-flex flex-column justify-content-center align-items-center col-3">
+                <label for="buttondisplay">Turn: </label>
+                <mat-form-field>
+                    <mat-select formControlName="turn" placeholder="10:00:00 - 11:00:00">
+                        <mat-option *ngFor="let turn of turns" [value]="turn.turn_id">
+                        {{turn.start_time}} - {{turn.end_time}}
+                        </mat-option>
+                    </mat-select>
                     </mat-form-field>
-                </div>
-                <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                    <label for="buttondisplay">Email: </label>
-                    <input type="email" class="input-group-text" formControlName ="mail" placeholder="example@mail.com">
-                </div>
+                                    
+            </div>
+            <div class="d-flex flex-column justify-content-center align-items-center col-3">
+                <label for="buttondisplay">People: </label>
+                <mat-form-field appearance="fill">
+                    <input
+                        type="number"
+                        matInput
+                        formControlName="quantity"
+                        placeholder="2">
+                </mat-form-field>
+            </div>
+            <div class="d-flex flex-column justify-content-center align-items-center col-3">
+                <label for="buttondisplay">Email: </label>
+                <input type="email" class="input-group-text" formControlName ="mail" placeholder="example@mail.com">
+            </div>
 
-            </section>
-        </form>
-    </div>
-
-    <div step-2>
-        <p>STEP2</p>
-    </div>
-
-    <div step-3>
-        <p>STEP3</p>
-    </div>
-
-</t-stepper-container>
+        </section>
+    </form>
+</div>

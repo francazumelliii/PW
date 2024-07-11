@@ -840,8 +840,8 @@ async def get_user_from_email(email: str = Depends(get_email_from_token)):
             logging.error("User not found")
             raise HTTPException(status_code=404, detail="Utente non trovato")
     except Error as err:
-        logging.error(f"Error retriving data: {err}")
-        raise HTTPException(status_code=400, detail=f"Error retriving data: {err}")
+        logging.error(f"Error retrieving data: {err}")
+        raise HTTPException(status_code=400, detail=f"Error retrieving data: {err}")
     finally:
         if conn:
             conn.close()
