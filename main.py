@@ -10,9 +10,11 @@ from datetime import datetime, timedelta
 import mysql.connector
 from mysql.connector import Error as MySQLError 
 import logging
+from datetime import datetime, date
 from functools import wraps
 from pydantic import BaseModel
 import secrets
+import json
 app = FastAPI()
 
 # Configurazione OAuth2
@@ -559,18 +561,41 @@ async def check_tables(date: str, turn: str | int, id: str | int,token: str = De
             conn.close()
 
 
+def serialize_date(obj):
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError("Type not serializable")
+
 # booking table function
 @app.post("/api/v1/restaurant/reservation")
 async def insert_reservation(request: Request, token: str = Depends(verify_token)):
+    cursor = None
+    conn = None
     try:
         data = await request.json()
         conn = get_db_connection()
-        id, turn, date, qt, email = data.get("id"), data.get("turn"), data.get("date"), data.get("qt"), data.get("email")
+        mail = data.get("mail")
+        date_str = data.get("date")
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
+        quantity = data.get("quantity")
+        turn_id = data.get("turn_id")
+        restaurant_id = data.get("restaurant_id")
+        customer_id = data.get("customer_id")
+
         cursor = conn.cursor(dictionary=True)
-        query = "INSERT INTO prenota (mail_prenotazione,data,num_posti,id_turno,id_locale) VALUES (%s,%s,%s,%s,%s)"
-        cursor.execute(query, (email, date, qt ,turn, id))
-        conn.commit()  # Assicurati di eseguire il commit per salvare le modifiche nel database
-        return JSONResponse(content={"message": "Reservation successfully inserted"},status_code=200)
+        query = "INSERT INTO reservation (mail, date, quantity, turn_id, restaurant_id, customer_id, confirmed) VALUES (%s, %s, %s, %s, %s, %s, 1)"
+        cursor.execute(query, (mail, date_obj, quantity, turn_id, restaurant_id, customer_id))
+        conn.commit()
+        
+        reservation_id = cursor.lastrowid
+        cursor.execute("SELECT * FROM reservation WHERE reservation_id = %s", (reservation_id, ))
+        result = cursor.fetchone()
+
+        # Serializza il risultato gestendo le date
+        result_json = json.dumps(result, default=serialize_date)
+        result_dict = json.loads(result_json)
+        
+        return JSONResponse(content={"success": True, "data": result_dict}, status_code=200)
     except mysql.connector.Error as err:
         return JSONResponse(content={"error": f"Error in retrieving data: {err}"}, status_code=500)
     finally:
@@ -578,7 +603,6 @@ async def insert_reservation(request: Request, token: str = Depends(verify_token
             cursor.close()
         if conn:
             conn.close()
-
 # get all imgs url 
 @app.get("/api/v1/imgs")
 async def get_all_imgs(id: str = Query(..., description="ID locale"), token: str = Depends(verify_token)): 
