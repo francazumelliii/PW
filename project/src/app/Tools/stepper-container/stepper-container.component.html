@@ -11,10 +11,10 @@
             <div class="flex pt-4 justify-content-end">
                 <p-button 
                     label="Next" 
-                    [disabled] = "nextDisabled"
+                    [disabled] = "firstNextDisabled"
                     icon="pi pi-arrow-right" 
                     iconPos="right" 
-                    (onClick)="nextCallback.emit()" />
+                    (onClick)="firstNextCallBack.emit()" />
             </div>
         </ng-template>
     </p-stepperPanel>
@@ -35,8 +35,8 @@
                     label="Next" 
                     icon="pi pi-arrow-right" 
                     iconPos="right" 
-                    [disabled] = "nextDisabled"
-                    (onClick)="nextCallback.emit()" />
+                    [disabled] = "lastNextDisabled"
+                    (onClick)="lastNextCallBack.emit()" />
             </div>
         </ng-template>
     </p-stepperPanel>
