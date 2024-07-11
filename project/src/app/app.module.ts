@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,7 +27,6 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { SearchbarComponent } from './Components/searchbar/searchbar.component';
 import { MapComponent } from './Components/map/map.component';
 import { RestaurantComponent } from './Components/restaurant/restaurant.component';
-import { StepperContainerComponent } from './Tools/stepper-container/stepper-container.component';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
@@ -43,7 +42,6 @@ import { DropdownModule } from 'primeng/dropdown';
     SearchbarComponent,
     MapComponent,
     RestaurantComponent,
-    StepperContainerComponent,
   ],
   imports: [
     BrowserModule,
