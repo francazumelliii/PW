@@ -33,7 +33,8 @@ export class FormControlService {
     this.reservationFormGroup = this.fb.group({
       date: new FormControl(null, Validators.required),
       turn: new FormControl(null,Validators.required),
-      quantity: new FormControl(null,[Validators.required,Validators.min(1), Validators.max(99)])
+      quantity: new FormControl(null,[Validators.required,Validators.min(1), Validators.max(99)]),
+      mail: new FormControl(null, [Validators.required, Validators.email])
     })
    }
 
