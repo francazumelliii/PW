@@ -1,4 +1,11 @@
-<t-stepper-container [nextDisabled]="reservationForm.invalid && reservationForm.touched || !_isDateInFuture">
+<t-stepper-container 
+    [firstNextDisabled]="reservationForm.invalid && reservationForm.touched || !_isDateInFuture" 
+    [lastNextDisabled]="true"
+    (firstNextCallBack) = "handleFirstNextClick($event)"
+    (lastNextCallBack)="handleLastNextClick($event)"
+    (prevCallBack)="handlePrevClick($event)"
+    
+    >
     <div step-1 class="bg-secondary-subtle d-flex flex-column jumbotron">
         <form [formGroup]="reservationForm" class=" d-flex flex-column align-items-center">
             <h1>MAKE A RESERVATION</h1>
@@ -42,8 +49,7 @@
                 </div>
                 <div class="d-flex flex-column justify-content-center align-items-center col-3">
                     <label for="buttondisplay">Email: </label>
-                    
-                    
+                    <input type="email" class="input-group-text" formControlName ="mail" placeholder="example@mail.com">
                 </div>
 
             </section>

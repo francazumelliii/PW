@@ -61,9 +61,26 @@ export class RestaurantComponent implements OnInit{
     console.log(this.reservationForm.controls['turn'].value)
   }
 
-
   checkDate(event: any){
     this._isDateInFuture = this.reservationForm.controls['date'].touched && event >= new Date()
   }
+
+  handleFirstNextClick(event: any){
+    const date = formatDate(this.reservationForm.controls['date'].value, "yyyy-MM-dd", "en-US")
+    const turn_id = this.reservationForm.controls['turn'].value
+    this.roleService.checkTablesAvailability(+this.restaurantId, date, turn_id)
+      .subscribe((response: APIResponse) => {
+        console.log(response)
+      })
+  }
+
+  handleLastNextClick(event: any){
+
+  }
+  
+  handlePrevClick(event: any){
+
+  }
+
 
 }
