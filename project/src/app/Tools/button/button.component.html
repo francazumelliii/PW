@@ -12,6 +12,7 @@
     <button 
         id="button"
         [disabled]="disabled"
+        [type] = "type"
         type="button"
         (click) = "click()"
         [ngClass]="{'rounded' : !icon}"

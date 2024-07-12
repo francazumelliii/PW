@@ -12,6 +12,7 @@ export class ButtonComponent {
   @Input() btnClasses: string = "";
   @Input() showIcon: boolean = true
   @Input() iconClasses: string = "";
+  @Input() type: string = "button";
   @Input() label: string = "LABEL";
   @Input() bgColor: string = "";
   @Input() color: string = "";
