@@ -16,13 +16,7 @@ import { Stepper } from 'primeng/stepper';
 })
 export class RestaurantComponent implements OnInit {
 
-  @ViewChild('stepper') stepper!: Stepper;
-  activeStep: number = 0;
   restaurantId!: string | number;
-  reservationForm!: FormGroup;
-  today: string = formatDate(new Date(), 'dd/MM/yyyy', 'en-US');
-  turns: Turn[] = [];
-  _isDateInFuture: boolean = false;
 
   constructor(
     private dbService: DatabaseService,
@@ -32,7 +26,6 @@ export class RestaurantComponent implements OnInit {
     private swal: SweetalertService,
     private formService: FormControlService
   ) {
-    this.reservationForm = this.formService.reservationForm;
   }
 
   ngOnInit() {
@@ -41,19 +34,9 @@ export class RestaurantComponent implements OnInit {
       this.getRestaurantFromId();
     });
 
-    this.getTurns();
   }
 
-  getTurns() {
-    this.roleService.getTurns()
-      .subscribe((response: APIResponse) => {
-        if (response.success) {
-          this.turns = response.data;
-        } else {
-          this.swal.fire('error', 'ERROR', 'Error retrieving data', '');
-        }
-      });
-  }
+
 
   getRestaurantFromId() {
     this.roleService.getRestaurantFromId(this.restaurantId)
@@ -66,42 +49,7 @@ export class RestaurantComponent implements OnInit {
       });
   }
 
-  checkForTables() {
-    console.log(this.reservationForm.controls['turn'].value);
-  }
-
-  checkDate(event: any) {
-    this._isDateInFuture = this.reservationForm.controls['date'].touched && event >= new Date();
-  }
-
-  handleFirstNextClick() {
-    const date = formatDate(this.reservationForm.controls['date'].value, 'yyyy-MM-dd', 'en-US');
-    const turn_id = this.reservationForm.controls['turn'].value;
-    this.checkTablesAvailability(+this.restaurantId, date, turn_id);
-    this.activeStep += 1
-  }
-
-  handleLastNextClick() {
-    this.activeStep += 1;
-  }
-
-  handlePrevClick() {
-    this.activeStep -= 1;
-  }
-
-  onStepChange(event: any) {
-    this.activeStep = event.index;
-  }
-
-  checkTablesAvailability(id: number, date: string, turn: number){
-    this.roleService.checkTablesAvailability(id, date, turn)
-      .subscribe((response: APIResponse) => {
-        console.log(response);
-        if (response.success) {
-          this.activeStep += 1;
-        } else {
-          this.swal.fire('error', 'Error', 'No available tables', '');
-        }
-      });
+  handleAvailability(event: boolean){
+    console.log(event)
   }
 }
