@@ -254,7 +254,7 @@ INNER JOIN piatto pi ON pi.id_menu = m.id
 #---------------- GET ALL RESTAURANTS IN DB -----------------
 #
 
-@app.get("/api/v1/restaurant/all")
+@app.get("/api/v1/restaurant")
 async def get_all_restaurants(request: Request, token: str = Depends(verify_token)):
     logger.info("Attempting to retrieve all restaurants...")
     conn = None
@@ -989,107 +989,143 @@ async def put_restaurant(request: Request, token:str = Depends(verify_token),id:
         conn.close()
         
 @app.get("/api/v1/restaurant/menu")
-async def get_all_menu(token=Depends(verify_token), id: int = Query("")):
-    try:
+async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
+    try: 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        query = """ 
-            SELECT menu.nome nome_menu, 
-                menu.id id_menu,
-                piatto.nome nome_piatto,
-                piatto.id id_piatto,
-                piatto.descrizione descrizione_piatto,
-                piatto.ingredienti ingredienti_piatto,
-                piatto.prezzo prezzo_piatto
-            FROM menu 
-            INNER JOIN locale on menu.id_locale = locale.id 
-            INNER JOIN piatto ON piatto.id_menu = menu.id
-            WHERE locale.id = %s
-        """
-        cursor.execute(query, (id,))
+        query = """SELECT 
+                    menu.menu_id, menu.name, menu.description, menu.category
+                    FROM menu 
+                    
+                    """
+        if id != None: 
+            query += " INNER JOIN restaurant ON restaurant.restaurant_id = menu.restaurant_id WHERE restaurant.restaurant_id = %s"
+            cursor.execute(query,(id,))
+        else: 
+            cursor.execute(query)
         result = cursor.fetchall()
-        
-        if result:
-            menus = defaultdict(lambda: {"menu_id": None, "menu_name": "", "courses": []})
-            for row in result:
-                course = {
-                    "course_id": row["id_piatto"],
-                    "course_name": row["nome_piatto"],
-                    "course_description": row["descrizione_piatto"],
-                    "course_ingredients": row["ingredienti_piatto"],
-                    "course_price": row["prezzo_piatto"]
+        menus = []
+        print(query)
+        for row in result: 
+            query = """SELECT dish.description, dish.dish_id, dish.ingredients, dish.vegan, dish.lactose_free,
+                        dish_category.name category_name, dish.name
+                        FROM dish INNER JOIN menu ON dish.menu_id = menu.menu_id 
+                        INNER JOIN dish_category ON dish_category.dish_category_id = dish.dish_category_id
+                        WHERE menu.menu_id = %s """
+            cursor.execute(query,(row['menu_id'], ))
+            dish_res = cursor.fetchall()
+            dishes = []
+            for dish in dish_res: 
+                dish = {
+                    "id" : dish['dish_id'],
+                    "name" : dish['name'],
+                    "description" : dish['description'],
+                    "ingredients" : dish['ingredients'],
+                    "is_vegan" : True if dish['vegan'] == '1' else False,
+                    "is_lactose_free" : True if dish['lactose_free'] == '1' else False,
+                    "category_name" : dish['category_name']
                 }
-                menu = menus[row["nome_menu"]]
-                menu["menu_id"] = row["id_menu"]
-                menu["menu_name"] = row["nome_menu"]
-                menu["courses"].append(course)
+                dishes.append(dish)
             
-            # Convertiamo il defaultdict in una lista di oggetti
-            menu_list = list(menus.values())
+            menu = {
+                "id" : row['menu_id'],
+                "name" : row['name'],
+                "description" : row['description'],
+                "category" : row['category'],
+                "dishes" : dishes
+            }
+            menus.append(menu)
             
-            response = {
-                "success": True,
-                "data": menu_list
-            }
-        else:
-            response = {
-                "success": False,
-                "data": []
-            }
-        return JSONResponse(content=response)
-    except MySQLError as err:
-        raise HTTPException(status_code=400, detail=f"Error: {err}")
-    finally:
+        return JSONResponse(content = {"success" : True, "data": menus}, status_code=200)
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail = f"Error: {err}")
+    finally: 
         conn.close()
 
-@app.get("/api/v1/menu")
-async def get_menu(id: int | str = Query("")):
-    try:
+@app.get("/api/v1/menu/dish")
+async def get_dishes(id: int | str = Query(None), category: str = Query(None), vegan: bool = Query(False),lactose_free: bool = Query(False) ):
+    try: 
         conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        query = """
-            SELECT menu.id id_menu,
-                menu.nome nome_menu,
-                piatto.nome nome_piatto,
-                piatto.id id_piatto,
-                piatto.descrizione descrizione_piatto,
-                piatto.ingredienti ingredienti_piatto ,
-                piatto.prezzo prezzo_piatto
-            FROM menu 
-            INNER JOIN piatto ON piatto.id_menu = menu.id 
-            WHERE menu.id = %s
+        cursor = conn.cursor(dictionary= True)
+  
+        query ="""
+            SELECT dish.dish_id, dish.description, dish.ingredients, dish.vegan ,dish.lactose_free, dish.name,
+                dish_category.dish_category_id, dish_category.name category_name
+                FROM dish INNER JOIN dish_category ON dish_category.dish_category_id = dish.dish_category_id
+                WHERE 1 = 1
         """
-        cursor.execute(query, (id,))
-        result = cursor.fetchall()
+        if id != None: 
+            query += " AND dish_id = " + id
+        if category != None: 
+            query += " AND dish.dish_category_id = " + category
+        if vegan != False: 
+            query += " AND dish.vegan = 1"
+        if lactose_free != False: 
+            query += " AND dish.lactose_free = 1"
         
-        if result:
-            menus = defaultdict(list)
-            for row in result:
-                course = {
-                    "course_id": row["id_piatto"],
-                    "course_name": row["nome_piatto"],
-                    "course_description": row["descrizione_piatto"],
-                    "course_ingredients": row["ingredienti_piatto"],
-                    "course_price": row["prezzo_piatto"]
-                }
-                menus[row["nome_menu"]].append(course)
-                
-            # Convertiamo il defaultdict in una lista di oggetti
-            menu_list = [{"menu_name": menu_name, "courses": courses} for menu_name, courses in menus.items()]
-            
-            response = {
-                "success": True,
-                "data": menu_list
-            }
-        else:
-            response = {
-                "success": False,
-                "data": []
-            }
-        return JSONResponse(content=response)
-    except MySQLError as err:
-        raise HTTPException(status_code=400, detail=f"Error: {err}")
-    finally:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return JSONResponse(content = result, status_code=200 )
+        
+        
+    except MySQLError as error: 
+        raise HTTPException(status_code=501, detail=f"Error: {error}")
+    finally: 
         conn.close()
         
         
+        
+@app.get("/api/v1/menu")
+async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """SELECT 
+                    menu.menu_id, menu.name, menu.description, menu.category
+                    FROM menu 
+                    
+                    """
+        if id != None: 
+            query += " WHERE menu.menu_id = %s"
+            cursor.execute(query,(id,))
+        else: 
+            cursor.execute(query)
+        result = cursor.fetchall()
+        menus = []
+        print(query)
+        for row in result: 
+            query = """
+                    SELECT dish.description, dish.dish_id, dish.ingredients, dish.vegan, dish.lactose_free,
+                        dish_category.name category_name, dish.name
+                    FROM dish INNER JOIN menu ON dish.menu_id = menu.menu_id 
+                        INNER JOIN dish_category ON dish_category.dish_category_id = dish.dish_category_id
+                        WHERE menu.menu_id = %s """
+            cursor.execute(query,(row['menu_id'], ))
+            dish_res = cursor.fetchall()
+            dishes = []
+            for dish in dish_res: 
+                dish = {
+                    "id" : dish['dish_id'],
+                    "name" : dish['name'],
+                    "description" : dish['description'],
+                    "ingredients" : dish['ingredients'],
+                    "is_vegan" : True if dish['vegan'] == '1' else False,
+                    "is_lactose_free" : True if dish['lactose_free'] == '1' else False,
+                    "category_name" : dish['category_name']
+                }
+                dishes.append(dish)
+            
+            menu = {
+                "id" : row['menu_id'],
+                "name" : row['name'],
+                "description" : row['description'],
+                "category" : row['category'],
+                "dishes" : dishes
+            }
+            menus.append(menu)
+            
+        return JSONResponse(content = {"success" : True, "data": menus}, status_code=200)
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail = f"Error: {err}")
+    finally: 
+        conn.close()
