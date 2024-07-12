@@ -29,6 +29,7 @@ import { MapComponent } from './Components/map/map.component';
 import { RestaurantComponent } from './Components/restaurant/restaurant.component';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
+import { ReservationComponent } from './Components/reservation/reservation.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +43,7 @@ import { DropdownModule } from 'primeng/dropdown';
     SearchbarComponent,
     MapComponent,
     RestaurantComponent,
+    ReservationComponent,
   ],
   imports: [
     BrowserModule,

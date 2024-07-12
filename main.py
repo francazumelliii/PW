@@ -255,7 +255,7 @@ INNER JOIN piatto pi ON pi.id_menu = m.id
 #
 
 @app.get("/api/v1/restaurant")
-async def get_all_restaurants(request: Request, token: str = Depends(verify_token)):
+async def get_all_restaurants(request: Request, token: str = Depends(verify_token), id: int = Query(None)):
     logger.info("Attempting to retrieve all restaurants...")
     conn = None
     cursor = None
@@ -283,8 +283,9 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
         INNER JOIN county ON county.county_id = village.county_id 
         INNER JOIN region ON region.region_id = county.region_id
         INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id
-        WHERE imgs.priority = 1
-        GROUP BY restaurant.restaurant_id"""
+        WHERE imgs.priority = 1"""
+        query += " AND restaurant.restaurant_id = " + str(id) if id != None else ""
+        query += " GROUP BY restaurant.restaurant_id"
         
         cursor.execute(query)   
         results = cursor.fetchall()
@@ -731,7 +732,7 @@ async def get_nearest_restaurants(latitude: float = Query(1), longitude: float =
         
         
 #get others restaurant in same county or village
-@app.post("/api/v1/get_others")
+@app.post("/api/v1/restaurant/others")
 async def get_others(request: Request, token: str = Depends(verify_token)):
     conn = None
     cursor = None
@@ -794,8 +795,6 @@ async def get_email_from_token(authorization: str = Header(None)):
     try:
         if authorization is None:
             raise HTTPException(status_code=401, detail="Missing Authorization header")
-        
-        # Divide l'header in schema e token solo se presente lo spazio
         auth_parts = authorization.split()
         if len(auth_parts) != 2:
             raise HTTPException(status_code=401, detail="Invalid Authorization header format")
@@ -882,27 +881,6 @@ async def get_user_reservation(mail: str):
         
     except: 
         return
-    finally: 
-        conn.close()
-        
-        
-@app.get("/api/v1/restaurant")
-async def get_from_id(id: int | str, token: str = Depends(verify_token)): 
-    try:    
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary = True)
-        query = baseSQL + " WHERE l.id = %s GROUP BY l.id"
-        cursor.execute(query,(id,))
-        result = cursor.fetchone()
-        
-        if result: 
-            response = {"success": True, "data": result }
-        else: 
-            response = {"success": False}
-        
-        return JSONResponse(content = response)
-    except MySQLError as err: 
-        raise HTTPException(status_code=400, detail= f"Error retriving data: {err}")
     finally: 
         conn.close()
         
