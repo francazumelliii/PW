@@ -1,65 +1,60 @@
-<form [formGroup] = "loginForm" onsubmit="onSubmit()">
-    <h1 class="text-center text-bolder"><strong>{{view}}</strong></h1>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <h1 class="text-center text-bolder"><strong>{{view}}</strong></h1>
 
-    <ng-container>
-      <div class="d-flex flex-column align-items-center col-10 m-auto">
-
-       
-          <div class="d-flex row column-gap-2 d justify-content-between input-flex" *ngIf="view==='SIGNUP'">
-            <div class="input-group mb-3 col">
-              <input type="text" class="form-control" placeholder="name" formControlName="name" >
-            </div>
-            <div class="input-group mb-3 col ">
-              <input type="text" class="form-control" placeholder="surname" formControlName="surname" >
-            </div>
-          </div>
-
-          <div class="input-group input-icons mb-3">
-              <div class="input-group-prepend ">
-                <span class="input-group-text" id="prepends-icon">
-                  <i class="bi bi-person"></i>
-                </span>
-              </div>
-              <input type="text" class="form-control" placeholder="Email" formControlName="email" >
-          </div>
-
-          <div class="input-group input-icons mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="preprend-icon">
-                  <i class="bi bi-key"></i>
-                </span>
-              </div>
-              <input type="text" class="form-control" placeholder="Password" formControlName ="password">
-          </div>
-
-          <small 
-            *ngIf="loginForm.invalid && loginForm.touched"
-            class="text-danger">Invalid {{loginForm.controls['email'].invalid ? 'email' : 'password'}}
-          </small>
-          <small *ngIf="error"class="text-danger">{{error}}</small>
-          <small *ngIf="view==='SIGNUP' && loginForm.touched && (!loginForm.get('name')?.value || !loginForm.get('surname')?.value)" class="text-danger">
-            Please fill in all fields
-          </small>
+  <ng-container>
+    <div class="d-flex flex-column align-items-center col-10 m-auto">
+      <div class="d-flex row column-gap-2 justify-content-between input-flex" *ngIf="view === 'SIGNUP'">
+        <div class="input-group mb-3 col">
+          <input type="text" class="form-control" placeholder="name" formControlName="name">
+        </div>
+        <div class="input-group mb-3 col">
+          <input type="text" class="form-control" placeholder="surname" formControlName="surname">
+        </div>
       </div>
-    </ng-container>
 
-    <t-button
-        icon="bi bi-box-arrow-in-right"
-        bgColor="#8271F1"
-        color="black"
-        borderColor="#aaaaaa"
-        btnClasses="py-3 rounded-end-4"
-        iconClasses="py-3 rounded-start-4"
-        label="LOGIN"
-        type="submit"
-        classes="w-75 m-auto"
-        (onClick)="onSubmit()"
-        [disabled]="!loginForm.valid && loginForm.touched"
-    ></t-button>
+      <div class="input-group input-icons mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="prepends-icon">
+            <i class="bi bi-person"></i>
+          </span>
+        </div>
+        <input type="text" class="form-control" placeholder="Email" formControlName="email">
+      </div>
 
+      <div class="input-group input-icons mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="preprend-icon">
+            <i class="bi bi-key"></i>
+          </span>
+        </div>
+        <input type="password" class="form-control" placeholder="Password" formControlName="password">
+      </div>
 
-    <span 
-    (click)="switchView()"
-    class="text-primary text-center d-block pointer text-decoration-underline"
-    >{{view === "LOGIN" ? "Don't have an account yet?" : "Already registered?"}}</span>
+      <small *ngIf="loginForm.invalid && loginForm.touched" class="text-danger">
+        Invalid {{ loginForm.controls['email'].invalid ? 'email' : 'password' }}
+      </small>
+      <small *ngIf="error" class="text-danger">{{ error }}</small>
+      <small *ngIf="view === 'SIGNUP' && loginForm.touched && (!loginForm.get('name')?.value || !loginForm.get('surname')?.value)" class="text-danger">
+        Please fill in all fields
+      </small>
+    </div>
+  </ng-container>
+
+  <t-button
+    icon="bi bi-box-arrow-in-right"
+    bgColor="#8271F1"
+    color="black"
+    borderColor="#aaaaaa"
+    btnClasses="py-3 rounded-end-4"
+    iconClasses="py-3 rounded-start-4"
+    label="LOGIN"
+    type="submit"
+    classes="w-75 m-auto"
+    [disabled]="!loginForm.valid && loginForm.touched"
+    (onClick)="onSubmit()"
+  ></t-button>
+
+  <span (click)="switchView()" class="text-primary text-center d-block pointer text-decoration-underline">
+    {{ view === 'LOGIN' ? "Don't have an account yet?" : "Already registered?" }}
+  </span>
 </form>
