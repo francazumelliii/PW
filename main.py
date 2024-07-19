@@ -574,14 +574,19 @@ async def insert_reservation(request: Request, token: str = Depends(verify_token
         data = await request.json()
         conn = get_db_connection()
         mail = data.get("mail")
+        user_mail = data.get("user_mail")
         date_str = data.get("date")
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
         quantity = data.get("quantity")
         turn_id = data.get("turn_id")
         restaurant_id = data.get("restaurant_id")
-        customer_id = data.get("customer_id")
 
         cursor = conn.cursor(dictionary=True)
+        query = """SELECT customer_id AS id, 'customer' AS user_type FROM customer WHERE mail = %s 
+                    UNION SELECT admin_id AS id, 'admin' AS user_type FROM admin WHERE mail = %s """
+                    
+        cursor.execute(query,(user_mail, user_mail))
+        customer_id = cursor.fetchone()['id']
         query = "INSERT INTO reservation (mail, date, quantity, turn_id, restaurant_id, customer_id, confirmed) VALUES (%s, %s, %s, %s, %s, %s, 1)"
         cursor.execute(query, (mail, date_obj, quantity, turn_id, restaurant_id, customer_id))
         conn.commit()
@@ -596,7 +601,7 @@ async def insert_reservation(request: Request, token: str = Depends(verify_token
         
         return JSONResponse(content={"success": True, "data": result_dict}, status_code=200)
     except mysql.connector.Error as err:
-        return JSONResponse(content={"error": f"Error in retrieving data: {err}"}, status_code=500)
+        return JSONResponse(content={"error": f"Error in retrieving data: {err}"}, status_code=501)
     finally:
         if cursor:
             cursor.close()
