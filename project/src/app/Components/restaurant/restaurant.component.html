@@ -1,4 +1,21 @@
 <app-reservation
 [restaurantId]="restaurantId"
 (_isAvailable)="handleAvailability($event)"
-></app-reservation>
+>
+
+    <ng-container *ngIf="_isAvailable === false ">
+            <small 
+                
+                class="text-danger"
+            >
+                Sorry, there's no tables for this time and date.. :(
+            </small>
+    </ng-container>
+
+    <ng-container *ngIf="_isAvailable == true">
+        <h3
+        >
+            YOUR TABLES ARE SUCCESSFULLY RESERVED!
+        </h3>
+    </ng-container>
+</app-reservation>
