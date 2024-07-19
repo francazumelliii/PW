@@ -10,7 +10,7 @@ export class ButtonComponent {
   @Input() icon: string = "";
   @Input() classes: string = "";
   @Input() btnClasses: string = "";
-  @Input() showIcon: boolean = true
+  @Input() showIcon: boolean = true;
   @Input() iconClasses: string = "";
   @Input() type: string = "button";
   @Input() label: string = "LABEL";
@@ -20,10 +20,6 @@ export class ButtonComponent {
   @Input() borderColor: string = "";
   @Input() hoverColor: string = "";
   @Output() onClick = new EventEmitter<any>();
-
-
-  ngOnInit(){
-  }
 
   click() {
     this.onClick.emit("");
