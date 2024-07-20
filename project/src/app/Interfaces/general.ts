@@ -1,3 +1,5 @@
+import e from "express"
+
 export interface General {
 }
 
@@ -60,4 +62,26 @@ export interface Turn{
     turn_id: number,
     start_time: string,
     end_time: string
+}
+
+export interface List{
+    key:string,
+    value:string 
+}
+
+export interface Customer{
+    customer_id: number | string,
+    name: string,
+    surname: string,
+    mail: string,
+    list: string
+}
+
+export interface Admin{
+    admin_id: number | string,
+    name: string,
+    surname: string, 
+    mail: string,
+    restaurant_id: number | string,
+    list: string
 }
