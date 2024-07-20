@@ -86,9 +86,9 @@ export class AuthenticationService {
       })
     );
   }
-  storeMail(mail: string){
-    localStorage.setItem("mail", mail)
-  }
+ 
+
+  
 
   get mail() {
     return localStorage.getItem("mail")
