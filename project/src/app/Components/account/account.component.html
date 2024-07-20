@@ -1,0 +1,19 @@
+<section class="container-fluid d-flex flex-row justify-content-center">
+
+    <main class="container d-flex justify-content-center align-items-center flex-row">
+        <!-- PROFILE DETAILS -->
+        <div class="col-4 border border-black d-flex flex-column align-items-center column-gap-3 py-5">
+            <div class="d-flex flex-column column-gap-4">
+                <t-avatar [name]="user.name + ' ' + user.surname" [size]="140"></t-avatar>
+                <p class=" fw-bold text-center fs-5 m-0 mt-2">{{user.name}} {{user.surname}}</p>
+                <small class="text-center">{{user.mail}}</small>
+            </div>
+        </div>
+
+        <!-- PROFILE INFO -->
+        <div class="col-8 border border-black">
+
+        </div>
+    </main>
+
+</section>

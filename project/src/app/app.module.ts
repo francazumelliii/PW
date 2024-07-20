@@ -32,6 +32,8 @@ import { ReservationComponent } from './Components/reservation/reservation.compo
 import { ModalComponent } from './Tools/modal/modal.component';
 import { ModalTestComponent } from './Tools/modal-test/modal-test.component';
 import { ModalService } from './Services/modal.service';
+import { AccountComponent } from './Components/account/account.component';
+import { AvatarComponent } from './Tools/avatar/avatar.component';
 
 
 @NgModule({
@@ -49,7 +51,9 @@ import { ModalService } from './Services/modal.service';
     RestaurantComponent,
     ReservationComponent,
     ModalComponent,
-    ModalTestComponent
+    ModalTestComponent,
+    AccountComponent,
+    AvatarComponent
   ],
   imports: [
     BrowserModule,
