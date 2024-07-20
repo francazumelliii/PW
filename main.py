@@ -1112,3 +1112,24 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
         raise HTTPException(status_code=501, detail = f"Error: {err}")
     finally: 
         conn.close()
+
+
+
+@app.get("/api/v1/list")
+async def get_list(mail: str = Query(None), role: str = Query(None), token = Depends(verify_token)):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        query = "SELECT list FROM " + role + " WHERE mail = %s"
+        cursor.execute(query, (mail, ))
+        result = cursor.fetchone()
+        
+        if result: 
+            return JSONResponse(content = {"success": True, "data": result }, status_code=200)
+        else: 
+            return JSONResponse(content= {"success": False})
+    except MySQLError as err: 
+        raise HTTPException(detail = f"Error retrieving data: {err}", status_code=501)
+    finally: 
+        conn.close()
