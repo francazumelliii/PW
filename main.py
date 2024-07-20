@@ -820,7 +820,7 @@ async def get_email_from_token(authorization: str = Header(None)):
         raise HTTPException(status_code=401, detail="Token JWT non valido")
 
 
-@app.get("/api/v1/user")
+#@app.get("/api/v1/user")
 async def get_user_from_email(email: str = Depends(get_email_from_token)):
     conn = None
     try:
@@ -829,7 +829,7 @@ async def get_user_from_email(email: str = Depends(get_email_from_token)):
 
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM customer WHERE mail = %s"
-        cursor.execute(query, (email.lower(),))  # email dovrebbe essere una tupla
+        cursor.execute(query, (email.lower(),))
         result = cursor.fetchone()
         
         user = {
@@ -1113,6 +1113,27 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
     finally: 
         conn.close()
 
+@app.get("/api/v1/user")
+async def get_user(token = Depends(verify_token), role: str = Query(None), mail : str = Query(None)): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = "SELECT * FROM admin" if role=="admin" else "SELECT * FROM customer"
+        query += " WHERE mail = %s"
+        cursor.execute(query,(mail, ))
+        print(query)
+        result = cursor.fetchone()
+        if result: 
+            return JSONResponse(content = {"success":True, "data": result}, status_code=200)
+        else: 
+            return JSONResponse(content = {"success": False})
+    except MySQLError as err:
+        raise HTTPException(status_code=501, detail=f"Error retrieving data {err}")
+    finally: 
+        conn.close()
+
+
+
 
 
 @app.get("/api/v1/list")
@@ -1133,3 +1154,7 @@ async def get_list(mail: str = Query(None), role: str = Query(None), token = Dep
         raise HTTPException(detail = f"Error retrieving data: {err}", status_code=501)
     finally: 
         conn.close()
+        
+
+
+            
