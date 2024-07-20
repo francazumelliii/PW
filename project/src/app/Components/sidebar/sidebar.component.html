@@ -17,15 +17,15 @@
                            [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
       <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-        <mat-nav-list>
-            <a  
-                [routerLink]="['/homepage']" routerLinkActive="router-active" 
-                class="d-flex row align-items-center">
+        <mat-nav-list *ngFor="let item of list">
+          <a  
+              [routerLink]="['/' + item.value]" routerLinkActive="router-active" 
+              class="d-flex row align-items-center">
 
-                <i class="bi bi-house-door-fill col-3"></i>
-                <span class="col-9">Home</span>
-            </a>
-        </mat-nav-list>
+              <i class="bi bi-house-door-fill col-3"></i>
+              <span class="col-9">{{item.key}}</span>
+          </a>
+      </mat-nav-list>
       </mat-sidenav>
   
       <mat-sidenav-content>
