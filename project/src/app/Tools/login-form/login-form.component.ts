@@ -54,7 +54,7 @@ export class LoginFormComponent implements OnInit{
     .subscribe((response: any) => {
       response.access_token ? 
         (
-          this.authService.storeMail(email),
+          this.roleService.storeMail(email),
           this.roleService.setUserType(response.user_type),
           this.authService.setToken(response.access_token)
           )
@@ -68,7 +68,7 @@ export class LoginFormComponent implements OnInit{
       .subscribe((response: any) => {
         console.log(response)
         response.access_token ? (
-          this.authService.storeMail(email),
+          this.roleService.storeMail(email),
           this.roleService.setUserType("customer"),
           this.authService.setToken(response.access_token)
           ) : null

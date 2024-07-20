@@ -37,6 +37,13 @@ export class RoleService {
     else if(this.type === "customer") this.delegate = this.customerClass
   }
 
+  storeMail(mail: string){
+    localStorage.setItem("mail", mail)
+  }
+
+  get mail(){
+    return localStorage.getItem("mail")
+  }
 
   loadUserType() {
     const storedUserType = localStorage.getItem("user_type");
