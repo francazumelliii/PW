@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Output } from '@angular/core';
+import {AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '../../Services/authentication.service';
@@ -13,16 +13,16 @@ import { SweetAlertUpdatableParameters } from 'sweetalert2';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.sass'
 })
-export class SidebarComponent {
-  
+export class SidebarComponent implements AfterViewInit{
+
   mobileQuery: MediaQueryList;
   fillerNav = Array.from({length: 50}, (_, i) => `Nav Item ${i + 1}`);
 
   private _mobileQueryListener: () => void;
 
   constructor(
-    changeDetectorRef: ChangeDetectorRef, 
-    media: MediaMatcher, 
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
     private swal : SweetalertService,
     private authService: AuthenticationService,
     private dbService: DatabaseService,
@@ -33,7 +33,7 @@ export class SidebarComponent {
         this.mobileQuery.addListener(this._mobileQueryListener);
       }
 
-  ngOnInit(){
+  ngAfterViewInit(){
     this.getList()
   }
 
@@ -48,9 +48,7 @@ export class SidebarComponent {
   list: List[] = []
   getList(){
     const role = this.roleService.role
-    const mail = this.roleService.mail
-
-    this.dbService.get(`/api/v1/list?role=${role}&mail=${mail}`)
+    this.dbService.get(`/api/v1/list?role=${role}`)
       .subscribe((response: APIResponse) => {
         response.success ? this.list = JSON.parse(response.data.list): null
       },

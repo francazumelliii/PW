@@ -69,11 +69,9 @@ export class RestaurantComponent implements OnInit {
       "quantity" : this.reservationForm.controls['quantity'].value,
       "date" : formatDate(this.reservationForm.controls['date'].value, "yyyy-MM-dd", "en-US"),
       "turn_id" : this.reservationForm.controls['turn'].value,
-      "restaurant_id" : this.restaurantId,
-      "user_mail" : this.authService.mail
+      "restaurant_id" : this.restaurantId
     }
-    const test = {"bla" : "11"}
-    this.dbService.post('/api/v1/restaurant/reservation', test)
+    this.dbService.post('/api/v1/restaurant/reservation', body)
       .subscribe((response:APIResponse) => {
         response.success ? (
           console.log(response.data)

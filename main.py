@@ -15,6 +15,8 @@ from functools import wraps
 from pydantic import BaseModel
 import secrets
 import json
+
+
 app = FastAPI()
 
 # Configurazione OAuth2
@@ -30,11 +32,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#Logging service
+# Logging service
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-#Db configuration
+# Db configuration
 db_config = {
     'host': "localhost",
     'user': "root",
@@ -43,13 +45,12 @@ db_config = {
     'port': 3306
 }
 
-#Token generation
+# Token generation
 SECRET_KEY = secrets.token_urlsafe(32)
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 240
 
-
-# db connection
+# Db connection
 def get_db_connection():
     try:
         conn = mysql.connector.connect(**db_config)
@@ -58,15 +59,13 @@ def get_db_connection():
     except mysql.connector.Error as e:
         logger.error(f"Error connecting to database: {e}")
     return None
-    
 
-
-#class for signin
+# Class for signin
 class SignInRequest(BaseModel):
     email: str
     password: str
 
-#global exception handler
+# Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled exception: {exc}")
@@ -75,7 +74,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"message": "Internal server error"}
     )
 
-# access token creation
+# Access token creation
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
@@ -86,7 +85,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# token verifying
+# Token verifying
 async def verify_token(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -567,14 +566,13 @@ def serialize_date(obj):
 
 # booking table function
 @app.post("/api/v1/restaurant/reservation")
-async def insert_reservation(request: Request, token: str = Depends(verify_token)):
+async def insert_reservation(request: Request, token: str = Depends(verify_token), user_mail: str = Depends(verify_token)):
     cursor = None
     conn = None
     try:
         data = await request.json()
         conn = get_db_connection()
         mail = data.get("mail")
-        user_mail = data.get("user_mail")
         date_str = data.get("date")
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
         quantity = data.get("quantity")
@@ -779,16 +777,16 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta
 
 
-# Funzione per ottenere l'email dal token JWT
-async def get_email_from_token(token: str = Depends(verify_token)):
+# Extract email from token
+async def get_email_from_token(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
         if email is None:
-            raise HTTPException(status_code=401, detail="Email non trovata nel token")
+            raise HTTPException(status_code=401, detail="Email not found in token")
         return email
     except JWTError as e:
-        raise HTTPException(status_code=401, detail="Token JWT non valido")
+        raise HTTPException(status_code=401, detail="Invalid JWT token")
 
 
 # Configurazione del logger
@@ -876,18 +874,7 @@ async def patch_user(request: Request, token: str = Depends(verify_token)):
     finally: 
         if conn.is_connected():
             conn.close()
-        
-@app.get("/api/v1/user/reservation")
-async def get_user_reservation(mail: str): 
-    try: 
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        query = ""
-        
-    except: 
-        return
-    finally: 
-        conn.close()
+    
         
         
 @app.get("/api/v1/restaurant/others")
@@ -1114,7 +1101,7 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
         conn.close()
 
 @app.get("/api/v1/user")
-async def get_user(token = Depends(verify_token), role: str = Query(None), mail : str = Query(None)): 
+async def get_user(token = Depends(verify_token), role: str = Query(None), mail : str = Depends(verify_token)): 
     try: 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -1137,7 +1124,7 @@ async def get_user(token = Depends(verify_token), role: str = Query(None), mail 
 
 
 @app.get("/api/v1/list")
-async def get_list(mail: str = Query(None), role: str = Query(None), token = Depends(verify_token)):
+async def get_list(mail: str = Depends(verify_token), role: str = Query(None), token = Depends(verify_token)):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -1157,4 +1144,107 @@ async def get_list(mail: str = Query(None), role: str = Query(None), token = Dep
         
 
 
+            
+# Endpoint per ottenere le prenotazioni degli utenti (admin e customer)
+@app.get("/api/v1/user/reservation")
+async def get_users_reservation(token: str = Depends(verify_token), mail: str = Depends(verify_token)):
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT *
+            FROM (
+                SELECT
+                    'admin' AS user_type,
+                    a.admin_id AS user_id,
+                    a.name AS name,
+                    a.surname AS surname,
+                    a.mail AS email,
+                    r.reservation_id,
+                    DATE_FORMAT(r.date, '%Y-%m-%d') AS date,
+                    r.quantity as quantity,
+                    r.confirmed as confirmed,
+                    r.mail as mail,
+                    rest.restaurant_id,
+                    rest.name AS restaurant_name,
+                    TIME_FORMAT(t.start_time, '%H:%i') AS start_time,
+                    TIME_FORMAT(t.end_time, '%H:%i') AS end_time,
+                    rest.street,rest.street_number,
+                    village.name village_name
+                FROM admin AS a
+                INNER JOIN reservation AS r ON r.customer_id = a.admin_id
+                INNER JOIN restaurant AS rest ON rest.restaurant_id = r.restaurant_id
+                INNER JOIN turn AS t ON r.turn_id = t.turn_id
+                INNER JOIN village ON village.village_id = rest.village_id
+                WHERE a.mail = %s
+                UNION ALL
+                SELECT
+                    'customer' AS user_type,
+                    c.customer_id AS user_id,
+                    c.name AS name,
+                    c.surname AS surname,
+                    c.mail AS email,
+                    r.reservation_id,
+                    DATE_FORMAT(r.date, '%Y-%m-%d') AS date,
+                    r.quantity as quantity,
+                    r.confirmed as confirmed,
+                    r.mail as mail,
+                    rest.restaurant_id,
+                    rest.name AS restaurant_name,
+                    rest.street,rest.street_number,
+                    village.name village_name,
+                    TIME_FORMAT(t.start_time, '%H:%i') AS start_time,
+                    TIME_FORMAT(t.end_time, '%H:%i') AS end_time
+                FROM customer AS c
+                INNER JOIN reservation AS r ON r.customer_id = c.customer_id
+                INNER JOIN restaurant AS rest ON rest.restaurant_id = r.restaurant_id
+                INNER JOIN turn AS t ON r.turn_id = t.turn_id
+                INNER JOIN village ON rest.village_id = village.village_id
+                WHERE c.mail = %s
+            ) AS combined_results;
+            """
+        cursor.execute(query,(mail,mail))
+        result = cursor.fetchall()
+        if result:
+            response = []
+
+            for row in result:
+                obj = {
+                    "user": {
+                        "id" : row['user_id'],
+                        "name" : row['name'],
+                        "surname": row['surname'],
+                        "mail" : row['email']
+                        },
+                    "reservation": {
+                        "id": row['reservation_id'],
+                        "date": row['date'],
+                        "quantity" : row['quantity'],
+                        "confirmed" : row['confirmed'],
+                        "mail": row['mail'],
+                        "start_time": row['start_time'],
+                        "end_time": row['end_time']
+                        },
+                    "restaurant" : {
+                        "id": row['restaurant_id'],
+                        "name": row['restaurant_name'],
+                        "street": row["street"],
+                        "street_number": row['street_number'],
+                        "village": row['village_name']
+                    }
+
+                }
+                response.append(obj)
+
+
+            return JSONResponse(content={"success": True, "data": response}, status_code=200)
+        else: 
+            return JSONResponse(content={"success": False, "message": "No reservations found"}, status_code=200)
+        
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail=f"Error retrieving data {err}")
+    finally:
+        if conn.is_connected():
+            cursor.close()
+            conn.close()
             

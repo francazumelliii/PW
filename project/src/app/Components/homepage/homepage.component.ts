@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import {Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit, AfterContentInit} from '@angular/core';
 import { RoleService } from '../../Services/role.service';
 import { APIResponse, Restaurant } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.sass']
 })
-export class HomepageComponent implements OnInit {
+export class HomepageComponent implements AfterContentInit {
   constructor(
     private roleService: RoleService,
     private swal: SweetalertService,
@@ -25,7 +25,7 @@ export class HomepageComponent implements OnInit {
   @ViewChild("map") map!: MapComponent;
   @ViewChild("cardContainer") cardContainer!: CardContainerComponent;
 
-  ngOnInit(): void {
+  ngAfterContentInit(): void {
     this.getAllRestaurants();
   }
 
@@ -33,7 +33,7 @@ export class HomepageComponent implements OnInit {
     this.roleService.getAllRestaurants().subscribe((response: APIResponse) => {
       if(response.success) {
         this.restaurantsList = response.data;
-        this.map.list = this.restaurantsList; 
+        this.map.list = this.restaurantsList;
       }
     }, (error: any) => {
       console.error(error);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../Services/database.service';
 import { RoleService } from '../../Services/role.service';
-import { Admin, APIResponse, Customer } from '../../Interfaces/general';
+import { Admin, APIResponse, Customer, Reservation } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 
 @Component({
@@ -17,23 +17,34 @@ export class AccountComponent implements OnInit {
     private swal : SweetalertService
   ){}
 
+  reservations: Reservation[] = []
   user!: Customer | Admin 
   ngOnInit(){
     this.getAccount()
-
-  }
+    this.getUserReservations()
+  } 
 
 
   getAccount(){
     const role = this.roleService.role
-    const mail = this.roleService.mail
-    this.dbService.get(`/api/v1/user?mail=${mail}&role=${role}`)
+    this.dbService.get(`/api/v1/user?role=${role}`)
       .subscribe((response: APIResponse) => {
         response.success ? this.user = response.data : null
         console.log(this.user)
       },(error : any) => {
         this.swal.fire("error","ERROR","Error retrieving account data... try later","")
         console.error(error)
+      })
+  }
+
+  getUserReservations(){
+    this.dbService.get(`/api/v1/user/reservation`)
+      .subscribe((response: APIResponse) => {
+        response.success ? (this.reservations = response.data): null
+        console.log(this.reservations)
+      },(error: any) => {
+        console.error(error),
+        this.swal.fire("error", "ERROR", "Error retrieving data... try later", "")
       })
   }
 }

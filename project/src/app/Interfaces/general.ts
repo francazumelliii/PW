@@ -19,7 +19,7 @@ export interface restaurant_obj{
     street: string,
     street_number: string,
     max_chairs: string | number,
-    description: string, 
+    description: string,
     banner: string
 }
 export interface admin_obj{
@@ -37,7 +37,7 @@ export interface company_obj{
 export interface coords_obj{
     latitude: number ,
     longitude: number,
-    village: string, 
+    village: string,
     county: string,
     county_code: string,
     region: string
@@ -54,8 +54,8 @@ export interface APIResponse{
 export interface Marker{
     longitude: number,
     latitude: number,
-    color: string, 
-    icon: string, 
+    color: string,
+    icon: string,
 }
 
 export interface Turn{
@@ -66,7 +66,7 @@ export interface Turn{
 
 export interface List{
     key:string,
-    value:string 
+    value:string
 }
 
 export interface Customer{
@@ -80,8 +80,33 @@ export interface Customer{
 export interface Admin{
     admin_id: number | string,
     name: string,
-    surname: string, 
+    surname: string,
     mail: string,
     restaurant_id: number | string,
     list: string
+}
+
+export interface Reservation{
+  "user": {
+    "id": number | string,
+    "name": string,
+    "surname": string,
+    "mail": string
+  },
+  "reservation": {
+    "id": number | string,
+    "date": string,
+    "quantity": number ,
+    "confirmed": number,
+    "mail": string,
+    "start_time": string,
+    "end_time": string
+  },
+  "restaurant": {
+    "id": number | string,
+    "name": string,
+    "street": string,
+    "street_number": string,
+    "village": string
+  }
 }
