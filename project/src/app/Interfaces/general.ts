@@ -105,6 +105,8 @@ export interface Reservation{
   "restaurant": {
     "id": number | string,
     "name": string,
+    "banner": string,
+    "img": string,
     "street": string,
     "street_number": string,
     "village": string
