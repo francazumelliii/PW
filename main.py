@@ -1,4 +1,5 @@
 from collections import defaultdict
+from decimal import Decimal
 from typing import List
 from fastapi import FastAPI, Request, HTTPException, Depends, Query, Header, status
 from fastapi.responses import JSONResponse
@@ -506,9 +507,13 @@ class TableCheckRequest(BaseModel):
     turn: int
     id: int
     
-# tables availability function
+def convert_decimal_to_float(value):
+    if isinstance(value, Decimal):
+        return float(value)
+    return value
+
 @app.get("/api/v1/tables")
-async def check_tables(date: str, turn: str | int, id: str | int,token: str = Depends(verify_token)):
+async def check_tables(date: str, turn: str | int, id: str | int, token: str = Depends(verify_token)):
     try:
         conn = get_db_connection()
         if not conn:
@@ -529,7 +534,7 @@ async def check_tables(date: str, turn: str | int, id: str | int,token: str = De
             restaurant.max_chairs
         """
 
-        cursor.execute(query, (date,turn,id))
+        cursor.execute(query, (date, turn, id))
         result = cursor.fetchone()
 
         if not result:
@@ -539,15 +544,15 @@ async def check_tables(date: str, turn: str | int, id: str | int,token: str = De
             cursor.execute(max_seats_query, (id,))
             max_seats_result = cursor.fetchone()
             if max_seats_result:
-                return JSONResponse(content={"available_seats": max_seats_result[0]}, status_code=200)
+                return JSONResponse(content={"available_seats": convert_decimal_to_float(max_seats_result[0])}, status_code=200)
             else:
                 return JSONResponse(content={"message": "No results found"}, status_code=200)
 
-        total_reserved = result[0] or 0  
-        max_seats = result[1] or 0 
+        total_reserved = convert_decimal_to_float(result[0] or 0)
+        max_seats = convert_decimal_to_float(result[1] or 0)
         available_seats = max_seats - total_reserved
 
-        return JSONResponse(content={"success": True, "data":{"available_seats" : available_seats}}, status_code=200)
+        return JSONResponse(content={"success": True, "data": {"available_seats": available_seats}}, status_code=200)
 
     except MySQLError as err:
         logging.error(f"Error retrieving data: {err}")
@@ -1167,16 +1172,20 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                     r.mail as mail,
                     rest.restaurant_id,
                     rest.name AS restaurant_name,
+                    rest.banner,
                     TIME_FORMAT(t.start_time, '%H:%i') AS start_time,
                     TIME_FORMAT(t.end_time, '%H:%i') AS end_time,
                     rest.street,rest.street_number,
-                    village.name village_name
+                    village.name village_name,
+                    imgs.path
                 FROM admin AS a
                 INNER JOIN reservation AS r ON r.customer_id = a.admin_id
                 INNER JOIN restaurant AS rest ON rest.restaurant_id = r.restaurant_id
                 INNER JOIN turn AS t ON r.turn_id = t.turn_id
                 INNER JOIN village ON village.village_id = rest.village_id
-                WHERE a.mail = %s
+                INNER JOIN imgs ON rest.restaurant_id = imgs.restaurant_id
+                WHERE a.mail = %s AND imgs.priority = 1
+                GROUP BY rest.restaurant_id
                 UNION ALL
                 SELECT
                     'customer' AS user_type,
@@ -1193,15 +1202,19 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                     rest.name AS restaurant_name,
                     rest.street,rest.street_number,
                     village.name village_name,
+                    rest.banner,
                     TIME_FORMAT(t.start_time, '%H:%i') AS start_time,
-                    TIME_FORMAT(t.end_time, '%H:%i') AS end_time
+                    TIME_FORMAT(t.end_time, '%H:%i') AS end_time,
+                    imgs.path
                 FROM customer AS c
                 INNER JOIN reservation AS r ON r.customer_id = c.customer_id
                 INNER JOIN restaurant AS rest ON rest.restaurant_id = r.restaurant_id
                 INNER JOIN turn AS t ON r.turn_id = t.turn_id
                 INNER JOIN village ON rest.village_id = village.village_id
-                WHERE c.mail = %s
-            ) AS combined_results;
+                INNER JOIN imgs ON rest.restaurant_id = imgs.restaurant_id
+                WHERE c.mail = %s AND imgs.priority = 1
+                GROUP BY rest.restaurant_id
+            ) AS combined_results ORDER BY date ASC;
             """
         cursor.execute(query,(mail,mail))
         result = cursor.fetchall()
@@ -1228,6 +1241,8 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                     "restaurant" : {
                         "id": row['restaurant_id'],
                         "name": row['restaurant_name'],
+                        "banner" : row["banner"],
+                        "img": row['path'],
                         "street": row["street"],
                         "street_number": row['street_number'],
                         "village": row['village_name']
