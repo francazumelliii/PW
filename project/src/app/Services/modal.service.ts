@@ -6,6 +6,7 @@ import { ModalComponent } from '../Tools/modal/modal.component';
 })
 export class ModalService {
   private modalComponentRef: ComponentRef<ModalComponent> | null = null;
+  private childComponentRef: ComponentRef<any> | null = null;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -13,31 +14,44 @@ export class ModalService {
     private injector: Injector
   ) {}
 
-  open(component: any, inputs: any = {}, title: string = ''): void {
-    if (this.modalComponentRef) {
-      this.close(); // Chiudi eventuali modali aperti
-    }
+  open(component: any, inputs: any = {}, title: string = ''): Promise<ComponentRef<any>> {
+    return new Promise((resolve, reject) => {
+      if (this.modalComponentRef) {
+        this.close(); // Close any open modals
+      }
 
-    // Crea una referenza al componente del modal
-    const componentRef = this.componentFactoryResolver
-      .resolveComponentFactory(ModalComponent)
-      .create(this.injector);
+      // Create a reference to the modal component
+      const componentRef = this.componentFactoryResolver
+        .resolveComponentFactory(ModalComponent)
+        .create(this.injector);
 
-    // Attacca il componente all'albero dei componenti di Angular
-    this.appRef.attachView(componentRef.hostView);
+      // Attach the component to Angular's component tree
+      this.appRef.attachView(componentRef.hostView);
 
-    // Ottieni l'elemento DOM del componente
-    const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
-      .rootNodes[0] as HTMLElement;
+      // Get the DOM element of the component
+      const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+        .rootNodes[0] as HTMLElement;
 
-    document.body.appendChild(domElem);
+      document.body.appendChild(domElem);
 
-    // Imposta il tipo di componente e gli input del contenuto del modal
-    (componentRef.instance as ModalComponent).childComponentType = component;
-    (componentRef.instance as ModalComponent).childComponentInputs = inputs;
-    (componentRef.instance as ModalComponent).title = title;
+      // Set the type of the child component and its inputs
+      const modalInstance = componentRef.instance as ModalComponent;
+      modalInstance.childComponentType = component;
+      modalInstance.childComponentInputs = inputs;
+      modalInstance.title = title;
 
-    this.modalComponentRef = componentRef;
+      this.modalComponentRef = componentRef;
+
+      // Wait until the child component is created
+      setTimeout(() => {
+        this.childComponentRef = modalInstance.childComponentRef;
+        if (this.childComponentRef) {
+          resolve(this.childComponentRef);
+        } else {
+          reject('Failed to create child component');
+        }
+      });
+    });
   }
 
   close(): void {
@@ -45,6 +59,7 @@ export class ModalService {
       this.appRef.detachView(this.modalComponentRef.hostView);
       this.modalComponentRef.destroy();
       this.modalComponentRef = null;
+      this.childComponentRef = null;
     }
   }
 }

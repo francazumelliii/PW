@@ -1,4 +1,4 @@
-import { Component, Input, ComponentFactoryResolver, ViewChild, ViewContainerRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, ComponentFactoryResolver, ViewChild, ViewContainerRef, OnDestroy, OnInit, AfterViewInit, ComponentRef } from '@angular/core';
 import { ModalService } from '../../Services/modal.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { ModalService } from '../../Services/modal.service';
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.sass']
 })
-export class ModalComponent implements OnInit, OnDestroy {
+export class ModalComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() childComponentType: any;
   @Input() childComponentInputs: any;
@@ -14,26 +14,27 @@ export class ModalComponent implements OnInit, OnDestroy {
 
   @ViewChild('modalContent', { read: ViewContainerRef, static: true }) modalContent!: ViewContainerRef;
 
+  public childComponentRef: ComponentRef<any> | null = null;
+
   constructor(private componentFactoryResolver: ComponentFactoryResolver, private modalService: ModalService) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ngAfterViewInit() {
+    this.createChildComponent();
+  }
+
+  createChildComponent() {
     if (this.childComponentType) {
-      setTimeout(() => {
-        console.log('Creating component...');
-        const factory = this.componentFactoryResolver.resolveComponentFactory(this.childComponentType);
-        const ref = this.modalContent.createComponent(factory);
-  
-        // Cast ref.instance to the expected component type
-        const instance = ref.instance as any;
-        Object.keys(this.childComponentInputs).forEach((key) => {
-          instance[key] = this.childComponentInputs[key];
-        });
-  
-        console.log('Component created:', ref.instance);
+      const factory = this.componentFactoryResolver.resolveComponentFactory(this.childComponentType);
+      this.childComponentRef = this.modalContent.createComponent(factory);
+
+      const instance = this.childComponentRef.instance as any;
+      Object.keys(this.childComponentInputs).forEach((key) => {
+        instance[key] = this.childComponentInputs[key];
       });
     }
   }
-  
 
   close() {
     this.modalService.close();
