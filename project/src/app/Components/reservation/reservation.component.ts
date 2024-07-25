@@ -32,6 +32,7 @@ export class ReservationComponent implements OnInit {
     this.reservationForm = this.formService.reservationForm;
   }
   ngOnInit(){
+    this.reservationForm = this.formService.reservationForm;
     this.getTurns()
   }
 
