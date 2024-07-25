@@ -2,7 +2,7 @@
     <div class="input-group-prepend">
       <span *ngIf="icon.length > 0"
             [ngClass]="icon"
-            class="btn btn-outline-secondary {{ iconClasses }}"
+            class="btn btn-outline-secondary {{ iconClasses }} {{hoverClass}}"
             [ngStyle]="{'background-color': bgColor, 'color': color, 'border-color': borderColor}">
       </span>
     </div>
@@ -12,7 +12,7 @@
             (click)="click()"
             [ngClass]="{'rounded': !icon}"
             [ngStyle]="{'background': bgColor, 'border-color': borderColor}"
-            class="form-control {{ btnClasses }}">
+            class="form-control {{ btnClasses }} {{hoverClass}}">
       {{ label }}
     </button>
   </div>
