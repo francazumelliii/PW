@@ -8,4 +8,5 @@ export interface Delegate {
     getRestaurantFromId(id: number | string): Observable<APIResponse>
     getTurns(): Observable<APIResponse>
     checkTablesAvailability(restaurant_id: number, date: string, turn_id: number): Observable<APIResponse>
+    deleteReservation(id: number | string) :Observable<APIResponse>
 }

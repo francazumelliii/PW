@@ -75,4 +75,7 @@ export class RoleService {
   checkTablesAvailability(restaurant_id: number, date: string, turn_id: number){
     return this.delegate.checkTablesAvailability(restaurant_id, date, turn_id )
   }
+  deleteReservation(id: number | string){
+    return this.delegate.deleteReservation(id)
+  }
 }
