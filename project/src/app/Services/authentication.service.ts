@@ -32,13 +32,28 @@ export class AuthenticationService {
         })
       );
   }
+  signUp(name: string, surname: string, email: string, password: string){
+    const body = {
+      name: name,
+      surname: surname,
+      email: email,
+      password: password
+    }
+    return this.http.post(`${this.domain}/api/v1/signup`, body)
+      .pipe(
+        catchError((error: any) => {
+          return error
+        })
+      )
+
+
+  }
 
   setToken(token: string): void {
     localStorage.setItem("token", token);
     console.log("STORED: ", token);
-    this.router.navigate(['homepage']).then(() => {
-      window.location.reload();
-    });
+    this.router.navigate(['homepage'])
+    return
   }
 
   logOut() {
