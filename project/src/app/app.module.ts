@@ -34,6 +34,8 @@ import { ModalTestComponent } from './Tools/modal-test/modal-test.component';
 import { ModalService } from './Services/modal.service';
 import { AccountComponent } from './Components/account/account.component';
 import { AvatarComponent } from './Tools/avatar/avatar.component';
+import { ReservationItemComponent } from './Tools/reservation-item/reservation-item.component';
+import { ConfirmModalComponent } from './Tools/confirm-modal/confirm-modal.component';
 
 
 @NgModule({
@@ -53,7 +55,9 @@ import { AvatarComponent } from './Tools/avatar/avatar.component';
     ModalComponent,
     ModalTestComponent,
     AccountComponent,
-    AvatarComponent
+    AvatarComponent,
+    ReservationItemComponent,
+    ConfirmModalComponent
   ],
   imports: [
     BrowserModule,
