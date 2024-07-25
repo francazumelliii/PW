@@ -1,0 +1,24 @@
+<div class="container">
+    <h1 class="fw-light mb-0">{{titleText}}</h1>
+    <h4 class=" text-secondary fw-light mt-2">{{subtitleText}}</h4>
+    <div class="d-flex flex-row justify-content-between">
+        <t-button
+            icon="bi bi-check"
+            [label]="confirmBtnLabel"
+            (onClick)="confirmClick()"
+            btnClasses="bg-teal-500 border-teal-600 text-teal-700"
+            iconClasses="bg-teal-500 text-teal-700 border-teal-600"
+            hoverClass="bg-teal-600-hover text-teal-800-hover"
+        ></t-button>
+        <t-button
+            icon="bi bi-x"
+            [label]="backBtnLabel"
+            (onClick)="backClick()"
+            btnClasses="bg-red-500 border-red-600 text-red-700"
+            iconClasses="bg-red-500 border-red-600 text-red-700"
+            hoverClass="bg-red-600-hover text-red-800-hover"
+        ></t-button>
+
+
+    </div>  
+</div>
