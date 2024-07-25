@@ -1184,7 +1184,7 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                 INNER JOIN turn AS t ON r.turn_id = t.turn_id
                 INNER JOIN village ON village.village_id = rest.village_id
                 INNER JOIN imgs ON rest.restaurant_id = imgs.restaurant_id
-                WHERE a.mail = %s AND imgs.priority = 1
+                WHERE a.mail = %s AND imgs.priority = 1 AND r.confirmed = 1
                 GROUP BY rest.restaurant_id
                 UNION ALL
                 SELECT
@@ -1212,7 +1212,7 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                 INNER JOIN turn AS t ON r.turn_id = t.turn_id
                 INNER JOIN village ON rest.village_id = village.village_id
                 INNER JOIN imgs ON rest.restaurant_id = imgs.restaurant_id
-                WHERE c.mail = %s AND imgs.priority = 1
+                WHERE c.mail = %s AND imgs.priority = 1 AND r.confirmed = 1
                 GROUP BY rest.restaurant_id
             ) AS combined_results ORDER BY date ASC;
             """
@@ -1263,3 +1263,21 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
             cursor.close()
             conn.close()
             
+
+@app.delete("/api/v1/user/reservation")
+async def delete_reservation(mail: str = Depends(verify_token),id: int = Query(None)): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        if id: 
+            query = "UPDATE reservation SET confirmed = 0 WHERE reservation_id = %s"
+            cursor.execute(query,(id,))
+            conn.commit()
+            if cursor.rowcount == 0: 
+                raise HTTPException(status_code=401, detail = "reservation not found")
+            return JSONResponse(status_code=200, content={"success": True, "data": "reservation successfully deleted"})
+        
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail=f"Error retrieving data... {err}")
+    finally:
+        conn.close()
