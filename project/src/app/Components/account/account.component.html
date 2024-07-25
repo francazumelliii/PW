@@ -21,6 +21,14 @@
                       </mat-panel-title>
                     </mat-expansion-panel-header>
 
+                    <!-- user reservations history -->
+                    <ul class="list-group d-flex flex-column row-gap-2">
+                        <t-reservation-item 
+                            *ngFor="let item of reservations" 
+                            [reservation]="item"
+                            (changes)="getUserReservations()"
+                            ></t-reservation-item>
+                    </ul>
                     
                   </mat-expansion-panel>
             </div>
