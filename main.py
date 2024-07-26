@@ -610,23 +610,7 @@ async def insert_reservation(request: Request, token: str = Depends(verify_token
             cursor.close()
         if conn:
             conn.close()
-# get all imgs url 
-@app.get("/api/v1/imgs")
-async def get_all_imgs(id: str = Query(..., description="ID locale"), token: str = Depends(verify_token)): 
-    try: 
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        query = "SELECT * FROM imgs WHERE id_locale = %s"
-        cursor.execute(query, (id,))
-        result = cursor.fetchall()
-        return JSONResponse(content = result)
-    except mysql.connector.Error as err:
-        return JSONResponse(content={"Error": f"Error in retrieving data: {err}"},status_code=400)
-        
-    finally: 
-        cursor.close()
-        conn.close()
-        
+
 # get nearest restaurants by location
 #@app.get("/api/v1/restaurant/nearest")
 async def get_nearest(village: str = Query(""),county: str = Query(""), state: str = Query(""), token: str = Depends(verify_token)): 
@@ -1280,4 +1264,31 @@ async def delete_reservation(mail: str = Depends(verify_token),id: int = Query(N
     except MySQLError as err: 
         raise HTTPException(status_code=501, detail=f"Error retrieving data... {err}")
     finally:
+        conn.close()
+        
+        
+@app.get("/api/v1/restaurant/img")
+async def get_all_imgs(token= Depends(verify_token), id: int = Query(None)): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """SELECT * FROM restaurant INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id 
+                    WHERE restaurant.restaurant_id = %s"""
+        cursor.execute(query,(id, ))
+        result = cursor.fetchall()
+        
+        response = []
+        for row in result: 
+            obj = {
+                "image": row['path'],
+                "thumbImage": row['path'],
+                "alt": row['name'],
+                "title": row['name']                
+            }
+            response.append(obj)
+            
+        return JSONResponse(content={"success": True, "data": response}, status_code=200)
+    except MySQLError as err:
+        raise HTTPException(status_code=501, detail = f"Error fetching data {err}")
+    finally: 
         conn.close()
