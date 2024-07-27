@@ -6,7 +6,7 @@
         </ng-container>
       </span>
     </div>
-    <input type="text" class="form-control" #searchBar>
+    <input type="text" class="form-control" #searchBar [placeholder]="placeholder">
     <div class="input-group-append ">
       <span class="input-group-text rounded-start-0 rounded-end-circle py-3">
         <i class="bi bi-x pointer clear-icon" (click)="clearSearchBar()"></i>

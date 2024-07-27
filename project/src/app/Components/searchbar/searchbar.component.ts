@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../Services/api.service';
 import { FormBuilder, FormControl } from '@angular/forms';
@@ -14,6 +14,7 @@ export class SearchbarComponent {
   @Output() location = new EventEmitter<GeolocationPosition>()
   @Output() address = new EventEmitter<any>()
   @Output() onClear = new EventEmitter<any>()
+  @Input() placeholder: string = ""
   position!: GeolocationPosition 
   _isLoading: boolean = false
 
