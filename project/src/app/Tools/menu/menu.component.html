@@ -1,0 +1,15 @@
+<section class="d-flex flex-column justify-content-center row-gap-3">
+  <div class="d-flex flex-column container-fluid">
+    <h1 class="m-0">{{ menu.name }}</h1>
+    <p>{{ menu.description }}</p>
+  </div>
+  <!-- DISHES LIST -->
+  <div class="d-flex flex-row justify-content-between flex-wrap ">
+    <div *ngFor="let category of categories" class="col-12">
+      <h1 class="text-center">{{ category }}</h1>
+      <div *ngFor="let dish of dishes[category]">
+        <p>{{ dish.name }}</p>
+      </div>
+    </div>
+  </div>
+</section>
