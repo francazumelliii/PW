@@ -36,7 +36,11 @@ import { AccountComponent } from './Components/account/account.component';
 import { AvatarComponent } from './Tools/avatar/avatar.component';
 import { ReservationItemComponent } from './Tools/reservation-item/reservation-item.component';
 import { ConfirmModalComponent } from './Tools/confirm-modal/confirm-modal.component';
-
+import { NgImageSliderComponent, NgImageSliderModule } from 'ng-image-slider';
+import { ImageSliderComponent } from './Tools/image-slider/image-slider.component';
+import { RestaurantInfoComponent } from './Components/restaurant-info/restaurant-info.component';
+import { MenuButtonComponent } from './Tools/menu-button/menu-button.component';
+import { MenuComponent } from './Tools/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +61,12 @@ import { ConfirmModalComponent } from './Tools/confirm-modal/confirm-modal.compo
     AccountComponent,
     AvatarComponent,
     ReservationItemComponent,
-    ConfirmModalComponent
+    ConfirmModalComponent,
+    ImageSliderComponent,
+    RestaurantInfoComponent,
+    MenuButtonComponent,
+    MenuComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -78,7 +87,8 @@ import { ConfirmModalComponent } from './Tools/confirm-modal/confirm-modal.compo
     DropdownModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    NgImageSliderModule
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'en-US' }, ModalService],
   bootstrap: [AppComponent],
