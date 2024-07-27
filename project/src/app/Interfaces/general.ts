@@ -111,4 +111,29 @@ export interface Reservation{
     "street_number": string,
     "village": string
   }
+
+}
+
+export interface Images{
+    image: string,
+    thumbImage: string,
+    alt: string,
+    title: string
+}
+
+export interface Menu{
+  id: number | string,
+  name: string,
+  description: string,
+  category: string,
+  dishes: Dish[]
+}
+export interface Dish{
+  id: number | string,
+  name: string,
+  description: string,
+  ingredients: string,
+  is_vegan: boolean,
+  is_lactose_free: boolean,
+  category_name: string
 }
