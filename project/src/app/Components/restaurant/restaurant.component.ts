@@ -2,7 +2,7 @@ import { Component, ComponentRef, OnInit, ViewChild } from '@angular/core';
 import { DatabaseService } from '../../Services/database.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleService } from '../../Services/role.service';
-import { APIResponse, Turn } from '../../Interfaces/general';
+import {APIResponse, Images, Menu, Restaurant, Turn} from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { FormControlService } from '../../Services/form-control.service';
 import { FormGroup } from '@angular/forms';
@@ -23,10 +23,14 @@ import { INPUT_MODALITY_DETECTOR_DEFAULT_OPTIONS } from '@angular/cdk/a11y';
   styleUrls: ['./restaurant.component.sass']
 })
 export class RestaurantComponent implements OnInit {
-  
+
   reservationForm = this.formService.reservationForm
   restaurantId!: string | number;
+  restaurant!: Restaurant[]
   _isAvailable!: boolean ;
+  images: Images[] = []
+  menus: Menu[] = []
+
   constructor(
     private dbService: DatabaseService,
     private route: ActivatedRoute,
@@ -43,7 +47,10 @@ export class RestaurantComponent implements OnInit {
     this.route.params.subscribe((params: any) => {
       this.restaurantId = params['id'];
       this.getRestaurantFromId();
+      this.getAllImgs()
+      this.getAllMenus()
     });
+
 
   }
 
@@ -53,7 +60,8 @@ export class RestaurantComponent implements OnInit {
     this.roleService.getRestaurantFromId(this.restaurantId)
       .subscribe((response: APIResponse) => {
         if (response.success) {
-          console.log(response.data);
+          this.restaurant = response.data
+          console.log("RES", response.data[0]);
         }
       },
       (error: any) => {
@@ -63,7 +71,7 @@ export class RestaurantComponent implements OnInit {
   }
 
   handleAvailability(event: boolean){
-    //event ? this.postReservation() : this._isAvailable = false 
+    //event ? this.postReservation() : this._isAvailable = false
     event ? this.showConfirmModal() : this._isAvailable = false;
   }
 
@@ -80,14 +88,14 @@ export class RestaurantComponent implements OnInit {
           this.postReservation()
           this.modalService.close();
           this.router.navigate(['/account'])
-          
+
         });
       })
       .catch((error) => {
         console.error('Errore nella creazione del componente figlio:', error);
       });
-  
-    
+
+
   }
 
   postReservation(){
@@ -114,6 +122,26 @@ export class RestaurantComponent implements OnInit {
 
   }
 
+  getAllImgs(){
+    this.dbService.get(`/api/v1/restaurant/img?id=${this.restaurantId}`)
+      .subscribe((response:APIResponse) => {
+        response.success ? this.images = response.data : null
+      },(error: any) => {
+        this.swal.fire("error","ERROR", "Error retrieving data", ""),
+        console.error(error)
+      })
+  }
 
-  
+  getAllMenus(){
+    this.dbService.get(`/api/v1/restaurant/menu?id=${this.restaurantId}`)
+      .subscribe((response: APIResponse) => {
+        response.success ? this.menus = response.data : null
+        console.log(this.menus)
+      }, (error: any ) => {
+        this.swal.fire("error", "ERROR", "Error retrieving data for menus"),
+        console.error(error)
+      })
+  }
+
 }
+
