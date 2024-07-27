@@ -1,7 +1,5 @@
 <div>
     <form [formGroup]="reservationForm" class="d-flex flex-column align-items-center" (ngSubmit)="handleButtonClick()">
-
-        <h1>RESERVE NOW</h1>
         <section class="d-lg-flex flex-row justify-content-between container">
             <div class="d-flex flex-column justify-content-center align-items-center col-3">
                 <label for="buttondisplay">Date: </label>
@@ -48,7 +46,7 @@
 
         </section>
         <t-button
-            [label]="'SEARCH FOR TABLES'"
+            [label]="'SEARCH'"
             [btnClasses]="'bg-info'"
             (onClick)="handleButtonClick()"
             [disabled] = "!_isDateInFuture || reservationForm.invalid"

@@ -41,7 +41,7 @@ export class ReservationItemComponent {
       instance.confirm.subscribe((data: any) => {
         this.deleteReservation()
         this.modalService.close();
-        
+
       });
     })
     .catch((error) => {
@@ -56,7 +56,7 @@ export class ReservationItemComponent {
       }, (error: any) => {
         this.swal.fire("error","ERROR", error.status_code == 401 ? 'Reservation not found' : "Error while deleting reservation", "")
         console.error(error)
-        
+
       })
   }
 
