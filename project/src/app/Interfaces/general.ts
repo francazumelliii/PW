@@ -135,5 +135,6 @@ export interface Dish{
   ingredients: string,
   is_vegan: boolean,
   is_lactose_free: boolean,
-  category_name: string
+  category_name: string,
+  price: number
 }
