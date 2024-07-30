@@ -645,37 +645,65 @@ async def get_nearest(village: str = Query(""),county: str = Query(""), state: s
     finally: 
         cursor.close()
         conn.close()
-      
+
+
 @app.get("/api/v1/restaurant/nearest")
-async def get_nearest_restaurants(latitude: float = Query(1), longitude: float = Query(), county: str = Query(), token: str = Depends(verify_token)):
-    try: 
+async def get_nearest_restaurants(
+    latitude: float = Query(...), 
+    longitude: float = Query(...),
+    token: str = Depends(verify_token)
+):
+    try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         query = """
-            SELECT restaurant.name AS restaurant_name,restaurant.rating,restaurant.street,restaurant.street_number,
-            restaurant.restaurant_id,
-            restaurant.latitude,restaurant.longitude,restaurant.max_chairs,restaurant.description,restaurant.banner,
-            admin.admin_id,admin.name AS admin_name,admin.surname AS admin_surname,company.name AS company_name,
-            company.vat_n,company.address AS company_address,company.telephone AS company_telephone,village.name AS village_name,
-            county.name AS county_name,county.code AS county_code,region.name AS region_name,
-            imgs.path AS img_path,
-            SQRT(POW(restaurant.latitude - %s, 2) + POW(restaurant.longitude - %s, 2)) AS distance
-            FROM restaurant 
+            SELECT DISTINCT
+                restaurant.restaurant_id,
+                restaurant.name AS restaurant_name,
+                restaurant.rating,
+                restaurant.street,
+                restaurant.street_number,
+                restaurant.latitude,
+                restaurant.longitude,
+                restaurant.max_chairs,
+                restaurant.description,
+                restaurant.banner,
+                admin.admin_id,
+                admin.name AS admin_name,
+                admin.surname AS admin_surname,
+                company.name AS company_name,
+                company.vat_n,
+                company.address AS company_address,
+                company.telephone AS company_telephone,
+                village.name AS village_name,
+                county.name AS county_name,
+                county.code AS county_code,
+                region.name AS region_name,
+                imgs.path AS img_path,
+                (
+                    6371 * acos(
+                        cos(radians(%s)) * cos(radians(restaurant.latitude)) * 
+                        cos(radians(restaurant.longitude) - radians(%s)) + 
+                        sin(radians(%s)) * sin(radians(restaurant.latitude))
+                    )
+                ) AS distance
+            FROM 
+                restaurant
             INNER JOIN admin ON admin.restaurant_id = restaurant.restaurant_id 
             INNER JOIN company ON company.company_id = restaurant.company_id 
             INNER JOIN village ON village.village_id = restaurant.village_id 
             INNER JOIN county ON county.county_id = village.county_id 
             INNER JOIN region ON region.region_id = county.region_id
-            INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id
-            WHERE county.name LIKE %s AND imgs.priority = '1'
-            GROUP BY restaurant.restaurant_id 
-            ORDER BY distance"""
-            
-        cursor.execute(query, (latitude, longitude, county))
-        print(latitude,longitude,county)
+            LEFT JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id AND imgs.priority = '1'
+            GROUP BY restaurant.restaurant_id
+            ORDER BY distance ASC
+        """
+        
+        cursor.execute(query, (latitude, longitude, latitude))
+        print(latitude, longitude)
         results = cursor.fetchall()
         response = []
-        for row in results: 
+        for row in results:
             restaurant_data = {
                 "restaurant": {
                     "id": row['restaurant_id'],
@@ -712,13 +740,13 @@ async def get_nearest_restaurants(latitude: float = Query(1), longitude: float =
             }
             response.append(restaurant_data)
     
-        return JSONResponse(content={"success" : True, "data": response}, status_code=200)        
-        
-    except MySQLError as err: 
-        raise HTTPException(status_code=401, detail=f"Error retriving data: {err}")
-    finally: 
+        return JSONResponse(content={"success": True, "data": response}, status_code=200)
+    
+    except MySQLdb.MySQLError as err:
+        raise HTTPException(status_code=401, detail=f"Error retrieving data: {err}")
+    finally:
         conn.close()
-      
+
       
       
         
@@ -967,7 +995,7 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
         print(query)
         for row in result: 
             query = """SELECT dish.description, dish.dish_id, dish.ingredients, dish.vegan, dish.lactose_free,
-                        dish_category.name category_name, dish.name
+                        dish_category.name category_name, dish.name, dish.price
                         FROM dish INNER JOIN menu ON dish.menu_id = menu.menu_id 
                         INNER JOIN dish_category ON dish_category.dish_category_id = dish.dish_category_id
                         WHERE menu.menu_id = %s """
@@ -982,7 +1010,8 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
                     "ingredients": dish['ingredients'],
                     "is_vegan": dish['vegan'] == 1,  
                     "is_lactose_free": dish['lactose_free'] == 1, 
-                    "category_name": dish['category_name']
+                    "category_name": dish['category_name'],
+                    "price" : dish['price']
                 }
                 dishes.append(dish_data)
             
@@ -1055,7 +1084,7 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
         for row in result: 
             query = """
                     SELECT dish.description, dish.dish_id, dish.ingredients, dish.vegan, dish.lactose_free,
-                        dish_category.name category_name, dish.name
+                        dish_category.name category_name, dish.name, dish.price
                     FROM dish INNER JOIN menu ON dish.menu_id = menu.menu_id 
                         INNER JOIN dish_category ON dish_category.dish_category_id = dish.dish_category_id
                         WHERE menu.menu_id = %s """
@@ -1068,9 +1097,10 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
                     "name": dish['name'],
                     "description": dish['description'],
                     "ingredients": dish['ingredients'],
-                    "is_vegan": dish['vegan'] == 1,  # Verifica se il valore è 1 come numero
-                    "is_lactose_free": dish['lactose_free'] == 1,  # Verifica se il valore è 1 come numero
-                    "category_name": dish['category_name']
+                    "is_vegan": dish['vegan'] == 1, 
+                    "is_lactose_free": dish['lactose_free'] == 1,  
+                    "category_name": dish['category_name'],
+                    "price" : dish['price']
                 }
                 dishes.append(dish_data)
             
