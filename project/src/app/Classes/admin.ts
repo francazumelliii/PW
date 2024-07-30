@@ -16,8 +16,8 @@ export class Admin implements Delegate{
     getAllRestaurants(): Observable<APIResponse> {
         return this.dbService.get("/api/v1/restaurant")
     }
-    getNearestRestaurants(lat: number | string, lon: number | string, county: string): Observable<APIResponse> {
-        return this.dbService.get(`/api/v1/restaurant/nearest?latitude=${lat}&longitude=${lon}&county=${county}`)
+    getNearestRestaurants(lat: number | string, lon: number | string): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/restaurant/nearest?latitude=${lat}&longitude=${lon}`)
     }
     getRestaurantFromId(id: number | string): Observable<APIResponse> {
         return this.dbService.get(`/api/v1/restaurant?id=${id}`)
