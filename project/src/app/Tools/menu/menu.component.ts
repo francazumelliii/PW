@@ -9,10 +9,6 @@ import { Dish, Menu } from "../../Interfaces/general";
 export class MenuComponent implements OnInit {
   @Input() menu!: Menu;
 
-  appetizers: Dish[] = [];
-  firstDishes: Dish[] = [];
-  desserts: Dish[] = [];
-  categories: string[] = ["Antipasti", "Primi Piatti", "Desserts"];
   dishes: { [key: string]: Dish[] } = {};
 
   ngOnInit() {
@@ -21,17 +17,15 @@ export class MenuComponent implements OnInit {
 
   filterDishes() {
     this.menu.dishes.forEach(dish => {
-      if (dish.category_name === "Primi Piatti") {
-        this.firstDishes.push(dish);
-      } else if (dish.category_name === "Antipasti") {
-        this.appetizers.push(dish);
-      } else if (dish.category_name === "Desserts") {
-        this.desserts.push(dish);
+      const category = dish.category_name;
+      if (!this.dishes[category]) {
+        this.dishes[category] = [];
       }
+      this.dishes[category].push(dish);
     });
+  }
 
-    this.dishes["Primi Piatti"] = this.firstDishes;
-    this.dishes["Antipasti"] = this.appetizers;
-    this.dishes["Desserts"] = this.desserts;
+  get categories(): string[] {
+    return Object.keys(this.dishes);
   }
 }
