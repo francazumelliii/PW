@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit, AfterContentInit} from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterContentInit } from '@angular/core';
 import { RoleService } from '../../Services/role.service';
 import { APIResponse, Restaurant } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
@@ -12,18 +12,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./homepage.component.sass']
 })
 export class HomepageComponent implements AfterContentInit {
+  restaurantsList: Restaurant[] = [];
+  nearestRestaurantsList: Restaurant[] = [];
+  showNearestRestaurants: boolean = false;
+
+  @ViewChild("map") map!: MapComponent;
+  @ViewChild("cardContainer") cardContainer!: CardContainerComponent;
+
   constructor(
     private roleService: RoleService,
     private swal: SweetalertService,
     private cdr: ChangeDetectorRef,
     private router: Router
   ){}
-
-  restaurantsList: Restaurant[] = [];
-  nearestRestaurantsList: Restaurant[] = [];
-
-  @ViewChild("map") map!: MapComponent;
-  @ViewChild("cardContainer") cardContainer!: CardContainerComponent;
 
   ngAfterContentInit(): void {
     this.getAllRestaurants();
@@ -45,10 +46,11 @@ export class HomepageComponent implements AfterContentInit {
     const longitude = event.lon;
     const county = event.address.state;
 
-    this.roleService.getNearestRestaurants(latitude, longitude, county).subscribe((response: APIResponse) => {
+    this.roleService.getNearestRestaurants(latitude, longitude).subscribe((response: APIResponse) => {
       if (response.success) {
-        this.nearestRestaurantsList = response.data;
-        this.cardContainer.list = this.nearestRestaurantsList;
+        console.log('Received nearest restaurants data:', response.data);
+        this.nearestRestaurantsList = [...response.data];
+        this.showNearestRestaurants = true;
         this.cardContainer.circular = false;
         this.cdr.detectChanges();
       }
@@ -59,12 +61,13 @@ export class HomepageComponent implements AfterContentInit {
 
   handleSearchbarClear() {
     this.nearestRestaurantsList = [];
-    this.cardContainer.list = this.restaurantsList;
-    this.cardContainer.circular = true;
+    this.showNearestRestaurants = false;
+    this.cardContainer.circular = true
     this.cdr.detectChanges();
   }
+
   handleCardBtnClick(event: any){
-    console.log(event)
-    this.router.navigate(['/restaurant',event])
+    console.log(event);
+    this.router.navigate(['/restaurant', event]);
   }
 }
