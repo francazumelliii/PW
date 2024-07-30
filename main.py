@@ -974,17 +974,17 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
             cursor.execute(query,(row['menu_id'], ))
             dish_res = cursor.fetchall()
             dishes = []
-            for dish in dish_res: 
-                dish = {
-                    "id" : dish['dish_id'],
-                    "name" : dish['name'],
-                    "description" : dish['description'],
-                    "ingredients" : dish['ingredients'],
-                    "is_vegan" : True if dish['vegan'] == '1' else False,
-                    "is_lactose_free" : True if dish['lactose_free'] == '1' else False,
-                    "category_name" : dish['category_name']
+            for dish in dish_res:
+                dish_data = {
+                    "id": dish['dish_id'],
+                    "name": dish['name'],
+                    "description": dish['description'],
+                    "ingredients": dish['ingredients'],
+                    "is_vegan": dish['vegan'] == 1,  
+                    "is_lactose_free": dish['lactose_free'] == 1, 
+                    "category_name": dish['category_name']
                 }
-                dishes.append(dish)
+                dishes.append(dish_data)
             
             menu = {
                 "id" : row['menu_id'],
@@ -1062,17 +1062,17 @@ async def get_all_menu(token=Depends(verify_token), id: int = Query(None)):
             cursor.execute(query,(row['menu_id'], ))
             dish_res = cursor.fetchall()
             dishes = []
-            for dish in dish_res: 
-                dish = {
-                    "id" : dish['dish_id'],
-                    "name" : dish['name'],
-                    "description" : dish['description'],
-                    "ingredients" : dish['ingredients'],
-                    "is_vegan" : True if dish['vegan'] == '1' else False,
-                    "is_lactose_free" : True if dish['lactose_free'] == '1' else False,
-                    "category_name" : dish['category_name']
+            for dish in dish_res:
+                dish_data = {
+                    "id": dish['dish_id'],
+                    "name": dish['name'],
+                    "description": dish['description'],
+                    "ingredients": dish['ingredients'],
+                    "is_vegan": dish['vegan'] == 1,  # Verifica se il valore è 1 come numero
+                    "is_lactose_free": dish['lactose_free'] == 1,  # Verifica se il valore è 1 come numero
+                    "category_name": dish['category_name']
                 }
-                dishes.append(dish)
+                dishes.append(dish_data)
             
             menu = {
                 "id" : row['menu_id'],
