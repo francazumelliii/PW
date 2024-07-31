@@ -6,7 +6,7 @@
             ></t-image-slider>
     </div>
 
-    <div class="container col">
+    <div class="container col position-relative">
         <mat-expansion-panel hideToggle >
             <mat-expansion-panel-header>
               <mat-panel-title  class="text-secondary-emphasis ">
@@ -16,6 +16,7 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
             <app-reservation
+            [style]="{'z-index' : '10000000'}"
             [restaurantId]="restaurantId"
             (_isAvailable)="handleAvailability($event)"
             ></app-reservation>
