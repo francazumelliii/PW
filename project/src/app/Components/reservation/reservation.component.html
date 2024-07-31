@@ -1,56 +1,81 @@
-<div>
-    <form [formGroup]="reservationForm" class="d-flex flex-column align-items-center" (ngSubmit)="handleButtonClick()">
-        <section class="d-lg-flex flex-row justify-content-between container">
-            <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                <label for="buttondisplay">Date: </label>
-                <p-calendar 
-                    [placeholder]="today"
-                    [showIcon]="true" 
-                    [showOnFocus]="false" 
-                    (onSelect)="checkDate($event)"
-                    formControlName="date"
-                    [dateFormat]="'dd/mm/yy'"
-                    inputId="calendar"  
-                />
+<div class="d-flex justify-content-between ">
+  <div class="col-3 d-flex justify-content-center align-items-center">
+    <img
+      src="https://e7.pngegg.com/pngimages/927/894/png-clipart-on-the-beach-dinner-hoteles-ms-san-luis-village-banquet-table-love-beach.png"
+      style="width: 100%"
+    />
+  </div>
 
-                <small *ngIf="reservationForm.controls['date'].touched && !_isDateInFuture" class="text-danger mt-1">
-                    Date must be in the future.
-                </small>
-            </div>
+  <form
+    [formGroup]="reservationForm"
+    class="d-flex flex-column col-6 column-gap-4 py-3 row-gap-3"
+    (ngSubmit)="handleButtonClick()"
+  >
+    <div class="row">
+      <div class="col-md-6 form-group py-2 d-flex flex-column">
+        <label for="buttondisplay">People: </label>
+        <mat-form-field appearance="fill">
+          <input
+            type="number"
+            matInput
+            formControlName="quantity"
+            placeholder="2"
+          />
+        </mat-form-field>
+      </div>
 
-            <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                <label for="buttondisplay">Turn: </label>
-                <mat-form-field>
-                    <mat-select formControlName="turn" placeholder="10:00:00 - 11:00:00">
-                        <mat-option *ngFor="let turn of turns" [value]="turn.turn_id">
-                        {{turn.start_time}} - {{turn.end_time}}
-                        </mat-option>
-                    </mat-select>
-                    </mat-form-field>
-                                    
-            </div>
-            <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                <label for="buttondisplay">People: </label>
-                <mat-form-field appearance="fill">
-                    <input
-                        type="number"
-                        matInput
-                        formControlName="quantity"
-                        placeholder="2">
-                </mat-form-field>
-            </div>
-            <div class="d-flex flex-column justify-content-center align-items-center col-3">
-                <label for="buttondisplay">Email: </label>
-                <input type="email" class="input-group-text" formControlName ="mail" placeholder="example@mail.com">
-            </div>
+      <div class="col-md-6 form-group py-2 d-flex flex-column">
+        <label for="buttondisplay">Email: </label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="mail"
+          placeholder="example@mail.com"
+        />
+      </div>
+    </div>
 
-        </section>
-        <t-button
-            [label]="'SEARCH'"
-            [btnClasses]="'bg-info'"
-            (onClick)="handleButtonClick()"
-            [disabled] = "!_isDateInFuture || reservationForm.invalid"
-        ></t-button>
-        <ng-content></ng-content>
-    </form>
+    <div class="row ">
+      <div class="col-md-6 form-group py-2 d-flex flex-column">
+        <label for="buttondisplay">Date: </label>
+        <p-calendar
+          [style]="{ width: '100%' }"
+          [placeholder]="today"
+          [showIcon]="true"
+          [showOnFocus]="false"
+          (onSelect)="checkDate($event)"
+          formControlName="date"
+          [dateFormat]="'dd/mm/yy'"
+          inputId="calendar"
+        ></p-calendar>
+        <small
+          *ngIf="reservationForm.controls['date'].touched && !_isDateInFuture"
+          class="text-danger mt-1"
+        >
+          Date must be in the future.
+        </small>
+      </div>
+
+      <div class="col-md-6 form-group py-2 d-flex flex-column">
+        <label for="buttondisplay">Turn: </label>
+        <mat-form-field>
+          <mat-select formControlName="turn" placeholder="10:00:00 - 11:00:00">
+            <mat-option *ngFor="let turn of turns" [value]="turn.turn_id">
+              {{ turn.start_time }} - {{ turn.end_time }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <t-button
+        [label]="'SEARCH'"
+        [btnClasses]="'bg-info'"
+        (onClick)="handleButtonClick()"
+        [disabled]="!_isDateInFuture || reservationForm.invalid"
+      ></t-button>
+    </div>
+    <ng-content></ng-content>
+  </form>
 </div>
