@@ -78,4 +78,7 @@ export class RoleService {
   deleteReservation(id: number | string){
     return this.delegate.deleteReservation(id)
   }
+  searchRestaurants(toSearch: string){
+    return this.delegate.searchRestaurants(toSearch)
+  }
 }

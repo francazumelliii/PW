@@ -9,4 +9,5 @@ export interface Delegate {
     getTurns(): Observable<APIResponse>
     checkTablesAvailability(restaurant_id: number, date: string, turn_id: number): Observable<APIResponse>
     deleteReservation(id: number | string) :Observable<APIResponse>
+    searchRestaurants(toSearch: string) : Observable<APIResponse>
 }

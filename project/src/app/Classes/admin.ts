@@ -31,4 +31,7 @@ export class Admin implements Delegate{
     deleteReservation(id: number | string): Observable<APIResponse> {
         return this.dbService.delete(`/api/v1/user/reservation?id=${id}`)
     }
+    searchRestaurants(toSearch: string): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/restaurant/search?toSearch=${toSearch}`)
+    }
 }
