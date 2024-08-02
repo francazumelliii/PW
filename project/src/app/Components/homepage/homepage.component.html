@@ -9,6 +9,7 @@
   
     <div>
       <app-searchbar 
+        (searchedText)="handleSearchedText($event)"
         (address)="handleSearchbarLocation($event)" 
         (onClear)="handleSearchbarClear()"
         placeholder="Search for restaurants...">
