@@ -339,7 +339,94 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
         if conn:
             conn.close()
 
-#search restaurants
+@app.get("/api/v1/user/reservation/favorites")
+async def get_favorites(token: str = Depends(verify_token)): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """SELECT customer_id AS id, 'customer' AS user_type FROM customer WHERE mail = %s 
+                    UNION SELECT admin_id AS id, 'admin' AS user_type FROM admin WHERE mail = %s """
+                    
+        cursor.execute(query,(token, token))
+        customer_id = cursor.fetchone()['id']
+        if customer_id : 
+        
+            query = """
+                SELECT DISTINCT restaurant.restaurant_id,restaurant.name AS restaurant_name, restaurant.rating, restaurant.street, restaurant.street_number, 
+                restaurant.latitude,restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,admin.admin_id, 
+                admin.name AS admin_name, admin.surname AS admin_surname,company.name AS company_name, company.vat_n, company.address AS company_address, 
+                company.telephone AS company_telephone,village.name AS village_name,county.name AS county_name, county.code AS county_code,region.name AS region_name,imgs.path AS img_path,
+                IFNULL(res.orders, 0) AS orders
+                    FROM 
+                        restaurant
+                    LEFT JOIN 
+                        (SELECT reservation.restaurant_id, COUNT(reservation.reservation_id) AS orders FROM reservation GROUP BY reservation.restaurant_id) AS res ON res.restaurant_id = restaurant.restaurant_id
+                    JOIN 
+                        (SELECT admin_id, restaurant_id, name, surname FROM admin GROUP BY restaurant_id) admin ON admin.restaurant_id = restaurant.restaurant_id
+                    JOIN 
+                        (SELECT DISTINCT  company_id, name, vat_n, address, telephone FROM company) company ON company.company_id = restaurant.company_id
+                    JOIN 
+                        (SELECT DISTINCT village_id, name, county_id FROM village) village ON village.village_id = restaurant.village_id
+                    JOIN 
+                        (SELECT DISTINCT county_id, name, code, region_id FROM county) county ON county.county_id = village.county_id
+                    JOIN 
+                        (SELECT DISTINCT region_id, name FROM region) region ON region.region_id = county.region_id
+                    JOIN 
+                        (SELECT restaurant_id, path FROM imgs WHERE priority = 1 GROUP BY restaurant_id) imgs ON imgs.restaurant_id = restaurant.restaurant_id
+                    LEFT JOIN reservation ON reservation.restaurant_id = restaurant.restaurant_id
+                    WHERE reservation.customer_id = %s """
+                
+            cursor.execute(query,(customer_id,))
+            results = cursor.fetchall()
+            response = []
+            for row in results: 
+                restaurant_data = {
+                    "restaurant": {
+                        "id": row['restaurant_id'],
+                        "name": row["restaurant_name"],
+                        "rating": row["rating"],
+                        "street": row["street"],
+                        "street_number": row["street_number"],
+                        "max_chairs": row['max_chairs'],
+                        "description": row['description'],
+                        "banner": row['banner']
+                    },
+                    "admin": {
+                        "id": row['admin_id'],
+                        "name": row['admin_name'],
+                        "surname": row['admin_surname']
+                    },
+                    "company": {
+                        "name": row['company_name'],
+                        "vat": row["vat_n"],
+                        "address": row['company_address'],
+                        "telephone": row['company_telephone']
+                    },
+                    "coords": {
+                        "latitude": row["latitude"],
+                        "longitude": row['longitude'],
+                        "village": row["village_name"],
+                        "county": row["county_name"],
+                        "county_code": row["county_code"],
+                        "region": row["region_name"]
+                    },
+                    "img": {
+                        "path": row['img_path']
+                    },
+                    "orders": row["orders"]
+                }
+                response.append(restaurant_data)
+                
+            return JSONResponse(content= {"success": True, "data": response}, status_code=200)
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail=f"Error retrieving data {err}")
+    finally: 
+        conn.close()
+        
+                
+
+
+
 
 #get restaurant from id
 @app.get("/api/v1/restaurant")
