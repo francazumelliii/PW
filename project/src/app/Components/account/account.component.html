@@ -13,25 +13,25 @@
         <!-- PROFILE INFO -->
         <div class="col-8 d-flex flex-column column-gap-3">
             <!-- ORDERS-->
-            <div class="py-4 shadow bg-white rounded" >
-                <mat-expansion-panel >
-                    <mat-expansion-panel-header >
-                      <mat-panel-title  class="text-black font">
-                        <h1 class="fs-1 my-2">My Orders</h1>
-                      </mat-panel-title>
-                    </mat-expansion-panel-header>
-
-                    <!-- user reservations history -->
-                    <ul class="list-group d-flex flex-column row-gap-2">
-                        <t-reservation-item 
-                            *ngFor="let item of reservations" 
-                            [reservation]="item"
-                            (changes)="getUserReservations()"
-                            ></t-reservation-item>
-                    </ul>
-                    
-                  </mat-expansion-panel>
-            </div>
+            <div class="py-4 shadow bg-white rounded">
+                <mat-expansion-panel (opened)="switchPanelStatus()" (closed)="switchPanelStatus()">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title class="text-black font">
+                      <h1 class="fs-1 my-2">My Orders</h1>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+              
+                  <!-- User reservations history -->
+                  <ul class="list-group d-flex flex-column row-gap-2">
+                    <t-reservation-item 
+                      *ngFor="let item of reservations" 
+                      [reservation]="item"
+                      (changes)="getUserReservations()"
+                    ></t-reservation-item>
+                  </ul>
+                </mat-expansion-panel>
+              </div>
+              
         </div>
     </main>
 

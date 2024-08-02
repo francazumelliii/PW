@@ -10,6 +10,14 @@ export interface Restaurant{
     coords: coords_obj
     img: img_obj
 }
+export interface Favorites{
+    restaurant: restaurant_obj
+    admin: admin_obj
+    company: company_obj
+    coords: coords_obj
+    img: img_obj
+    orders: number
+}
 
 
 export interface restaurant_obj{

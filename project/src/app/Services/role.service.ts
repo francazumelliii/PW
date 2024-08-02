@@ -81,4 +81,7 @@ export class RoleService {
   searchRestaurants(toSearch: string){
     return this.delegate.searchRestaurants(toSearch)
   }
+  getFavoritesRestaurants(){
+    return this.delegate.getFavoritesRestaurants()
+  }
 }

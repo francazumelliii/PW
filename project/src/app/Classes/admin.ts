@@ -34,4 +34,7 @@ export class Admin implements Delegate{
     searchRestaurants(toSearch: string): Observable<APIResponse> {
         return this.dbService.get(`/api/v1/restaurant/search?toSearch=${toSearch}`)
     }
+    getFavoritesRestaurants(): Observable<APIResponse> {
+        return this.dbService.get("/api/v1/user/reservation/favorites")
+    }
 }
