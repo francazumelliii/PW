@@ -1148,7 +1148,7 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                 INNER JOIN village ON village.village_id = rest.village_id
                 INNER JOIN imgs ON rest.restaurant_id = imgs.restaurant_id
                 WHERE a.mail = %s AND imgs.priority = 1 AND r.confirmed = 1
-                GROUP BY rest.restaurant_id
+                GROUP BY r.reservation_id
                 UNION ALL
                 SELECT
                     'customer' AS user_type,
@@ -1176,8 +1176,8 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                 INNER JOIN village ON rest.village_id = village.village_id
                 INNER JOIN imgs ON rest.restaurant_id = imgs.restaurant_id
                 WHERE c.mail = %s AND imgs.priority = 1 AND r.confirmed = 1
-                GROUP BY rest.restaurant_id
-            ) AS combined_results ORDER BY date ASC;
+                GROUP BY r.reservation_id
+            ) AS combined_results ORDER BY date DESC;
             """
         cursor.execute(query,(mail,mail))
         result = cursor.fetchall()
