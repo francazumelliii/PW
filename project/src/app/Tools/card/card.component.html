@@ -1,5 +1,5 @@
-<div class="card m-0" style="width: 19.6rem;">
-    <img class="card-img-top" [src]="item.img.path" [alt]="item.restaurant.name">
+<div class="card m-0" [ngStyle]="{'width': width}">
+    <img class="card-img-top" [src]="item.img.path" [alt]="item.restaurant.name" [ngStyle]="{'width': width, 'height': height}">
     <div class="card-body">
       <h5 class="card-title fw-bold fs-6 my-0 ">{{item.restaurant.name}}</h5>
 

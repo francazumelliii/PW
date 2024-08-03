@@ -9,6 +9,8 @@ export class CardContainerComponent implements OnChanges {
   @ViewChild('cardCarousel') cardCarousel!: ElementRef;
   @Input() list: any[] = [];
   @Input() circular: boolean = true;
+  @Input() width: string = "19.6rem"
+  @Input() height: string = "11.025rem"
   @Output() cardBtnClick = new EventEmitter<any>();
 
   responsiveOptions: any[] = [

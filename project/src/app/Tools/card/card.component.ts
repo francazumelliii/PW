@@ -8,6 +8,8 @@ import { Restaurant } from '../../Interfaces/general';
 })
 export class CardComponent implements OnInit {
   @Input() item!: Restaurant
+  @Input() width: string = "19.6rem"
+  @Input() height: string = "11.025rem"
   @Output() btnClick = new EventEmitter<any>()
   ngOnInit(){
 

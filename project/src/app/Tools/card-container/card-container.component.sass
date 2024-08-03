@@ -10,20 +10,20 @@ $highlight: #3C82F6
     padding: 0
     list-style: none
 
+.card-container
+    ::ng-deep .p-carousel-indicator
+        width: 2.8rem
+        margin: .5rem
 
-::ng-deep .p-carousel-indicator 
-    width: 2.8rem
-    margin: .5rem
+    ::ng-deep .p-carousel-indicator .p-link 
+        width: 2.8rem
+        border-radius: .4rem
+        height: .8rem
+        background-color: white
+        border: 1px solid $light-gray
 
-::ng-deep .p-carousel-indicator .p-link
-    width: 2.8rem
-    border-radius: .4rem
-    height: .8rem
-    background-color: white
-    border: 1px solid $light-gray
-
-::ng-deep .p-carousel-indicator.p-highlight .p-link 
-    background-color: $highlight
-    border-color: $highlight
-    color: white
+    ::ng-deep .p-carousel-indicator.p-highlight .p-link 
+        background-color: $highlight
+        border-color: $highlight
+        color: white
 
