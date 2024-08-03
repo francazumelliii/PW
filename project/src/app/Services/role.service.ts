@@ -37,6 +37,13 @@ export class RoleService {
     else if(this.type === "customer") this.delegate = this.customerClass
   }
 
+  storeMail(mail: string){
+    localStorage.setItem("mail", mail)
+  }
+
+  get mail(){
+    return localStorage.getItem("mail")
+  }
 
   loadUserType() {
     const storedUserType = localStorage.getItem("user_type");
@@ -54,7 +61,27 @@ export class RoleService {
     return this.delegate.getAllRestaurants()
   }
 
-  getNearestRestaurants(lat:number | string, lon: number | string, county: string){
-    return this.delegate.getNearestRestaurants(lat,lon,county)
+  getNearestRestaurants(lat:number | string, lon: number | string){
+    return this.delegate.getNearestRestaurants(lat,lon)
+  }
+
+  getRestaurantFromId(id: number | string){
+    return this.delegate.getRestaurantFromId(id)
+  }
+
+  getTurns(){
+    return this.delegate.getTurns()
+  }
+  checkTablesAvailability(restaurant_id: number, date: string, turn_id: number){
+    return this.delegate.checkTablesAvailability(restaurant_id, date, turn_id )
+  }
+  deleteReservation(id: number | string){
+    return this.delegate.deleteReservation(id)
+  }
+  searchRestaurants(toSearch: string){
+    return this.delegate.searchRestaurants(toSearch)
+  }
+  getFavoritesRestaurants(){
+    return this.delegate.getFavoritesRestaurants()
   }
 }

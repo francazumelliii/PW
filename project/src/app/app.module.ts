@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
-
+import { MatSelectModule } from '@angular/material/select';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomepageComponent } from './Components/homepage/homepage.component';
@@ -10,19 +11,36 @@ import { SidebarComponent } from './Components/sidebar/sidebar.component';
 import { AuthenticationsComponent } from './Components/authentications/authentications.component';
 import { ButtonComponent } from './Tools/button/button.component';
 import { LoginFormComponent } from './Tools/login-form/login-form.component';
-import {MatList, MatListModule} from '@angular/material/list';
-
+import { MatListModule } from '@angular/material/list';
+import { StepperModule } from 'primeng/stepper';
 import { CarouselModule } from 'primeng/carousel';
-// Import Angular Material modules
+import { ButtonModule } from 'primeng/button';
+import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule } from '@angular/material/toolbar'; // Import MatToolbarModule
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
 import { CardComponent } from './Tools/card/card.component';
 import { CardContainerComponent } from './Tools/card-container/card-container.component';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { SearchbarComponent } from './Components/searchbar/searchbar.component';
 import { MapComponent } from './Components/map/map.component';
+import { RestaurantComponent } from './Components/restaurant/restaurant.component';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
+import { ReservationComponent } from './Components/reservation/reservation.component';
+import { ModalComponent } from './Tools/modal/modal.component';
+import { ModalTestComponent } from './Tools/modal-test/modal-test.component';
+import { ModalService } from './Services/modal.service';
+import { AccountComponent } from './Components/account/account.component';
+import { AvatarComponent } from './Tools/avatar/avatar.component';
+import { ReservationItemComponent } from './Tools/reservation-item/reservation-item.component';
+import { ConfirmModalComponent } from './Tools/confirm-modal/confirm-modal.component';
+import { NgImageSliderComponent, NgImageSliderModule } from 'ng-image-slider';
+import { ImageSliderComponent } from './Tools/image-slider/image-slider.component';
+import { RestaurantInfoComponent } from './Components/restaurant-info/restaurant-info.component';
+import { MenuButtonComponent } from './Tools/menu-button/menu-button.component';
+import { MenuComponent } from './Tools/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +54,19 @@ import { MapComponent } from './Components/map/map.component';
     CardContainerComponent,
     SearchbarComponent,
     MapComponent,
+    RestaurantComponent,
+    ReservationComponent,
+    ModalComponent,
+    ModalTestComponent,
+    AccountComponent,
+    AvatarComponent,
+    ReservationItemComponent,
+    ConfirmModalComponent,
+    ImageSliderComponent,
+    RestaurantInfoComponent,
+    MenuButtonComponent,
+    MenuComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -49,13 +80,18 @@ import { MapComponent } from './Components/map/map.component';
     MatIconModule,
     MatListModule,
     CarouselModule,
-    MatExpansionModule
-    
+    MatExpansionModule,
+    StepperModule,
+    ButtonModule,
+    CalendarModule,
+    DropdownModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    NgImageSliderModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [{ provide: LOCALE_ID, useValue: 'en-US' }, ModalService],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
-
-
-

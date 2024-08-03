@@ -1,0 +1,28 @@
+<section class="d-flex flex-column justify-content-center row-gap-3 bg-yellow-light py-5">
+  <div class="d-flex flex-column container-fluid">
+    <h1 class="m-0 menu-font fs-1 text-uppercase text-center text-menu">{{ menu.name }}</h1>
+    <p class="text-center text-menu">{{ menu.description }}</p>
+  </div>
+  <!-- DISHES LIST -->
+  <div class="d-flex flex-row justify-content-between flex-wrap row-gap-4 ">
+    <div *ngFor="let category of categories" class="col-12 border-menu-top">
+      <h1 class="text-center text-menu text-uppercase menu-font">{{ category }}</h1>
+      <div class="d-flex flex-row flex-wrap justify-content-between row-gap-4">
+
+        <div *ngFor="let dish of dishes[category]" class="col-6 d-flex flex-column justify-content-start align-items-center">
+          <p class="text-center text-menu-label text-uppercase m-0 fw-light menu-font" >{{ dish.name }}</p>
+          <small class="text-center text-menu-label m-0 w-75" >{{ dish.ingredients }}</small>
+          <small class="icon-text m-0 text-success p-0" *ngStyle="{visibility: dish.is_vegan ? 'visible' : 'hidden'}">
+            <i class=" p-0 m-0 bi bi-patch-check icon-text"></i>VEGAN
+          </small>
+          <small class="icon-text m-0 text-blue-300 p-0" *ngStyle="{visibility: dish.is_lactose_free ? 'visible' : 'hidden'}">
+            <i class=" p-0 m-0 bi bi-patch-check icon-text"></i>LACTOSE FREE
+          </small>
+          <p class="menu-font text-menu-label fs-5 fw-light">€ {{dish.price}}</p>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,11 +1,11 @@
 <div class="card m-0" style="width: 19.6rem;">
-    <img class="card-img-top" [src]="item.restaurant.banner" [alt]="item.restaurant.name">
+    <img class="card-img-top" [src]="item.img.path" [alt]="item.restaurant.name">
     <div class="card-body">
       <h5 class="card-title fw-bold fs-6 my-0 ">{{item.restaurant.name}}</h5>
 
       <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header>
-          <mat-panel-title  class="text-secondary-emphasis ">
+          <mat-panel-title  class="text-secondary-emphasis font">
 
             <div class="d-flex flex-row justify-content-between w-100 align-items-center m-0">
               <small class="col"><i class="bi bi-geo-alt-fill"></i></small>
@@ -25,7 +25,8 @@
       <t-button
         label="SHOW MORE"
         classes="my-1"
-        btnClasses="border bg-primary-subtle hover"
+        btnClasses="border bg-blue-200 hover-primary"
+        (onClick)="emitClick()"
       ></t-button>
     </div>
 </div>

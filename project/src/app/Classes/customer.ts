@@ -12,9 +12,27 @@ export class Customer implements Delegate{
 
     constructor( private dbService: DatabaseService ){}
     getAllRestaurants(): Observable<APIResponse> {
-        return this.dbService.get("/api/v1/restaurant/all")
+        return this.dbService.get("/api/v1/restaurant")
     }
-    getNearestRestaurants(lat: number | string, lon: number | string, county: string): Observable<APIResponse> {
-        return this.dbService.get(`/api/v1/restaurant/nearest?latitude=${lat}&longitude=${lon}&county=${county}`)
+    getNearestRestaurants(lat: number | string, lon: number | string): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/restaurant/nearest?latitude=${lat}&longitude=${lon}`)
+    }
+    getRestaurantFromId(id: number | string): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/restaurant?id=${id}`)
+    }
+    getTurns(): Observable<APIResponse>{
+        return this.dbService.get("/api/v1/turns")
+    }
+    checkTablesAvailability(restaurant_id: number, date: string, turn_id: number): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/tables?date=${date}&turn=${turn_id}&id=${restaurant_id}`)
+    }
+    deleteReservation(id: number | string): Observable<APIResponse> {
+        return this.dbService.delete(`/api/v1/user/reservation?id=${id}`)
+    }
+    searchRestaurants(toSearch: string): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/restaurant/search?toSearch=${toSearch}`)
+    }
+    getFavoritesRestaurants(): Observable<APIResponse> {
+        return this.dbService.get("/api/v1/user/reservation/favorites")
     }
 }

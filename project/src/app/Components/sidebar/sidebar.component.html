@@ -1,25 +1,31 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches" >
     <mat-toolbar color="primary" class="example-toolbar">
-      <button mat-icon-button (click)="snav.toggle()" class="btn-burger">
-        <i class="bi bi-list fs-2 "></i>
-        <!-- <mat-icon>menu</mat-icon> -->
-        </button>
-      <h1 class="example-app-name">Responsive App</h1>
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex align-items-center">
+          <button mat-icon-button (click)="snav.toggle()" class="btn-burger">
+            <i class="bi bi-list fs-2 "></i>
+            <!-- <mat-icon>menu</mat-icon> -->
+            </button>
+          <h1 class="example-app-name">Responsive App</h1>
+        </div>
+
+        <i class="bi bi-box-arrow-right pointer" (click)="logOut()"></i>
+      </div>
     </mat-toolbar>
   
     <mat-sidenav-container class="example-sidenav-container"
                            [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
       <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-        <mat-nav-list>
-            <a  
-                [routerLink]="['/homepage']" routerLinkActive="router-active" 
-                class="d-flex row align-items-center">
+        <mat-nav-list *ngFor="let item of list">
+          <a  
+              [routerLink]="['/' + item.value]" routerLinkActive="router-active" 
+              class="d-flex row align-items-center">
 
-                <i class="bi bi-house-door-fill col-3"></i>
-                <span class="col-9">Home</span>
-            </a>
-        </mat-nav-list>
+              <i class="bi bi-house-door-fill col-3"></i>
+              <span class="col-9">{{item.key}}</span>
+          </a>
+      </mat-nav-list>
       </mat-sidenav>
   
       <mat-sidenav-content>

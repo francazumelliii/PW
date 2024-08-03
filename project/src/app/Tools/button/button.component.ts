@@ -10,18 +10,16 @@ export class ButtonComponent {
   @Input() icon: string = "";
   @Input() classes: string = "";
   @Input() btnClasses: string = "";
+  @Input() showIcon: boolean = true;
   @Input() iconClasses: string = "";
+  @Input() type: string = "button";
   @Input() label: string = "LABEL";
   @Input() bgColor: string = "";
   @Input() color: string = "";
   @Input() disabled: boolean = false;
   @Input() borderColor: string = "";
-  @Input() hoverColor: string = "";
+  @Input() hoverClass: string = "";
   @Output() onClick = new EventEmitter<any>();
-
-
-  ngOnInit(){
-  }
 
   click() {
     this.onClick.emit("");

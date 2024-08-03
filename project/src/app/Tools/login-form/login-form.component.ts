@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControlService } from '../../Services/form-control.service';
 import { FormGroup } from '@angular/forms';
 import { AuthenticationService } from '../../Services/authentication.service';
 import { Router, RouterLinkWithHref } from '@angular/router';
 import { RoleService } from '../../Services/role.service';
-
+import { ModalService } from '../../Services/modal.service';
+import { ModalTestComponent } from '../modal-test/modal-test.component';
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
@@ -16,7 +17,8 @@ export class LoginFormComponent implements OnInit{
     private fcService: FormControlService,
     private authService: AuthenticationService,
     private router: Router,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private modalService: ModalService
   ){}
   loginForm !: FormGroup
   view: "LOGIN" | "SIGNUP" = "LOGIN"
@@ -52,6 +54,7 @@ export class LoginFormComponent implements OnInit{
     .subscribe((response: any) => {
       response.access_token ? 
         (
+          this.roleService.storeMail(email),
           this.roleService.setUserType(response.user_type),
           this.authService.setToken(response.access_token)
           )
@@ -65,13 +68,13 @@ export class LoginFormComponent implements OnInit{
       .subscribe((response: any) => {
         console.log(response)
         response.access_token ? (
+          this.roleService.storeMail(email),
           this.roleService.setUserType("customer"),
           this.authService.setToken(response.access_token)
           ) : null
         response.error ? this.error = response.error : null
       })
   }
-
 
 
 

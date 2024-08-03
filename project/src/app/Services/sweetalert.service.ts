@@ -10,7 +10,7 @@ export class SweetalertService {
   ) { }
 
 
-  error(icon: any = "error",title: any = null,text: string = "Something went wrong", footer: string = "", ){
+  fire(icon: any = "error",title: any = null,text: string = "Something went wrong", footer: string = "", ){
     Swal.fire({
       icon: icon,
       title: title,

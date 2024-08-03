@@ -1,13 +1,125 @@
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
 @import 'https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap'
 @import "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
-*
-    font-family: 'Comfortaa',Arial, Helvetica, sans-serif
+@import "../node_modules/bootstrap/scss/bootstrap"
+@import 'https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=DM+Serif+Display:ital@0;1&display=swap'
 
 
-$gray: #c9c9c9
-$light-gray: #ededed
 
 
 .pointer
-    cursor: pointer !important
+  cursor: pointer !important
+
+.hover-primary:hover
+  background: $blue-300 !important
+  box-shadow: inset 0 0 1vh .1vh $blue-400
+
+
+
+//FONTS
+
+*
+  font-family: 'Comfortaa', Arial, Helvetica, sans-serif
+.menu-font
+  font-family: "DM Serif Display", serif !important
+.font
+  font-family: 'Comfortaa', Arial, Helvetica, sans-serif !important
+
+
+
+
+//CUSTOMS
+$menu-color: #776b4e
+$menu-label-color:#747169
+$menu-color-light:#e8e0cc
+$gray: #c9c9c9
+$light-gray: #ededed
+
+.text-menu
+  color: $menu-color
+.border-menu-top
+  border-top: 1px solid $menu-color-light
+.border-menu-x
+  border-left: 1px solid $menu-color-light
+  border-right: 1px solid $menu-color-light
+.text-menu-label
+  color: $menu-label-color
+
+
+// BLUE
+.bg-blue-200
+  background: $blue-200
+
+// INDIGO
+.bg-indigo-100
+  background: $indigo-100
+
+// TEAL
+.bg-teal-500
+  background: $teal-500
+
+.bg-teal-600-hover:hover
+  background: $teal-600
+
+.text-teal-600-hover:hover
+  color: $teal-600
+
+.text-teal-500
+  color: $teal-500
+
+.border-teal-600
+  border-color: $teal-600
+
+.text-teal-700
+  color: $teal-700 !important
+
+.text-teal-800-hover:hover
+  color: $teal-900 !important
+
+.text-teal-400
+  color: $teal-400
+
+// GRAY
+.text-gray-700
+  color: $gray-700
+
+.text-gray-200
+  color: $gray-200
+
+.bg-gray-600
+  background: $gray-600
+.bg-gray-800-hover:hover
+  background: $gray-800 !important
+
+
+// RED
+.bg-red-500
+  background: $red-500
+
+.border-red-600
+  border-color: $red-600
+
+.text-red-700
+  color: $red-700
+
+.bg-red-600-hover:hover
+  background: $red-600 !important
+
+.text-red-800-hover:hover
+  color: $red-800 !important
+
+
+//CYAN
+.bg-cyan-400
+  background: $cyan-400
+
+//YELLOW
+.bg-yellow-100
+  background: $yellow-100
+
+.bg-yellow-light
+  background: lighten($yellow-100, 7%)
+
+//BLUE
+.text-blue-300
+  color: $blue-300

@@ -1,0 +1,47 @@
+<section class=" container-fluid d-flex flex-column">
+    <div class="col">
+        <t-image-slider [images]="images"
+            [imageSize]="{width: '70%', height: '70%'}"
+            [autoSlide]="{interval: 2, stopOnHover: false}"
+            ></t-image-slider>
+    </div>
+
+    <div class="container col position-relative">
+        <mat-expansion-panel hideToggle >
+            <mat-expansion-panel-header>
+              <mat-panel-title  class="text-secondary-emphasis ">
+                    <div class="container-fluid d-flex justify-content-center align-items-center text-teal-500 text-teal-600-hover ">
+                        <h1 class="fs-4 my-2 fw-bold expansion-title font">SEARCH FOR TABLES</h1>
+                    </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-reservation
+            [style]="{'z-index' : '10000000'}"
+            [restaurantId]="restaurantId"
+            (_isAvailable)="handleAvailability($event)"
+            ></app-reservation>
+        </mat-expansion-panel>
+    </div>
+    <div class="container-fluid d-flex flex-row py-3 ">
+        <div class="container col shadow py-3">
+            <app-restaurant-info
+            [restaurant]="restaurant[0]"
+            [menus]="menus"
+            ></app-restaurant-info>
+        </div>
+        <div class="container col shadow d-flex justify-content-center py-3">
+            <t-map
+            [list] = "restaurant"
+            [centerLatitude]="restaurant[0].coords.latitude"
+            [centerLongitude]="restaurant[0].coords.longitude"
+            [width]="600"
+            [height]="200"
+            [zoomLevel]="10"
+            [scale]="1"
+            ></t-map>
+        </div>
+    </div>
+
+
+</section>
+

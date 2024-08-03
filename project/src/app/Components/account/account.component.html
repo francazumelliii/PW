@@ -1,0 +1,38 @@
+<section class="container-fluid d-flex flex-row justify-content-center">
+
+    <main class="container d-flex justify-content-center align-items-start flex-row column-gap-2">
+        <!-- PROFILE DETAILS -->
+        <div class="col-4 d-flex flex-column align-items-center column-gap-3 py-5 rounded bg-white shadow">
+            <div class="d-flex flex-column column-gap-4">
+                <t-avatar [name]="user.name + ' ' + user.surname" [size]="140"></t-avatar>
+                <p class=" fw-bold text-center fs-5 m-0 mt-2">{{user.name}} {{user.surname}}</p>
+                <small class="text-center">{{user.mail}}</small>
+            </div>
+        </div>
+
+        <!-- PROFILE INFO -->
+        <div class="col-8 d-flex flex-column column-gap-3">
+            <!-- ORDERS-->
+            <div class="py-4 shadow bg-white rounded">
+                <mat-expansion-panel (opened)="switchPanelStatus()" (closed)="switchPanelStatus()">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title class="text-black font">
+                      <h1 class="fs-1 my-2">My Orders</h1>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+              
+                  <!-- User reservations history -->
+                  <ul class="list-group d-flex flex-column row-gap-2">
+                    <t-reservation-item 
+                      *ngFor="let item of reservations" 
+                      [reservation]="item"
+                      (changes)="getUserReservations()"
+                    ></t-reservation-item>
+                  </ul>
+                </mat-expansion-panel>
+              </div>
+              
+        </div>
+    </main>
+
+</section>
