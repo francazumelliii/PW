@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ComponentRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RoleService } from '../../Services/role.service';
 import { APIResponse, Turn } from '../../Interfaces/general';
 import { formatDate } from '@angular/common';
@@ -6,6 +6,8 @@ import { FormGroup } from '@angular/forms';
 import { DatabaseService } from '../../Services/database.service';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { FormControlService } from '../../Services/form-control.service';
+import { ModalService } from '../../Services/modal.service';
+import { ConfirmModalComponent } from '../../Tools/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-reservation',
@@ -27,7 +29,8 @@ export class ReservationComponent implements OnInit {
     private dbService: DatabaseService,
     private roleService: RoleService,
     private swal: SweetalertService,
-    private formService: FormControlService
+    private formService: FormControlService,
+    private modalService: ModalService
   ) {
     this.reservationForm = this.formService.reservationForm;
   }
@@ -63,9 +66,11 @@ export class ReservationComponent implements OnInit {
         if (response.success) {
           const available_seats = response.data.available_seats - quantity
           this._isAvailable.emit(available_seats >= 0)
-        } else {
-          this.swal.fire('error', 'Error', 'No available tables', '');
+          available_seats < 0 ? this.swal.fire("info", "NO TABLES ARE AVAILABLE", `Sorry, there are no tables for ${quantity} people available for this time and date.`,"") : null
         }
+      },(error : any) => {
+        this.swal.fire("error", "ERROR", "Error retrieving data... try later"),
+        console.error(error)
       });
   }
   handleButtonClick(){
