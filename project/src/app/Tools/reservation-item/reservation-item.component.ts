@@ -42,10 +42,10 @@ export class ReservationItemComponent {
         this.deleteReservation()
         this.modalService.close();
 
-      });
+      })
     })
     .catch((error) => {
-      console.error('Errore nella creazione del componente figlio:', error);
+      console.error('Error during child component creation:', error);
     });
   }
   deleteReservation(){
