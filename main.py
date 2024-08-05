@@ -1250,11 +1250,11 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
                     r.mail as mail,
                     rest.restaurant_id,
                     rest.name AS restaurant_name,
-                    rest.street,rest.street_number,
-                    village.name village_name,
                     rest.banner,
                     TIME_FORMAT(t.start_time, '%H:%i') AS start_time,
                     TIME_FORMAT(t.end_time, '%H:%i') AS end_time,
+                    rest.street,rest.street_number,
+                    village.name village_name,
                     imgs.path
                 FROM customer AS c
                 INNER JOIN reservation AS r ON r.customer_id = c.customer_id
