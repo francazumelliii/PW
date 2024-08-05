@@ -1,4 +1,4 @@
-<section class="container-fluid d-flex flex-column align-items-center">
+<section class="container-fluid d-flex flex-column align-items-center row-gap-4">
 
     <main class="container d-flex justify-content-center align-items-start flex-row column-gap-2">
         <!-- PROFILE DETAILS -->
@@ -36,8 +36,11 @@
     </main>
     <!-- FAVORITES RESTAURANTS-->
   <ng-container *ngIf="favoriteRestaurants.length > 0 && !this._isOpened">
-    <div class="container">
-      <t-card-container [list]="favoriteRestaurants" [width]="'15rem'" [height]="'8.437rem'"></t-card-container>
+    <div class="d-flex flex-column align-items-center">
+      <h1 class="m-0">YOUR FAVORITES</h1>
+      <div class="container mt-0">
+        <t-card-container [list]="favoriteRestaurants" [width]="'15rem'" [height]="'8.437rem'"></t-card-container>
+      </div>
     </div>
   </ng-container>
 
