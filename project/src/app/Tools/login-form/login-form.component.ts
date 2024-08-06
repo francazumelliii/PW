@@ -6,6 +6,7 @@ import { Router, RouterLinkWithHref } from '@angular/router';
 import { RoleService } from '../../Services/role.service';
 import { ModalService } from '../../Services/modal.service';
 import { ModalTestComponent } from '../modal-test/modal-test.component';
+import { SweetalertService } from '../../Services/sweetalert.service';
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
@@ -18,7 +19,8 @@ export class LoginFormComponent implements OnInit{
     private authService: AuthenticationService,
     private router: Router,
     private roleService: RoleService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private swal: SweetalertService
   ){}
   loginForm !: FormGroup
   view: "LOGIN" | "SIGNUP" = "LOGIN"
@@ -52,13 +54,16 @@ export class LoginFormComponent implements OnInit{
     
     this.authService.signIn(email,password)
     .subscribe((response: any) => {
-      response.access_token ? 
+        response.access_token ? 
         (
           this.roleService.storeMail(email),
           this.roleService.setUserType(response.user_type),
           this.authService.setToken(response.access_token)
           )
-          : console.log("response") //TO FINISH
+          : this.error = "Email or password incorrect"
+    },(error: any) => {
+      this.swal.fire("error","ERROR","Error retrieving data from database...try later", "")
+      console.error(error)
     })
   }
 
