@@ -146,3 +146,25 @@ export interface Dish{
   category_name: string,
   price: number
 }
+
+
+export interface RestaurantReservation{
+    "reservation": {
+        "id": number | string,
+        "date": string,
+        "quantity": number ,
+        "confirmed": number,
+        "mail": string,
+        "start_time": string,
+        "end_time": string
+      },
+      "restaurant": {
+        "id": number | string,
+        "name": string,
+        "banner": string,
+        "img": string,
+        "street": string,
+        "street_number": string,
+        "village": string
+      }
+}
