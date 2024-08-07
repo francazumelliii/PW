@@ -1527,4 +1527,70 @@ async def update_restaurant(request: Request, token = Depends(verify_token),id: 
         raise HTTPException(status_code=501, detail=f"Error retrieving data {err}")
     finally: 
         conn.close()
-                    
+        
+        
+ 
+ 
+@app.get("/api/v1/restaurant/reservation")
+async def get_restaurant_reservation(token = Depends(verify_token), id: str = Query(None)): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+        SELECT 
+            reservation.reservation_id,
+            DATE_FORMAT(reservation.date, '%Y-%m-%d') AS date,
+            reservation.quantity AS quantity,
+            reservation.confirmed AS confirmed,
+            reservation.mail AS mail,
+            restaurant.restaurant_id,
+            restaurant.name AS restaurant_name,
+            restaurant.banner,
+            TIME_FORMAT(turn.start_time, '%H:%i') AS start_time,
+            TIME_FORMAT(turn.end_time, '%H:%i') AS end_time,
+            restaurant.street,
+            restaurant.street_number,
+            village.name AS village_name,
+            imgs.path 
+        FROM reservation INNER JOIN restaurant ON reservation.restaurant_id = restaurant.restaurant_id 
+        INNER JOIN village ON restaurant.village_id = village.village_id 
+        INNER JOIN turn ON reservation.turn_id = turn.turn_id 
+        INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id 
+        WHERE imgs.priority = 1 AND restaurant.restaurant_id = %s;
+
+            """
+        cursor.execute(query,(id,))
+        result = cursor.fetchall()
+        if result:
+            response = []
+
+            for row in result:
+                obj = {
+                    "reservation": {
+                        "id": row['reservation_id'],
+                        "date": row['date'],
+                        "quantity" : row['quantity'],
+                        "confirmed" : row['confirmed'],
+                        "mail": row['mail'],
+                        "start_time": row['start_time'],
+                        "end_time": row['end_time']
+                        },
+                    "restaurant" : {
+                        "id": row['restaurant_id'],
+                        "name": row['restaurant_name'],
+                        "banner" : row["banner"],
+                        "img": row['path'],
+                        "street": row["street"],
+                        "street_number": row['street_number'],
+                        "village": row['village_name']
+                    }
+
+                }
+                response.append(obj)
+            return JSONResponse(status_code=200, content={"success" : True, "data": response})
+        else: 
+            return JSONResponse(status_code=401, content = {"success": False, "detail" : "Forbidden"})
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail = f"Error retrieving data {err}")
+    finally: 
+        conn.close()
