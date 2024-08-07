@@ -1453,3 +1453,78 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
             cursor.close()
         if conn:
             conn.close()
+
+
+@app.patch("/api/v1/restaurant")
+async def update_restaurant(request: Request, token = Depends(verify_token),id: int = Query(None),): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        data = await request.json()
+        name = data.get("name")
+        street = data.get("street")
+        street_number = data.get("street_number")
+        latitude = data.get("latitude")
+        longitude = data.get("longitude")
+        max_chairs = data.get("max_chairs")
+        description = data.get("description")
+        banner = data.get("banner")
+        village = data.get("village_id")      
+        
+        
+        query = "UPDATE restaurant SET"
+        query_parts = []
+        params = []
+        
+        if not id: 
+            raise HTTPException(detail = "Not found", status_code=401)
+        
+        if name is not None:
+            query_parts.append(" name = %s")
+            params.append(name)
+        if street is not None:
+            query_parts.append(" street = %s")
+            params.append(street)
+        if street_number is not None:
+            query_parts.append(" street_number = %s")
+            params.append(street_number)
+        if latitude is not None:
+            query_parts.append(" latitude = %s")
+            params.append(latitude)
+        if longitude is not None:
+            query_parts.append(" longitude = %s")
+            params.append(longitude)
+        if max_chairs is not None:
+            query_parts.append(" max_chairs = %s")
+            params.append(max_chairs)
+        if description is not None:
+            query_parts.append(" description = %s")
+            params.append(description)
+        if banner is not None:
+            query_parts.append(" banner = %s")
+            params.append(banner)
+        if village is not None:
+            query_parts.append(" village_id = %s")
+            params.append(village)
+        
+        if query_parts:
+            query += ",".join(query_parts)
+            query += " WHERE restaurant_id = %s"  
+            params.append(id) 
+
+            cursor.execute(query, tuple(params))
+            conn.commit()
+            
+            if cursor.rowcount > 0 :    
+                query = "SELECT * FROM restaurant WHERE restaurant_id = %s"
+                cursor.execute(query,(id, ))
+                result = cursor.fetchone()
+                return JSONResponse(status_code=200,content={"success": True, "data": result})
+            else: 
+                return JSONResponse(status_code=401, content={"success": False, "detail" : "Forbidden"})
+            
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail=f"Error retrieving data {err}")
+    finally: 
+        conn.close()
+                    
