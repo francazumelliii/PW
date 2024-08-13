@@ -209,48 +209,6 @@ async def verify_token_route(authorization: str = Header(None)):
     except JWTError as e:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-#base sql 
-baseSQL = """
-SELECT 
-    l.id AS id_locale,
-    l.name AS nome_locale,
-    l.via AS via_locale,
-    l.civico AS civico_locale,
-    l.posti_max AS posti_max_locale,
-    l.descrizione AS descrizione_locale,
-    l.banner AS banner_locale,
-    c.id AS id_comune,
-    c.name AS nome_comune,
-    p.id AS id_provincia,
-    p.name AS nome_provincia,
-    p.sigla AS sigla_provincia,
-    r.id AS id_regione,
-    r.name AS nome_regione,
-    a.cf AS cf_admin,
-    a.password AS password_admin,
-    a.name AS nome_admin,
-    a.cogname AS cognome_admin,
-    a.email AS email_admin,
-    az.piva AS piva_azienda,
-    az.nome AS nome_azienda,
-    i.cf AS cf_imprenditore,
-    i.nome AS nome_imprenditore,
-    i.cognome AS cognome_imprenditore,
-    i.telefono AS telefono_imprenditore,
-    img.url AS img_url
-FROM locale l
-INNER JOIN comuni c ON c.id = l.id_comune  
-INNER JOIN province p ON p.id = c.id_provincia 
-INNER JOIN regioni r ON r.id = p.id_regione 
-INNER JOIN admin a ON a.id_locale = l.id 
-INNER JOIN azienda az ON az.piva = l.piva_azienda 
-INNER JOIN imprenditore i ON i.cf = az.cf_imprenditore
-INNER JOIN imgs img ON img.id_locale = l.id
-INNER JOIN menu m ON m.id_locale = l.id 
-INNER JOIN piatto pi ON pi.id_menu = m.id
-
-"""
-#
 #---------------- GET ALL RESTAURANTS IN DB -----------------
 #
 
@@ -1530,7 +1488,7 @@ async def update_restaurant(request: Request, token = Depends(verify_token),id: 
         
         
  
- 
+ #GET ALL RESTAURANT RESERVATION FROM RESTAURANT_ID
 @app.get("/api/v1/restaurant/reservation")
 async def get_restaurant_reservation(token = Depends(verify_token), id: str = Query(None)): 
     try: 
@@ -1594,3 +1552,178 @@ async def get_restaurant_reservation(token = Depends(verify_token), id: str = Qu
         raise HTTPException(status_code=501, detail = f"Error retrieving data {err}")
     finally: 
         conn.close()
+        
+        
+        
+#PATCH RESERVATION
+@app.patch("/api/v1/restaurant/reservation")
+async def patch_reservation_admin(request:Request, token:str = Depends(verify_token), id: int = Query(None)): 
+    try: 
+        data = await request.json()
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        turn_id = data.get("turn_id")
+        quantity = data.get("quantity")
+        mail  = data.get("mail")
+        date_value = data.get("date")
+        
+        query = "UPDATE reservation SET"
+        query_parts = []
+        params = []
+        
+        if not id: 
+            raise HTTPException(detail = "Not found", status_code=401)
+        
+        if turn_id is not None:
+            query_parts.append(" turn_id = %s")
+            params.append(turn_id)
+        if quantity is not None:
+            query_parts.append(" quantity = %s")
+            params.append(quantity)
+        if mail is not None:
+            query_parts.append(" mail = %s")
+            params.append(mail)
+        if date_value is not None:
+            query_parts.append(" date = %s")
+            params.append(date_value)
+            
+        if query_parts:
+            query += ",".join(query_parts)
+            query += " WHERE reservation_id = %s"  
+            params.append(id) 
+            cursor.execute(query, tuple(params))
+            conn.commit()
+            
+            if cursor.rowcount > 0 : 
+                query = """
+                SELECT 
+                DATE_FORMAT(date, '%Y-%m-%d') AS date,
+                reservation_id,
+                customer_id,
+                turn_id,
+                mail,
+                restaurant_id,
+                confirmed, 
+                quantity
+                FROM reservation WHERE reservation_id = %s"""
+                cursor.execute(query, (id,))
+                result = cursor.fetchone()
+                if result: 
+                    return JSONResponse( status_code= 200, content = {"success" : True, "data": result})
+                else: 
+                    return JSONResponse( status_code = 501, content = {"success": False})
+                
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail=f"Error retrieving data.. {err} ")
+
+    finally: 
+        conn.close()
+        
+#DELETE RESTAURANT
+@app.delete("/api/v1/restaurant")
+async def delete_restaurant (token: str = Depends(verify_token), id: int = Query(None)): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary = True)
+        if id : 
+            query = "DELETE FROM restaurant WHERE restaurant_id = %s"
+            cursor.execute(query,(id,))
+            conn.commit()
+            if cursor.rowcount > 0: 
+                return JSONResponse(status_code=200, content = {"success": True, "data" : f"Successfully deleted with id: {id}"})
+            else: 
+                return JSONResponse(status_code=501,content = {"success": False})
+        else:
+            raise HTTPException(status_code=401, detail = f"Missing parameters")
+        
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail=f"Error retrieving data.. {err}")
+    finally: 
+        conn.close()
+        
+        
+
+@app.get("/api/v1/admin/restaurant")
+async def get_all_restaurants( token: str = Depends(verify_token)):
+    logger.info("Attempting to retrieve all restaurants...")
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            logger.error("Database connection failed")
+            raise HTTPException(status_code=500, detail="Database connection failed")
+        
+        cursor = conn.cursor(dictionary=True)
+        query= """
+        SELECT 
+            restaurant.name AS restaurant_name, restaurant.rating, restaurant.street, restaurant.street_number, restaurant.latitude,
+            restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,restaurant.restaurant_id,
+            admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname, admin.mail,
+            company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
+            village.name AS village_name,
+            county.name AS county_name, county.code AS county_code,
+            region.name AS region_name,
+            imgs.path AS img_path
+        FROM restaurant 
+        INNER JOIN admin ON admin.restaurant_id = restaurant.restaurant_id 
+        INNER JOIN company ON company.company_id = restaurant.company_id 
+        INNER JOIN village ON village.village_id = restaurant.village_id 
+        INNER JOIN county ON county.county_id = village.county_id 
+        INNER JOIN region ON region.region_id = county.region_id
+        INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id
+        WHERE imgs.priority = 1"""
+        query += " AND admin.mail = '" + token + "'"
+        query += " GROUP BY restaurant.restaurant_id"
+        
+        cursor.execute(query)   
+        results = cursor.fetchall()
+        response = []
+        for row in results: 
+            restaurant_data = {
+                "restaurant": {
+                    "id": row['restaurant_id'],
+                    "name": row["restaurant_name"],
+                    "rating": row["rating"],
+                    "street": row["street"],
+                    "street_number": row["street_number"],
+                    "max_chairs": row['max_chairs'],
+                    "description": row['description'],
+                    "banner": row['banner']
+                },
+                "admin": {
+                    "id": row['admin_id'],
+                    "name": row['admin_name'],
+                    "surname": row['admin_surname']
+                },
+                "company": {
+                    "name": row['company_name'],
+                    "vat": row["vat_n"],
+                    "address": row['company_address'],
+                    "telephone": row['company_telephone']
+                },
+                "coords": {
+                    "latitude": row["latitude"],
+                    "longitude": row['longitude'],
+                    "village": row["village_name"],
+                    "county": row["county_name"],
+                    "county_code": row["county_code"],
+                    "region": row["region_name"]
+                },
+                "img": {
+                    "path": row['img_path']
+                }
+            }
+            response.append(restaurant_data)
+           
+
+        
+        return JSONResponse(content={"success": True, "data": response}, status_code=200)
+    except mysql.connector.Error as err:
+        logger.error(f"Database error: {err}")
+        raise HTTPException(status_code=500, detail="Database error")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
