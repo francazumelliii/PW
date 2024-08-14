@@ -5,7 +5,8 @@
         <t-card-container 
           [list]="showNearestRestaurants ? nearestRestaurantsList : restaurantsList" 
           #cardContainer 
-          (cardBtnClick)="handleCardBtnClick($event)">
+          (cardBtnClick)="handleCardBtnClick($event)"
+          [circular]="circular">
         </t-card-container>
       </div>
     
