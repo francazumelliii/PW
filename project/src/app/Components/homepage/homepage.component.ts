@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterContentInit } from '@angular/core';
 import { RoleService } from '../../Services/role.service';
-import { APIResponse, Restaurant } from '../../Interfaces/general';
+import { APIResponse, Images, Menu, Restaurant } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { MapComponent } from '../map/map.component';
 import { Router } from '@angular/router';
@@ -14,12 +14,14 @@ export class HomepageComponent implements AfterContentInit {
   restaurantsList: Restaurant[] = [];
   nearestRestaurantsList: Restaurant[] = [];
   showNearestRestaurants: boolean = false;
+  images: Images[] = []
+  menus: Menu[] = []
 
   @ViewChild("map") map!: MapComponent;
   circular:boolean = true
 
   constructor(
-    private roleService: RoleService,
+    public roleService: RoleService,
     private swal: SweetalertService,
     private cdr: ChangeDetectorRef,
     private router: Router
@@ -28,16 +30,27 @@ export class HomepageComponent implements AfterContentInit {
   ngAfterContentInit(): void {
     this.getAllRestaurants();
   }
-
+  
   getAllRestaurants() {
     this.roleService.getAllRestaurants().subscribe((response: APIResponse) => {
       if(response.success) {
-        this.restaurantsList = response.data;
-        this.map.list = this.restaurantsList;
+        this.restaurantsList = [...response.data];
+        this.map ? this.map.list = response.data : null;
+        this.getRestaurantImages(+response.data[0].restaurant.id);
+        this.getAllMenus(+response.data[0].restaurant.id)
       }
     }, (error: any) => {
       console.error(error);
     });
+  }
+  getRestaurantImages(id: number){
+    this.roleService.getRestaurantImages(id)
+      .subscribe((response: APIResponse) => {
+        response.success ? this.images = response.data : null
+      }, (error : any) => {
+        console.error(error),
+        this.swal.fire("error","ERROR","Error retrieving data... try later", "")
+      })
   }
 
   handleSearchbarLocation(event: any) {
@@ -89,5 +102,14 @@ export class HomepageComponent implements AfterContentInit {
         console.error(error);
         this.swal.fire("error","ERROR","Error retrieving data...try later", "");
       });
+  }
+  getAllMenus(id: number){
+    return this.roleService.getAllMenus(id)
+      .subscribe((response: APIResponse) => {
+        response.success ? this.menus = response.data : null
+      },(error: any) => {
+        console.error("error"),
+        this.swal.fire("error","ERROR","Error retrieving data... try later", "")
+      })
   }
 }

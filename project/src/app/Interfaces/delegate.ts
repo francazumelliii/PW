@@ -11,4 +11,6 @@ export interface Delegate {
     deleteReservation(id: number | string) :Observable<APIResponse>
     searchRestaurants(toSearch: string) : Observable<APIResponse>
     getFavoritesRestaurants(): Observable<APIResponse>
+    getRestaurantImages(id: number): Observable<APIResponse> | any
+    getAllMenus(id: number) : Observable<APIResponse> | any
 }

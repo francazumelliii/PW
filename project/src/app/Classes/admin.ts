@@ -37,4 +37,10 @@ export class Admin implements Delegate{
     getFavoritesRestaurants(): Observable<APIResponse> {
         return this.dbService.get("/api/v1/user/reservation/favorites")
     }
+    getRestaurantImages(id: number): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/restaurant/img?id=${id}`)
+    }
+    getAllMenus(id: number): Observable<APIResponse> {
+        return this.dbService.get(`/api/v1/restaurant/menu?id=${id}`)
+    }
 }

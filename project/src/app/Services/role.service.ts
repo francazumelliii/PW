@@ -55,9 +55,6 @@ export class RoleService {
 
 // ------------ DELEGATE FUNCTIONS ------------ //
   getAllRestaurants(): Observable<any> {
-    if(!this.delegate){
-      throw new Error("Delegate not properly initialized")
-    }
     return this.delegate.getAllRestaurants()
   }
 
@@ -83,5 +80,11 @@ export class RoleService {
   }
   getFavoritesRestaurants(){
     return this.delegate.getFavoritesRestaurants()
+  }
+  getRestaurantImages(id: number){
+    return this.delegate.getRestaurantImages(id)
+  }
+  getAllMenus(id: number){
+    return this.delegate.getAllMenus(id)
   }
 }

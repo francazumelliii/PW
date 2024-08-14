@@ -1,23 +1,46 @@
-<section class="jumbotron d-flex flex-column justify-content-center m-auto p-4 row-gap-3">
-    <div class="bg-secondary-subtle">
-      <t-card-container 
-        [list]="showNearestRestaurants ? nearestRestaurantsList : restaurantsList" 
-        #cardContainer 
-        (cardBtnClick)="handleCardBtnClick($event)">
-      </t-card-container>
-    </div>
-  
-    <div>
-      <app-searchbar 
-        (searchedText)="handleSearchedText($event)"
-        (address)="handleSearchbarLocation($event)" 
-        (onClear)="handleSearchbarClear()"
-        placeholder="Search for restaurants...">
-      </app-searchbar>
-    </div>
+<ng-container *ngIf="roleService.role !=='admin' else adminTemplate">
+
+  <section class="jumbotron d-flex flex-column justify-content-center m-auto p-4 row-gap-3" >
+      <div class="bg-secondary-subtle">
+        <t-card-container 
+          [list]="showNearestRestaurants ? nearestRestaurantsList : restaurantsList" 
+          #cardContainer 
+          (cardBtnClick)="handleCardBtnClick($event)">
+        </t-card-container>
+      </div>
     
-    <div class="d-flex flex-row justify-content-center w-100 flex-wrap">
-      <t-map [list]="showNearestRestaurants ? nearestRestaurantsList : restaurantsList" #map></t-map>
+      <div>
+        <app-searchbar 
+          (searchedText)="handleSearchedText($event)"
+          (address)="handleSearchbarLocation($event)" 
+          (onClear)="handleSearchbarClear()"
+          placeholder="Search for restaurants...">
+        </app-searchbar>
+      </div>
+      
+      <div class="d-flex flex-row justify-content-center w-100 flex-wrap">
+        <t-map [list]="showNearestRestaurants ? nearestRestaurantsList : restaurantsList" #map></t-map>
+      </div>
+    </section>
+    
+</ng-container>
+
+<ng-template #adminTemplate>
+
+  <section class="d-flex flex-row rounded">
+    <div class="col-5 ">
+      <t-image-slider [images]="images"
+        [imageSize]="{width: '100%', height: '50%'}"
+        [autoSlide]="{interval: 1, stopOnHover: false}"
+      ></t-image-slider>
+    </div>
+    <div class="col-7 d-flex flex-column row-gap-3 p-3">
+      <app-restaurant-info
+        [restaurant]="restaurantsList[0]"
+        [menus]="menus"
+      ></app-restaurant-info>
     </div>
   </section>
+
+</ng-template>
   
