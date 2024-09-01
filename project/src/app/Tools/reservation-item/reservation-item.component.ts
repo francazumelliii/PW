@@ -60,8 +60,9 @@ export class ReservationItemComponent {
       })
   }
 
-  redirect(){
-    this.router.navigate(['/restaurant/' + this.reservation.restaurant.id])
-    return
+  handleViewClick(){
+    /* this.router.navigate(['/restaurant/' + this.reservation.restaurant.id])
+    return */
+    this.roleService.openViewModalOrRedirect(this.reservation);
   }
 }
