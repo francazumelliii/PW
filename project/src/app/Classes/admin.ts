@@ -2,8 +2,10 @@ import { Injectable } from "@angular/core";
 import { Delegate } from "../Interfaces/delegate";
 import { DatabaseService } from "../Services/database.service";
 import { Observable } from "rxjs";
-import { APIResponse, Restaurant } from "../Interfaces/general";
+import { APIResponse, Reservation, Restaurant } from "../Interfaces/general";
 import { ApiService } from "../Services/api.service";
+import { ModalService } from "../Services/modal.service";
+import { UpdateModalComponent } from "../Tools/update-modal/update-modal.component";
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +13,8 @@ import { ApiService } from "../Services/api.service";
 export class Admin implements Delegate{
 
     constructor(
-        private dbService: DatabaseService
+        private dbService: DatabaseService,
+        private modalService: ModalService
     ){}
     getAllRestaurants(): Observable<APIResponse> {
         return this.dbService.get(`/api/v1/admin/restaurant`)
@@ -42,5 +45,11 @@ export class Admin implements Delegate{
     }
     getAllMenus(id: number): Observable<APIResponse> {
         return this.dbService.get(`/api/v1/restaurant/menu?id=${id}`)
+    }
+    getRestaurantReservations(id: number){
+        return this.dbService.get(`/api/v1/restaurant/reservation?id=${id}`)
+    }
+    openViewModal(reservation: Reservation){
+        return this.modalService.open(UpdateModalComponent, {reservation: reservation}, "VIEW RESERVATION")
     }
 }

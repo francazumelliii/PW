@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { APIResponse, Restaurant } from "./general";
+import { APIResponse, Reservation, Restaurant } from "./general";
 import { ApiService } from "../Services/api.service";
 
 export interface Delegate {
@@ -13,4 +13,6 @@ export interface Delegate {
     getFavoritesRestaurants(): Observable<APIResponse>
     getRestaurantImages(id: number): Observable<APIResponse> | any
     getAllMenus(id: number) : Observable<APIResponse> | any
+    getRestaurantReservations(id: number): Observable<APIResponse> | any
+    openViewModal(reseravtion: Reservation): void
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Delegate } from '../Interfaces/delegate';
 import { Admin } from '../Classes/admin';
 import { Customer } from '../Classes/customer';
-import { APIResponse } from '../Interfaces/general';
+import { APIResponse, Reservation } from '../Interfaces/general';
 import { Observable, throwError } from 'rxjs';
 
 @Injectable({
@@ -86,5 +86,11 @@ export class RoleService {
   }
   getAllMenus(id: number){
     return this.delegate.getAllMenus(id)
+  }
+  getRestaurnatReservations(id: number){
+    return this.delegate.getRestaurantReservations(id)
+  }
+  openViewModalOrRedirect(reservation: Reservation){
+    return this.delegate.openViewModal(reservation)
   }
 }
