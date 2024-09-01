@@ -1,0 +1,165 @@
+
+
+<!-- RESTAURANT TEMPLATE-->
+<ng-container *ngIf= "restaurant else reservation">
+  <section class="container d-flex flex-column ">
+    <form [formGroup]="updateRestaurantForm" class="d-flex flex-column row-gap-2" >
+      <div class="form-row d-flex column-gap-2">
+          <div class="form-group col-md-6 ">
+            <label for="name" >Name</label>
+            <input type="text"
+            [ngClass]="{'border-danger' : updateRestaurantForm.controls['name'].invalid}"
+             class="form-control h-50 " id="name" placeholder="Best Restaurant Ever" formControlName = "name">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="description">Description</label>
+            <textarea 
+            formControlName = "description"
+            [ngClass]="{'border-danger' : updateRestaurantForm.controls['description'].invalid}"
+            class="form-control" id="description" placeholder="All you can FEET" class=" h-50 form-control"></textarea>
+          </div>
+      </div>
+      <div class="form-row">
+        <label for="villages">Village</label>
+        <select class="form-select" formControlName = "village" 
+        [ngClass]="{'border-danger' : updateRestaurantForm.controls['village'].invalid}"
+        >
+            <option *ngFor="let village of villages" [value]="village.id">{{village.name}}</option>
+        </select>
+      </div>
+      <div class="form-row d-flex column-gap-2">
+        <div class="form-group col-md-6 ">
+          <label for="street">Street</label>
+          <input type="text" class="form-control h-50" id="street" placeholder="StreetWear" formControlName = "street"
+          [ngClass]="{'border-danger' : updateRestaurantForm.controls['street'].invalid}"
+          >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="street_number">Street Number</label>
+          <input type="text" class="form-control h-50" id="street_number" placeholder="A89" formControlName = "streetNumber"
+          [ngClass]="{'border-danger' : updateRestaurantForm.controls['streetNumber'].invalid}"
+          >
+        </div>
+      </div>
+      <div class="form-row d-flex column-gap-2">
+        <div class="form-group col-md-6 ">
+          <label for="latitude">Latitude</label>
+          <input type="text" class="form-control h-50" id="latitude" placeholder="4100299" formControlName = "latitude">
+          <small id = "latitude_error" class="text-danger"  *ngIf="updateRestaurantForm.controls['latitude'].invalid">Incorrect data type</small>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="longitude">Longitude</label>
+          <input type="text" class="form-control h-50" id="longitude" placeholder="9002991" formControlName = "longitude">
+          <small id = "longitude_error" class="text-danger" *ngIf="updateRestaurantForm.controls['longitude'].invalid">Incorrect data type</small>
+        </div>
+      </div>
+      <div class="form-row d-flex column-gap-2">
+        <div class="form-group col-md-6 ">
+          <label for="max_chairs">Total Chairs / Tables</label>
+          <input type="text" class="form-control h-50" id="max_chairs" placeholder="100" formControlName = "maxChairs">
+          <small id = "maxChairs_error" class="text-danger"  *ngIf="updateRestaurantForm.controls['maxChairs'].invalid">Incorrect data type</small>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="banner">Banner</label>
+          <input type="text" class="form-control h-50 overflow-x-scroll" id="banner" placeholder="Banner link" formControlName = "banner"
+          [ngClass]="{'border-danger' : updateRestaurantForm.controls['banner'].invalid}"
+          >
+        </div>
+      </div>
+     
+      <div class="d-flex flex-row justify-content-between container">
+        <t-button
+        label="CONFIRM"
+        icon = "bi bi-check"
+        btnClasses="bg-success"
+        iconClasses="bg-success border text-black"
+        (click) = "patchRestaurant()"
+        [disabled] = "updateRestaurantForm.invalid"
+        ></t-button>
+        <t-button
+        label="BACK"
+        icon = "bi bi-trash"
+        btnClasses="bg-danger"
+        iconClasses="border bg-danger text-black"
+        (onClick)="closeModal()"
+        ></t-button>
+      </div>
+        
+    </form>
+  </section>  
+</ng-container>
+
+
+<!-- RESERVATION TEMPLATE-->
+
+<!-- change template for reservation -->
+<ng-template #reservation>
+  <section class="container d-flex flex-column ">
+    <form [formGroup]="updateReservationForm" class="d-flex flex-column row-gap-2" >
+      <div class="form-row d-flex column-gap-2">
+          <div class="form-group col-md-6 ">
+            <label for="name" >Restaurant</label>
+            <input type="text" readonly
+             class="form-control h-50 disabled" id="name" placeholder="Best Restaurant Ever" formControlName= "restaurantName">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="date">{{reservationDate > today ? '✏️' : null}} Date</label>
+            <input type = "date" class=" pointer form-control h-50 " (change)="checkDate()" formControlName="date" [ngClass]="{'disabled' : reservationDate < today}" 
+              [disabled]="reservationDate < today">
+          </div>
+      </div>
+      <div class="form-row">
+        <label for="turn">Time</label>
+        <select class="form-select" formControlName = "turn" 
+        [ngClass]="{'border-danger' : updateReservationForm.controls['turn'].invalid}"
+        >
+            <option *ngFor="let turn of turns" [value]="turn.id">{{turn.start_time}} - {{turn.end_time}}</option>
+        </select>
+      </div>
+      <div class="form-row d-flex column-gap-2">
+        <div class="form-group col-md-6 ">
+          <label for="street">Street</label>
+          <input type="text" class="form-control h-50 disabled" id="street" placeholder="StreetWear" readonly formControlName="restaurantStreet"
+          >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="street_number">Street Number</label>
+          <input type="text" class="form-control h-50 disabled" readonly id="street_number" placeholder="A89" formControlName="restaurantStreetNumber"
+          >
+        </div>
+      </div>
+      <div class="form-row d-flex column-gap-2">
+        <div class="form-group col-md-6 ">
+          <label for="quantity">✏️Quantity</label>
+          <input type="number" class="form-control h-50" id="quantity" formControlName="quantity">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="mail">✏️Mail</label>
+          <input type="text" class="form-control h-50" id="mail" formControlName="mail">
+        </div>
+      </div>
+     
+     
+      <div class="d-flex flex-row justify-content-between container">
+        <t-button
+        label="CONFIRM"
+        icon = "bi bi-check"
+        btnClasses="bg-success"
+        iconClasses="bg-success border text-black"
+        (click) = "patchReservation()"
+        [disabled] = "updateReservationForm.invalid || (!_isDateInFuture && updateReservationForm.controls['date'].touched)"
+        ></t-button>
+
+        <t-button
+        label="BACK"
+        icon = "bi bi-trash"
+        btnClasses="bg-danger"
+        iconClasses="border bg-danger text-black"
+        (onClick)="closeModal()"
+        ></t-button>
+      </div>
+        
+    </form>
+  </section>  
+
+</ng-template>
