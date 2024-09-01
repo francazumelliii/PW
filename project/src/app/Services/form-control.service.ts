@@ -2,6 +2,7 @@
 import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormControl, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { numberValidator } from '../Tools/number-validator';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,14 @@ export class FormControlService {
   constructor(private fb: FormBuilder) {
     this.initLoginForm()
     this.initReservationForm()
+    this.initUpdateRestaurantForm()
+    this.initUpdateReservationForm()
    }
 
    private loginFormGroup !: FormGroup;
    private reservationFormGroup !: FormGroup;
+   private updateRestaurantFormGroup !: FormGroup
+   private updateReservationFormGroup !: FormGroup
 
    initLoginForm(){
     this.loginFormGroup = this.fb.group({
@@ -42,6 +47,39 @@ export class FormControlService {
     return this.reservationFormGroup
    }
 
+   initUpdateRestaurantForm(){
+    this.updateRestaurantFormGroup = this.fb.group({
+      name: new FormControl(null, Validators.required),
+      description: new FormControl(null, Validators.required),
+      village: new FormControl(null, Validators.required),
+      street:  new FormControl(null, Validators.required),
+      streetNumber:  new FormControl(null, Validators.required),
+      latitude:  new FormControl(null, [Validators.required, numberValidator()]),
+      longitude:  new FormControl(null, [Validators.required, numberValidator()]),
+      maxChairs:  new FormControl(null, [Validators.required, numberValidator()]),
+      banner:  new FormControl(null, Validators.required)
+    })
+   }
+
+   get updateRestaurantForm(){
+    return this.updateRestaurantFormGroup
+   }
+
+   initUpdateReservationForm(){
+    this.updateReservationFormGroup = this.fb.group({
+      date: new FormControl(Validators.required ),
+      turn: new FormControl(Validators.required),
+      mail: new FormControl(Validators.required, Validators.email),
+      quantity: new FormControl([Validators.required, numberValidator()]),
+      restaurantName: new FormControl(),
+      restaurantStreet: new FormControl(),
+      restaurantStreetNumber: new FormControl(),
+    })
+   }
+
+   get updateReservationForm(){
+    return this.updateReservationFormGroup;
+   }
 
 
 }
