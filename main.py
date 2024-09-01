@@ -230,7 +230,7 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
             restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,restaurant.restaurant_id,
             admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname,
             company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
-            village.name AS village_name,
+            village.name AS village_name, village.village_id AS village_id,
             county.name AS county_name, county.code AS county_code,
             region.name AS region_name,
             imgs.path AS img_path
@@ -277,7 +277,8 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
                     "village": row["village_name"],
                     "county": row["county_name"],
                     "county_code": row["county_code"],
-                    "region": row["region_name"]
+                    "region": row["region_name"],
+                    "village_id": row['village_id']
                 },
                 "img": {
                     "path": row['img_path']
@@ -311,7 +312,7 @@ async def get_favorites(token: str = Depends(verify_token)):
         
             query = """
                 SELECT DISTINCT restaurant.restaurant_id,restaurant.name AS restaurant_name, restaurant.rating, restaurant.street, restaurant.street_number, 
-                restaurant.latitude,restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,admin.admin_id, 
+                restaurant.latitude,restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,admin.admin_id, village.village_id,
                 admin.name AS admin_name, admin.surname AS admin_surname,company.name AS company_name, company.vat_n, company.address AS company_address, 
                 company.telephone AS company_telephone,village.name AS village_name,county.name AS county_name, county.code AS county_code,region.name AS region_name,imgs.path AS img_path,
                 IFNULL(res.orders, 0) AS orders
@@ -366,7 +367,8 @@ async def get_favorites(token: str = Depends(verify_token)):
                         "village": row["village_name"],
                         "county": row["county_name"],
                         "county_code": row["county_code"],
-                        "region": row["region_name"]
+                        "region": row["region_name"],
+                        "village_id": row['village_id']
                     },
                     "img": {
                         "path": row['img_path']
@@ -405,7 +407,7 @@ async def get_restaurant_from_id(id:str | int = Query(""), token: str = Depends(
             restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,restaurant.restaurant_id,
             admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname,
             company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
-            village.name AS village_name,
+            village.name AS village_name,village.village_id AS village_id,
             county.name AS county_name, county.code AS county_code,
             region.name AS region_name,
             imgs.path AS img_path
@@ -449,7 +451,8 @@ async def get_restaurant_from_id(id:str | int = Query(""), token: str = Depends(
                 "village": results["village_name"],
                 "county": results["county_name"],
                 "county_code": results["county_code"],
-                "region": results["region_name"]
+                "region": results["region_name"],
+                "village_id": results['village_id']
             },
             "img": {
                 "path": results['img_path']
@@ -483,7 +486,7 @@ async def get_all_turns(request: Request, token: str = Depends(verify_token)):
 
     try:
         cursor = conn.cursor(dictionary=True)
-        query = "SELECT turn_id, TIME_FORMAT(start_time, '%H:%i:%s') AS start_time, TIME_FORMAT(end_time, '%H:%i:%s') AS end_time FROM turn"
+        query = "SELECT turn_id AS id, TIME_FORMAT(start_time, '%H:%i') AS start_time, TIME_FORMAT(end_time, '%H:%i') AS end_time FROM turn"
         cursor.execute(query)
         result = cursor.fetchall()
         return JSONResponse(content={"success": True, "data": result})
@@ -670,6 +673,7 @@ async def get_nearest_restaurants(
                 company.address AS company_address,
                 company.telephone AS company_telephone,
                 village.name AS village_name,
+                village.village_id AS village_id,
                 county.name AS county_name,
                 county.code AS county_code,
                 region.name AS region_name,
@@ -690,7 +694,7 @@ async def get_nearest_restaurants(
             INNER JOIN region ON region.region_id = county.region_id
             LEFT JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id AND imgs.priority = '1'
             GROUP BY restaurant.restaurant_id
-            ORDER BY distance ASC LIMIT 5
+            ORDER BY distance LIMIT 5
         """
         
         cursor.execute(query, (latitude, longitude, latitude))
@@ -726,7 +730,8 @@ async def get_nearest_restaurants(
                     "village": row["village_name"],
                     "county": row["county_name"],
                     "county_code": row["county_code"],
-                    "region": row["region_name"]
+                    "region": row["region_name"],
+                    "village_id": row['village_id']
                 },
                 "img": {
                     "path": row['img_path']
@@ -1337,7 +1342,7 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
             restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,restaurant.restaurant_id,
             admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname,
             company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
-            village.name AS village_name,
+            village.name AS village_name,village.village_id AS village_id,
             county.name AS county_name, county.code AS county_code,
             region.name AS region_name,
             imgs.path AS img_path
@@ -1392,7 +1397,8 @@ async def get_all_restaurants(request: Request, token: str = Depends(verify_toke
                     "village": row["village_name"],
                     "county": row["county_name"],
                     "county_code": row["county_code"],
-                    "region": row["region_name"]
+                    "region": row["region_name"],
+                    "village_id": row['village_id']
                 },
                 "img": {
                     "path": row['img_path']
@@ -1661,7 +1667,7 @@ async def get_all_restaurants( token: str = Depends(verify_token)):
             restaurant.longitude, restaurant.max_chairs, restaurant.description, restaurant.banner,restaurant.restaurant_id,
             admin.admin_id, admin.name AS admin_name, admin.surname AS admin_surname, admin.mail,
             company.name AS company_name, company.vat_n, company.address AS company_address, company.telephone AS company_telephone,
-            village.name AS village_name,
+            village.name AS village_name, village.village_id AS village_id,
             county.name AS county_name, county.code AS county_code,
             region.name AS region_name,
             imgs.path AS img_path
@@ -1708,7 +1714,8 @@ async def get_all_restaurants( token: str = Depends(verify_token)):
                     "village": row["village_name"],
                     "county": row["county_name"],
                     "county_code": row["county_code"],
-                    "region": row["region_name"]
+                    "region": row["region_name"],
+                    "village_id": row['village_id'],
                 },
                 "img": {
                     "path": row['img_path']
@@ -1727,3 +1734,36 @@ async def get_all_restaurants( token: str = Depends(verify_token)):
             cursor.close()
         if conn:
             conn.close()
+
+@app.get("/api/v1/villages")
+async def get_all_villages(token: str = Depends(verify_token), county = Query(None)): 
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """SELECT village.name, village.cadastal_code, village.latitude, village.longitude, village.village_id 
+        FROM village INNER JOIN county ON village.county_id = county.county_id 
+        WHERE county.code = %s GROUP BY village.village_id ORDER BY village.name ASC"""
+        cursor.execute(query,(county, ))
+        results = cursor.fetchall()
+        
+        if results: 
+            response = []
+            for row in results: 
+                obj = {
+                    "id": row['village_id'],
+                    "name": row['name'],
+                    "cadastal_code": row['cadastal_code'],
+                    "latitude": row['latitude'],
+                    "longitude": row['longitude']
+                }
+                response.append(obj)
+            return JSONResponse(content = {"success": True, "data": response}, status_code=200)
+                        
+        else: 
+            return JSONResponse(content = {"success": False, "data": "Missing parameter"}, status_code=401)
+    except MySQLError as err: 
+        raise HTTPException(status_code=501, detail = f"Error retrieving data... {err}")
+    finally: 
+        conn.close()
+        
+        
