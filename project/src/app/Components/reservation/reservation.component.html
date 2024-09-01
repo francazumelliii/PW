@@ -60,7 +60,7 @@
         <label for="buttondisplay">Turn: </label>
         <mat-form-field>
           <mat-select formControlName="turn" placeholder="10:00:00 - 11:00:00">
-            <mat-option *ngFor="let turn of turns" [value]="turn.turn_id">
+            <mat-option *ngFor="let turn of turns" [value]="turn.id">
               {{ turn.start_time }} - {{ turn.end_time }}
             </mat-option>
           </mat-select>

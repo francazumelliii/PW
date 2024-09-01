@@ -104,7 +104,8 @@ export class RestaurantComponent implements OnInit {
       "quantity" : this.reservationForm.controls['quantity'].value,
       "date" : formatDate(this.reservationForm.controls['date'].value, "yyyy-MM-dd", "en-US"),
       "turn_id" : this.reservationForm.controls['turn'].value,
-      "restaurant_id" : this.restaurantId
+      "restaurant_id" : this.restaurantId,
+      "customer_mail" : this.roleService.mail
     }
     this.dbService.post('/api/v1/restaurant/reservation', body)
       .subscribe((response:APIResponse) => {
