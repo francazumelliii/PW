@@ -80,7 +80,8 @@ export class LoginFormComponent implements OnInit{
         response.error ? this.error = response.error : null
       })
   }
-
-
-
+  
+  ngOnDestroy(): void {
+    this.loginForm.reset()
+  }
 }
