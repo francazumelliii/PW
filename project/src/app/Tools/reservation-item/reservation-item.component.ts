@@ -15,6 +15,7 @@ import { Router, TitleStrategy } from '@angular/router';
 export class ReservationItemComponent {
   @Input() reservation!: Reservation
   @Output() changes = new EventEmitter<any>()
+  @Input() role: string = "CUSTOMER"
   _isDeletable:boolean = false;
   constructor(
     private roleService: RoleService,

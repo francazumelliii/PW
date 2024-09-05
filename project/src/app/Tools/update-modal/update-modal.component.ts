@@ -84,6 +84,7 @@ export class UpdateModalComponent {
     this.dbService.patch(`/api/v1/restaurant?id=${this.restaurant[0].restaurant.id}`, body)
       .subscribe((response: APIResponse) => {
         response.success ? this.swal.fire("success", "SUCCESS!", "Restaurant successfully updated!", "") : null
+        this.modalService.close();
         this.restaurant[0] = response.data
         this.fillUpdateRestaurantForm()
       },(error: any) => [
@@ -146,7 +147,8 @@ export class UpdateModalComponent {
     this.dbService.patch(`/api/v1/restaurant/reservation?id=${this.reservation.reservation.id}`, body)
       .subscribe((response: APIResponse) => {
         response.success ? this.modalService.close() : null
-        //toast message (success)
+        this.swal.fire("success", "SUCCESS!", "Reservation successfully updated!", "")
+        this.modalService.close()
       },(error: any) => {
         console.error(error),
         this.swal.fire("error", "ERROR", "Error retrieving data for patch reservation", "")
