@@ -1278,16 +1278,15 @@ async def get_users_reservation(token: str = Depends(verify_token), mail: str = 
             
 
 @app.delete("/api/v1/user/reservation")
-async def delete_reservation(mail: str = Depends(verify_token),id: int = Query(None)): 
+async def delete_reservation(id: int = Query(None), token: str = Depends(verify_token)): 
     try: 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         if id: 
+            print(id)
             query = "UPDATE reservation SET confirmed = 0 WHERE reservation_id = %s"
             cursor.execute(query,(id,))
             conn.commit()
-            if cursor.rowcount == 0: 
-                raise HTTPException(status_code=401, detail = "reservation not found")
             return JSONResponse(status_code=200, content={"success": True, "data": "reservation successfully deleted"})
         
     except MySQLError as err: 
@@ -1520,7 +1519,7 @@ async def get_restaurant_reservation(token = Depends(verify_token), id: str = Qu
         INNER JOIN village ON restaurant.village_id = village.village_id 
         INNER JOIN turn ON reservation.turn_id = turn.turn_id 
         INNER JOIN imgs ON imgs.restaurant_id = restaurant.restaurant_id 
-        WHERE imgs.priority = 1 AND restaurant.restaurant_id = %s;
+        WHERE imgs.priority = 1 AND restaurant.restaurant_id = %s AND reservation.confirmed = 1;
 
             """
         cursor.execute(query,(id,))
