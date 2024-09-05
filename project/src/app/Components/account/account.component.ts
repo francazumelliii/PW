@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../Services/database.service';
 import { RoleService } from '../../Services/role.service';
-import { Admin, APIResponse, Customer, Favorites, Reservation } from '../../Interfaces/general';
+import { Admin, APIResponse, Customer, Favorites, Reservation, Restaurant } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
+import { RestaurantInfoComponent } from '../restaurant-info/restaurant-info.component';
 
 @Component({
   selector: 'app-account',
@@ -13,19 +14,25 @@ export class AccountComponent implements OnInit {
   
   constructor(
     private dbService: DatabaseService,
-    private roleService: RoleService,
+    public roleService: RoleService,
     private swal : SweetalertService
     ){}
     
     reservations: Reservation[] = []
     user!: Customer | Admin 
+    restaurant!: Restaurant 
     _isOpened: boolean = false;
     favoriteRestaurants: Favorites[] = []
+    RestaurantInfoComponent!: RestaurantInfoComponent;
 
   ngOnInit(){
     this.getAccount()
-    this.getUserReservations()
-    this.getFavoritesRestaurants()
+    if(this.roleService.role ==='customer'){
+      this.getUserReservations()
+      this.getFavoritesRestaurants()
+    }else{
+      this.getAdminRestaurant()
+    }
   } 
 
 
@@ -65,4 +72,17 @@ export class AccountComponent implements OnInit {
         this.swal.fire("error", "ERROR", "Error retrieving data... try later", "")
       })
   }
+  getAdminRestaurant(){
+    this.dbService.get("/api/v1/admin/restaurant")
+      .subscribe((response: APIResponse) => {
+        response.success ? this.restaurant = response.data[0] : null
+        console.log(this.restaurant)
+      }, (error: any) => {
+        console.error(error),
+        this.swal.fire("error", "ERROR", "Error retrieving data for admin restaurant...try later", "")
+      })
+  }
+
+
+
 }

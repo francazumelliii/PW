@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, Output, ViewChild, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 't-card-container',
@@ -6,11 +6,10 @@ import { Component, ElementRef, Input, Output, ViewChild, EventEmitter, OnChange
   styleUrls: ['./card-container.component.sass']
 })
 export class CardContainerComponent implements OnChanges {
-  @ViewChild('cardCarousel') cardCarousel!: ElementRef;
   @Input() list: any[] = [];
   @Input() circular: boolean = true;
-  @Input() width: string = "19.6rem"
-  @Input() height: string = "11.025rem"
+  @Input() width: string = "19.6rem";
+  @Input() height: string = "11.025rem";
   @Output() cardBtnClick = new EventEmitter<any>();
 
   responsiveOptions: any[] = [
@@ -19,18 +18,24 @@ export class CardContainerComponent implements OnChanges {
     { breakpoint: '560px', numVisible: 1, numScroll: 1 }
   ];
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['list']) {
-      console.log('List changed:', changes['list'].currentValue);
+  constructor(private cdr: ChangeDetectorRef) {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['list'] && changes['list'].currentValue !== changes['list'].previousValue) {
+      console.log('List changed:', changes['list'].currentValue);
+      this.updateCarousel();
     }
   }
 
   handleBtnClick(event: any): void {
     this.cardBtnClick.emit(event);
   }
+
   trackByFn(index: number, item: any): any {
     return item.id; 
   }
-  
+
+  private updateCarousel(): void {
+    this.cdr.detectChanges();
+  }
 }

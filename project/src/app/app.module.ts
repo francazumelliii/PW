@@ -41,6 +41,7 @@ import { ImageSliderComponent } from './Tools/image-slider/image-slider.componen
 import { RestaurantInfoComponent } from './Components/restaurant-info/restaurant-info.component';
 import { MenuButtonComponent } from './Tools/menu-button/menu-button.component';
 import { MenuComponent } from './Tools/menu/menu.component';
+import { UpdateModalComponent } from './Tools/update-modal/update-modal.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { MenuComponent } from './Tools/menu/menu.component';
     RestaurantInfoComponent,
     MenuButtonComponent,
     MenuComponent,
+    UpdateModalComponent,
 
   ],
   imports: [

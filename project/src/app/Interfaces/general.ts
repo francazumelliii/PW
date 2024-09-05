@@ -37,6 +37,7 @@ export interface admin_obj{
 }
 
 export interface company_obj{
+    id: number | string,
     name: string,
     vat: string,
     address: string,
@@ -46,6 +47,7 @@ export interface coords_obj{
     latitude: number ,
     longitude: number,
     village: string,
+    village_id: number,
     county: string,
     county_code: string,
     region: string
@@ -67,7 +69,7 @@ export interface Marker{
 }
 
 export interface Turn{
-    turn_id: number,
+    id: number,
     start_time: string,
     end_time: string
 }
@@ -95,13 +97,13 @@ export interface Admin{
 }
 
 export interface Reservation{
-  "user": {
+  user : {
     "id": number | string,
     "name": string,
     "surname": string,
     "mail": string
   },
-  "reservation": {
+  reservation : {
     "id": number | string,
     "date": string,
     "quantity": number ,
@@ -110,7 +112,7 @@ export interface Reservation{
     "start_time": string,
     "end_time": string
   },
-  "restaurant": {
+  restaurant : {
     "id": number | string,
     "name": string,
     "banner": string,
@@ -168,3 +170,15 @@ export interface RestaurantReservation{
         "village": string
       }
 }
+export interface Village{
+  id: number | string, 
+  name: string, 
+  cadastal_code: string, 
+  latitude: string, 
+  longitude: string
+}
+
+
+/*
+
+*/

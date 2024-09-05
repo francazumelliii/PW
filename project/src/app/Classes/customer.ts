@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Delegate } from "../Interfaces/delegate";
 import { DatabaseService } from "../Services/database.service";
-import { APIResponse, Restaurant } from "../Interfaces/general";
+import { APIResponse, Reservation, Restaurant } from "../Interfaces/general";
 import { Observable } from "rxjs";
 import { ApiService } from "../Services/api.service";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,7 @@ import { ApiService } from "../Services/api.service";
 export class Customer implements Delegate{
 
 
-    constructor( private dbService: DatabaseService ){}
+    constructor( private dbService: DatabaseService, private router: Router ){}
     getAllRestaurants(): Observable<APIResponse> {
         return this.dbService.get("/api/v1/restaurant")
     }
@@ -41,5 +42,11 @@ export class Customer implements Delegate{
     }
     getAllMenus(id: number) : Observable<APIResponse> | any {
 
+    }
+    getRestaurantReservations(id: number){
+        
+    }
+    openViewModal(reservation: Reservation){
+        this.router.navigate(['/restaurant/' + reservation.restaurant.id])
     }
 }

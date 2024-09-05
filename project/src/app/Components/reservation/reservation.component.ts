@@ -80,4 +80,7 @@ export class ReservationComponent implements OnInit {
     this.checkTablesAvailability(+this.restaurantId, date, turn_id, quantity)
   }
 
+  ngOnDestroy(): void {
+    this.reservationForm.reset()
+  }
 }
