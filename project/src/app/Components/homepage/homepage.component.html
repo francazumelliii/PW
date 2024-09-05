@@ -62,6 +62,8 @@
         <t-reservation-item 
           *ngFor="let item of reservations" 
           [reservation]="item"
+          [role]="'ADMIN'"
+          (changes)="handleReservationModalChanges()"
         ></t-reservation-item>
       </ul>
     </div>

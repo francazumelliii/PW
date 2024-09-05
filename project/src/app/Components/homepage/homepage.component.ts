@@ -130,7 +130,7 @@ export class HomepageComponent implements OnInit {
     });
   }
   openModal() {
-    this.modalService.open(UpdateModalComponent, {restaurant: this.restaurantsList}, "UPDATE MODAL")
+    this.modalService.open(UpdateModalComponent, {restaurant: this.restaurantsList}, "UPDATE")
   }
   
   getRestaurantReservations(id: number){
@@ -141,6 +141,10 @@ export class HomepageComponent implements OnInit {
         },(error: any ) => {
           console.error(error);
         })
+  }
+
+  handleReservationModalChanges(){
+    this.getRestaurantReservations(+this.restaurantsList[0].restaurant.id)
   }
 
 
