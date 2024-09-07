@@ -15,6 +15,6 @@ export class CardComponent implements OnInit {
 
   }
   emitClick(){
-    this.btnClick.emit(this.item.restaurant.id)
+    this.btnClick.emit(this.item.id)
   }
 }

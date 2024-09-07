@@ -2,27 +2,27 @@
     <div class="d-flex flex-row align-items-center ">
     <!--restaurant info-->
     <div class=" border-end px-2 d-flex flex-row align-items-center justify-content-center column-gap-2 col-4">
-        <img [src]="reservation.restaurant.img" class="img-fluid">
+        <img [src]="reservation.restaurant.img.path" class="img-fluid">
         <div class="d-flex flex-column justify-content-center aling-items-center ">
             <h3 class="m-0">{{reservation.restaurant.name}}</h3>
-            <small class="m-0">{{reservation.restaurant.village}}, {{reservation.restaurant.street}} - {{reservation.restaurant.street_number}}</small>
+            <small class="m-0">{{reservation.restaurant.coords.village}}, {{reservation.restaurant.street}} - {{reservation.restaurant.street_number}}</small>
         </div>
     </div>
     <!-- reservation info -->
 
         <div class="d-flex flex-column align-items-start justify-content-center px-2 border-end col">
             <h3 class="m-0 fw-light fs-6">Email: </h3>
-            <small>{{reservation.reservation.mail}}</small>
+            <small>{{reservation.mail}}</small>
         </div>
 
         <div class="d-flex flex-column align-items-center justify-content-center px-2 border-end col">
-            <h3 class="m-0 fw-light fs-6">{{reservation.reservation.date}}</h3>
-            <small class="m-0">{{reservation.reservation.start_time}} - {{reservation.reservation.end_time}}</small>
+            <h3 class="m-0 fw-light fs-6">{{reservation.date}}</h3>
+            <small class="m-0">{{reservation.start_time}} - {{reservation.end_time}}</small>
         </div>
 
         <div class="d-flex flex-column align-items-center justify-content-center px-2 border-end col-2">
             <h3 class="m-0 fw-light fs-6">Quantity: </h3>
-            <small>{{reservation.reservation.quantity}} <i class="bi bi-person-fill text-secondary"></i></small>
+            <small>{{reservation.quantity}} <i class="bi bi-person-fill text-secondary"></i></small>
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center px-2 col-1">
             <i *ngIf="!_isDeletable" class="fs-5 pointer text-primary" [ngClass]="{'bi bi-arrow-up-right-square' : role === 'CUSTOMER', 'bi bi-pencil-square' : role === 'ADMIN'}" (click)="handleViewClick()"></i>

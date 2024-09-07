@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatabaseService } from '../../Services/database.service';
 import { RoleService } from '../../Services/role.service';
 import { Admin, APIResponse, Customer, Favorites, Reservation, Restaurant } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { RestaurantInfoComponent } from '../restaurant-info/restaurant-info.component';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-account',
@@ -15,7 +16,8 @@ export class AccountComponent implements OnInit {
   constructor(
     private dbService: DatabaseService,
     public roleService: RoleService,
-    private swal : SweetalertService
+    private swal : SweetalertService,
+    private router: Router
     ){}
     
     reservations: Reservation[] = []
@@ -25,20 +27,22 @@ export class AccountComponent implements OnInit {
     favoriteRestaurants: Favorites[] = []
     RestaurantInfoComponent!: RestaurantInfoComponent;
 
-  ngOnInit(){
-    this.getAccount()
+  ngOnInit(): void {
     if(this.roleService.role ==='customer'){
       this.getUserReservations()
       this.getFavoritesRestaurants()
+      this.getAccount()
     }else{
       this.getAdminRestaurant()
     }
-  } 
+
+  }
+    
 
 
   getAccount(){
     const role = this.roleService.role
-    this.dbService.get(`/api/v1/user?role=${role}`)
+    this.roleService.getUser()
       .subscribe((response: APIResponse) => {
         response.success ? this.user = response.data : null
         console.log(this.user)
@@ -49,10 +53,10 @@ export class AccountComponent implements OnInit {
   }
 
   getUserReservations(){
-    this.dbService.get(`/api/v1/user/reservation`)
+    this.dbService.get(`/api/v1/reservation/customer/me`)
       .subscribe((response: APIResponse) => {
         response.success ? (this.reservations = response.data): null
-        console.log(this.reservations)
+        console.log("RESERVATION",this.reservations)
       },(error: any) => {
         console.error(error),
         this.swal.fire("error", "ERROR", "Error retrieving data... try later", "")

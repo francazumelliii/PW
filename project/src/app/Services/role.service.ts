@@ -93,4 +93,7 @@ export class RoleService {
   openViewModalOrRedirect(reservation: Reservation){
     return this.delegate.openViewModal(reservation)
   }
+  getUser(){
+    return this.delegate.getUser()
+  }
 }

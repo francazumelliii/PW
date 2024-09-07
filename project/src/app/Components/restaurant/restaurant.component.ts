@@ -16,6 +16,8 @@ import { ModalTestComponent } from '../../Tools/modal-test/modal-test.component'
 import { dirname } from 'node:path';
 import { ConfirmModalComponent } from '../../Tools/confirm-modal/confirm-modal.component';
 import { INPUT_MODALITY_DETECTOR_DEFAULT_OPTIONS } from '@angular/cdk/a11y';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AccountComponent } from '../account/account.component';
 
 @Component({
   selector: 'app-restaurant',
@@ -30,6 +32,7 @@ export class RestaurantComponent implements OnInit {
   _isAvailable!: boolean ;
   images: Images[] = []
   menus: Menu[] = []
+  accountComponent!: AccountComponent
 
   constructor(
     private dbService: DatabaseService,
@@ -60,8 +63,8 @@ export class RestaurantComponent implements OnInit {
     this.roleService.getRestaurantFromId(this.restaurantId)
       .subscribe((response: APIResponse) => {
         if (response.success) {
-          this.restaurant = response.data
-          console.log("RES", response.data[0]);
+          this.restaurant = Array(response.data)
+          console.log("RES", response.data);
         }
       },
       (error: any) => {
@@ -87,8 +90,8 @@ export class RestaurantComponent implements OnInit {
         instance.confirm.subscribe((data: any) => {
           this.postReservation()
           this.modalService.close();
-          this.router.navigate(['/account'])
-
+      
+  
         });
       })
       .catch((error) => {
@@ -100,19 +103,20 @@ export class RestaurantComponent implements OnInit {
 
   postReservation(){
     const body = {
-      "mail" : this.reservationForm.controls['mail'].value,
-      "quantity" : this.reservationForm.controls['quantity'].value,
-      "date" : formatDate(this.reservationForm.controls['date'].value, "yyyy-MM-dd", "en-US"),
-      "turn_id" : this.reservationForm.controls['turn'].value,
-      "restaurant_id" : this.restaurantId,
-      "customer_mail" : this.roleService.mail
+      mail : this.reservationForm.controls['mail'].value,
+      date : formatDate(this.reservationForm.controls['date'].value, "yyyy-MM-dd", "en-US"),
+      quantity : this.reservationForm.controls['quantity'].value,
+      turn_id : this.reservationForm.controls['turn'].value,
+      restaurant_id : this.restaurantId,
+      customer_mail : this.roleService.mail
+
     }
-    this.dbService.post('/api/v1/restaurant/reservation', body)
+    this.dbService.post('/api/v1/reservation', body)
       .subscribe((response:APIResponse) => {
         response.success ? (
           console.log(response.data)
         ) : null
-        //redirect to order page
+        this.router.navigate(['/account'])
       },
       (error: any) => {
         console.error(error),
@@ -124,9 +128,19 @@ export class RestaurantComponent implements OnInit {
   }
 
   getAllImgs(){
-    this.dbService.get(`/api/v1/restaurant/img?id=${this.restaurantId}`)
+    this.dbService.get(`/api/v1/imgs/restaurant/${this.restaurantId}`)
       .subscribe((response:APIResponse) => {
-        response.success ? this.images = response.data : null
+        response.success ? 
+        (
+          this.images = response.data.map((img: any) => {
+            return {
+              image: img.path,
+              thumbImage: img.path,
+              alt: img.path,
+              title:""
+            }
+          })
+        ) : null
       },(error: any) => {
         this.swal.fire("error","ERROR", "Error retrieving data", ""),
         console.error(error)
@@ -134,7 +148,7 @@ export class RestaurantComponent implements OnInit {
   }
 
   getAllMenus(){
-    this.dbService.get(`/api/v1/restaurant/menu?id=${this.restaurantId}`)
+    this.dbService.get(`/api/v1/menu/restaurant/${this.restaurantId}`)
       .subscribe((response: APIResponse) => {
         response.success ? this.menus = response.data : null
         console.log(this.menus)

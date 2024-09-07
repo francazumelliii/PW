@@ -1,4 +1,4 @@
-import {AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
+import {AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '../../Services/authentication.service';
@@ -13,7 +13,7 @@ import { SweetAlertUpdatableParameters } from 'sweetalert2';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.sass'
 })
-export class SidebarComponent implements AfterViewInit{
+export class SidebarComponent implements OnInit{
 
   mobileQuery: MediaQueryList;
   fillerNav = Array.from({length: 50}, (_, i) => `Nav Item ${i + 1}`);
@@ -33,7 +33,7 @@ export class SidebarComponent implements AfterViewInit{
         this.mobileQuery.addListener(this._mobileQueryListener);
       }
 
-  ngAfterViewInit(){
+  ngOnInit(){
     this.getList()
   }
 
@@ -48,9 +48,10 @@ export class SidebarComponent implements AfterViewInit{
   list: List[] = []
   getList(){
     const role = this.roleService.role
-    this.dbService.get(`/api/v1/list?role=${role}`)
+    this.dbService.get(`/api/v1/${role}/me/list`)
       .subscribe((response: APIResponse) => {
-        response.success ? this.list = JSON.parse(response.data.list): null
+        response.success ? this.list = JSON.parse(response.data): null
+        console.log("LIST ", this.list)
       },
       (error : any ) => {
         this.swal.fire("error","ERROR","Error retriving data for menu list...", ""),
