@@ -27,7 +27,7 @@ export class ReservationItemComponent {
 
   ngOnInit(){
     const today = new Date()
-    this._isDeletable = new Date(this.reservation.reservation.date) > today
+    this._isDeletable = new Date(this.reservation.date) > today
   }
 
   openModal(){
@@ -50,7 +50,7 @@ export class ReservationItemComponent {
     });
   }
   deleteReservation(){
-    const id = this.reservation.reservation.id
+    const id = this.reservation.id
     this.roleService.deleteReservation(id)
       .subscribe((response:APIResponse) => {
         response.success ? this.changes.emit("") : null

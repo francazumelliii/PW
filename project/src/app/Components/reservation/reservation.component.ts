@@ -64,7 +64,7 @@ export class ReservationComponent implements OnInit {
     this.roleService.checkTablesAvailability(id, date, turn)
       .subscribe((response: APIResponse) => {
         if (response.success) {
-          const available_seats = response.data.available_seats - quantity
+          const available_seats = response.data - quantity
           this._isAvailable.emit(available_seats >= 0)
           available_seats < 0 ? this.swal.fire("info", "NO TABLES ARE AVAILABLE", `Sorry, there are no tables for ${quantity} people available for this time and date.`,"") : null
         }

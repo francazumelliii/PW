@@ -8,7 +8,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 export class DatabaseService {
   
   private token: string = ""
-  private domain: string = "http://localhost:8000"
+  private domain: string = "http://localhost:8080"
 
   constructor(
     private http: HttpClient

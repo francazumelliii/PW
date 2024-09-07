@@ -56,14 +56,14 @@ export class UpdateModalComponent {
   }
 
   fillUpdateRestaurantForm(){
-    this.updateRestaurantForm.controls['name'].setValue(this.restaurant[0].restaurant.name);
-    this.updateRestaurantForm.controls['description'].setValue(this.restaurant[0].restaurant.description);
-    this.updateRestaurantForm.controls['street'].setValue(this.restaurant[0].restaurant.street);
-    this.updateRestaurantForm.controls['streetNumber'].setValue(this.restaurant[0].restaurant.street_number);
-    this.updateRestaurantForm.controls['maxChairs'].setValue(this.restaurant[0].restaurant.max_chairs);
+    this.updateRestaurantForm.controls['name'].setValue(this.restaurant[0].name);
+    this.updateRestaurantForm.controls['description'].setValue(this.restaurant[0].description);
+    this.updateRestaurantForm.controls['street'].setValue(this.restaurant[0].street);
+    this.updateRestaurantForm.controls['streetNumber'].setValue(this.restaurant[0].street_number);
+    this.updateRestaurantForm.controls['maxChairs'].setValue(this.restaurant[0].max_chairs);
     this.updateRestaurantForm.controls['latitude'].setValue(this.restaurant[0].coords.latitude);
     this.updateRestaurantForm.controls['longitude'].setValue(this.restaurant[0].coords.longitude);
-    this.updateRestaurantForm.controls['banner'].setValue(this.restaurant[0].restaurant.banner);
+    this.updateRestaurantForm.controls['banner'].setValue(this.restaurant[0].banner);
     this.updateRestaurantForm.controls['village'].setValue(this.restaurant[0].coords.village_id);
 
   }
@@ -81,7 +81,7 @@ export class UpdateModalComponent {
       village: this.updateRestaurantForm.controls['village'].value
 
     }
-    this.dbService.patch(`/api/v1/restaurant?id=${this.restaurant[0].restaurant.id}`, body)
+    this.dbService.patch(`/api/v1/restaurant?id=${this.restaurant[0].id}`, body)
       .subscribe((response: APIResponse) => {
         response.success ? this.swal.fire("success", "SUCCESS!", "Restaurant successfully updated!", "") : null
         this.modalService.close();
@@ -102,11 +102,11 @@ export class UpdateModalComponent {
     this.updateRestaurantForm.reset()
   }
   fillReservationForm(){
-    this.updateReservationForm.controls['quantity'].setValue(this.reservation.reservation.quantity);
-    this.updateReservationForm.controls['date'].setValue(this.reservation.reservation.date);
-    const turn = this.turns.find((turn: Turn) => turn.start_time === this.reservation.reservation.start_time);
+    this.updateReservationForm.controls['quantity'].setValue(this.reservation.quantity);
+    this.updateReservationForm.controls['date'].setValue(this.reservation.date);
+    const turn = this.turns.find((turn: Turn) => turn.start_time === this.reservation.start_time);
     this.updateReservationForm.controls['turn'].setValue(turn?.id);
-    this.updateReservationForm.controls['mail'].setValue(this.reservation.reservation.mail);
+    this.updateReservationForm.controls['mail'].setValue(this.reservation.mail);
     this.updateReservationForm.controls['restaurantName'].setValue(this.reservation.restaurant.name);
     this.updateReservationForm.controls['restaurantStreet'].setValue(this.reservation.restaurant.street);
     this.updateReservationForm.controls['restaurantStreetNumber'].setValue(this.reservation.restaurant.street_number);
@@ -144,7 +144,7 @@ export class UpdateModalComponent {
       date: date,
       mail: mail
     }
-    this.dbService.patch(`/api/v1/restaurant/reservation?id=${this.reservation.reservation.id}`, body)
+    this.dbService.patch(`/api/v1/restaurant/reservation?id=${this.reservation.id}`, body)
       .subscribe((response: APIResponse) => {
         response.success ? this.modalService.close() : null
         this.swal.fire("success", "SUCCESS!", "Reservation successfully updated!", "")

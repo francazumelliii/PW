@@ -15,4 +15,5 @@ export interface Delegate {
     getAllMenus(id: number) : Observable<APIResponse> | any
     getRestaurantReservations(id: number): Observable<APIResponse> | any
     openViewModal(reseravtion: Reservation): void
+    getUser(): Observable<APIResponse>
 }

@@ -53,18 +53,18 @@ export class LoginFormComponent implements OnInit{
   signIn(email: string, password: string){
     
     this.authService.signIn(email,password)
-    .subscribe((response: any) => {
-        response.access_token ? 
+     .subscribe((response: any) => {
+        response.jwt ? 
         (
           this.roleService.storeMail(email),
-          this.roleService.setUserType(response.user_type),
-          this.authService.setToken(response.access_token)
+          //this.roleService.setUserType(response.user_type),
+          this.authService.setToken(response.jwt)
           )
           : this.error = "Email or password incorrect"
     },(error: any) => {
       this.swal.fire("error","ERROR","Error retrieving data from database...try later", "")
       console.error(error)
-    })
+    }) 
   }
 
   signUp(name: string, surname:string, email:string, password: string){
@@ -72,12 +72,12 @@ export class LoginFormComponent implements OnInit{
     this.authService.signUp(name,surname,email,password)
       .subscribe((response: any) => {
         console.log(response)
-        response.access_token ? (
+        response.jwt ? ( 
           this.roleService.storeMail(email),
           this.roleService.setUserType("customer"),
-          this.authService.setToken(response.access_token)
-          ) : null
-        response.error ? this.error = response.error : null
+          this.authService.setToken(response.jwt) 
+        ) : null 
+        response.error ? this.error = response.error : null 
       })
   }
   

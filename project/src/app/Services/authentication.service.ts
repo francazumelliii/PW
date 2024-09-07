@@ -10,43 +10,29 @@ import { Router } from '@angular/router';
 })
 export class AuthenticationService {
 
-  private domain: string = "http://localhost:8000";
+  private domain: string = "http://localhost:8080";
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) { }
 
-  signIn(email: string, password: string): Observable<any> {
-    const body = { email, password };
-    return this.http.post(`${this.domain}/api/v1/signin`, body)
-      .pipe(
-        map((response: any) => {
-          if (response.token) {
-            this.setToken(response.token);
-          }
-          return response;
-        }),
-        catchError((error: any) => {
-          return of(error);
-        })
-      );
+  signIn(mail: string, password: string): Observable<any>{
+    const body = {mail: mail, password: password}
+    return this.http.post(`${this.domain}/api/v1/authenticate`, body)
   }
+
   signUp(name: string, surname: string, email: string, password: string){
     const body = {
+      mail: email,
       name: name,
       surname: surname,
-      email: email,
-      password: password
+      password: password,
+      list: ""
     }
+    console.log(`${this.domain}/api/v1/signup`, body)
     return this.http.post(`${this.domain}/api/v1/signup`, body)
-      .pipe(
-        catchError((error: any) => {
-          return error
-        })
-      )
-
-
+  
   }
 
   setToken(token: string): void {
@@ -61,28 +47,23 @@ export class AuthenticationService {
     this.router.navigate(['authentication']);
   }
 
-  isAuthenticated(): Observable<boolean> {
+  isAuthenticated(): boolean {
     const token = localStorage.getItem("token");
-    if (token) {
-      return this.verifyToken(token).pipe(
-        map((response: any) => response.valid),
-        catchError(() => of(false))
-      );
-    } else {
-      return of(false);
+    if(token && !this.isTokenExpired(token)){
+      return true
+    }else{
+      return false
     }
   }
 
-  verifyToken(token: string) {
-    return this.http.get(`${this.domain}/api/v1/token`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).pipe(
-      catchError((error: any) => {
-        console.log(error);
-        return error;
-      })
-    );
+  isTokenExpired(token: string): boolean {
+    const payload = token.split('.')[1]; 
+    const decodedPayload = JSON.parse(atob(payload));
+    const expirationTime = decodedPayload.exp;
+    const currentTime = Math.floor(Date.now() / 1000);
+    return expirationTime < currentTime;
   }
+  
 
   get mail() {
     return localStorage.getItem("mail")

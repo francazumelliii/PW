@@ -4,23 +4,6 @@ export interface General {
 }
 
 export interface Restaurant{
-    restaurant: restaurant_obj
-    admin: admin_obj
-    company: company_obj
-    coords: coords_obj
-    img: img_obj
-}
-export interface Favorites{
-    restaurant: restaurant_obj
-    admin: admin_obj
-    company: company_obj
-    coords: coords_obj
-    img: img_obj
-    orders: number
-}
-
-
-export interface restaurant_obj{
     id: string | number,
     name: string,
     rating: string | number,
@@ -29,11 +12,37 @@ export interface restaurant_obj{
     max_chairs: string | number,
     description: string,
     banner: string
+
+    admin: admin_obj[]
+    company: company_obj
+    coords: coords_obj
+    img: img_obj
+}
+export interface Favorites{
+  id: string | number,
+  name: string,
+  rating: string | number,
+  street: string,
+  street_number: string,
+  max_chairs: string | number,
+  description: string,
+  banner: string
+
+  admin: admin_obj[]
+  company: company_obj
+  coords: coords_obj
+  img: img_obj
+}
+
+
+export interface restaurant_obj{
+    
 }
 export interface admin_obj{
     id: string | number,
     name: string,
-    surname: string
+    surname: string,
+    mail: string
 }
 
 export interface company_obj{
@@ -80,48 +89,30 @@ export interface List{
 }
 
 export interface Customer{
-    customer_id: number | string,
+    id: number | string,
     name: string,
     surname: string,
     mail: string,
-    list: string
 }
 
 export interface Admin{
-    admin_id: number | string,
+    id: number | string,
     name: string,
     surname: string,
     mail: string,
-    restaurant_id: number | string,
-    list: string
+
 }
 
 export interface Reservation{
-  user : {
-    "id": number | string,
-    "name": string,
-    "surname": string,
-    "mail": string
-  },
-  reservation : {
-    "id": number | string,
-    "date": string,
-    "quantity": number ,
-    "confirmed": number,
-    "mail": string,
-    "start_time": string,
-    "end_time": string
-  },
-  restaurant : {
-    "id": number | string,
-    "name": string,
-    "banner": string,
-    "img": string,
-    "street": string,
-    "street_number": string,
-    "village": string
-  }
-
+  id: number,
+  date: string, 
+  mail: string,
+  start_time: string,
+  end_time: string, 
+  quantity: number, 
+  customer: Customer,
+  restaurant: Restaurant
+  
 }
 
 export interface Images{

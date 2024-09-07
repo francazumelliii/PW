@@ -45,9 +45,9 @@ export class HomepageComponent implements OnInit {
         if (this.map) {
           this.map.list = response.data;
         }
-        this.getRestaurantImages(+response.data[0].restaurant.id);
-        this.getRestaurantReservations(+response.data[0].restaurant.id);
-        this.getAllMenus(+response.data[0].restaurant.id);
+        this.getRestaurantImages(+response.data[0].id);
+        this.getRestaurantReservations(+response.data[0].id);
+        this.getAllMenus(+response.data[0].id);
         this.showNearestRestaurants = false; // Reset to show all restaurants initially
         this.circular = false; // Stop loading indicator
         this.cdr.detectChanges();
@@ -144,7 +144,7 @@ export class HomepageComponent implements OnInit {
   }
 
   handleReservationModalChanges(){
-    this.getRestaurantReservations(+this.restaurantsList[0].restaurant.id)
+    this.getRestaurantReservations(+this.restaurantsList[0].id)
   }
 
 

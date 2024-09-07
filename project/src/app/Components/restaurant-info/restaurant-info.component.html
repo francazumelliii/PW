@@ -2,9 +2,9 @@
     <div class="d-flex flex-column">
         <h1 class="title">
             <i class="fa-solid fa-utensils icon"></i>
-            {{restaurant.restaurant.name}}
+            {{restaurant.name}}
         </h1>
-        <p class="text-secondary">{{restaurant.restaurant.description}}</p>
+        <p class="text-secondary">{{restaurant.description}}</p>
         <p>{{restaurant.coords.village == restaurant.coords.county ?
             restaurant.coords.village : restaurant.coords.village
             + ', ' + restaurant.coords.county}} ({{restaurant.coords.county_code}})

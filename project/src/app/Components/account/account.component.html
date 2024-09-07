@@ -36,7 +36,7 @@
   <!-- FAVORITES RESTAURANTS-->
   <ng-container *ngIf="favoriteRestaurants.length > 0 && !this._isOpened && roleService.role ==='customer'">
     <div class="d-flex flex-column align-items-center">
-      <h1 class="m-0">YOUR FAVORITES</h1>
+      <h1 class="m-0">{{reservations.length > 0 ? 'YOUR FAVORITES' : 'FIND RESTAURANTS'}}</h1>
       <div class="container mt-0">
         <t-card-container [list]="favoriteRestaurants" [width]="'15rem'" [height]="'8.437rem'"></t-card-container>
       </div>
@@ -58,7 +58,7 @@
           </mat-expansion-panel-header>
           <!-- Admin's restaurant -->
           <div class="d-flex flex-row">
-            <img [src]="restaurant.restaurant.banner" class="restaurant-img">
+            <img [src]="restaurant.banner" class="restaurant-img">
             <app-restaurant-info [role]="'ADMIN'" [restaurant]="restaurant"></app-restaurant-info>
           </div>
         </mat-expansion-panel>

@@ -1,7 +1,7 @@
 <div class="card m-0" [ngStyle]="{'width': width}">
-    <img class="card-img-top" [src]="item.img.path" [alt]="item.restaurant.name" [ngStyle]="{'width': width, 'height': height}">
+    <img class="card-img-top" [src]="item.img.path" [alt]="item.name" [ngStyle]="{'width': width, 'height': height}">
     <div class="card-body">
-      <h5 class="card-title fw-bold fs-6 my-0 ">{{item.restaurant.name}}</h5>
+      <h5 class="card-title fw-bold fs-6 my-0 ">{{item.name}}</h5>
 
       <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header>
@@ -19,7 +19,7 @@
           
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <p class="text-secondary">{{item.restaurant.description}}</p>
+        <p class="text-secondary">{{item.description}}</p>
       </mat-expansion-panel>
 
       <t-button
