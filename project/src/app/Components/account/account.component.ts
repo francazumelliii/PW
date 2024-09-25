@@ -30,6 +30,8 @@ export class AccountComponent implements OnInit {
     availableSeats: number = 0;
     totalSeats: number = 0;
 
+    seats = [{name: "name", value: 0}]
+
   ngOnInit(): void {
     if(this.roleService.role ==='customer'){
       this.getUserReservations()
@@ -108,7 +110,10 @@ export class AccountComponent implements OnInit {
       .subscribe((response: APIResponse) => {
         response.success ? (
           this.availableSeats = response.data.available,
-          this.totalSeats = response.data.total
+          this.totalSeats = response.data.total,
+          this.seats = [
+           { name: "Available Seats", value: this.availableSeats }, 
+          ]
         ) : null
       }, (error: any) => {
         console.error(error);
