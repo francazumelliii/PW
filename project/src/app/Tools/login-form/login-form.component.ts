@@ -57,12 +57,12 @@ export class LoginFormComponent implements OnInit{
         response.jwt ? 
         (
           this.roleService.storeMail(email),
-          //this.roleService.setUserType(response.user_type),
+          this.roleService.setUserType(response.role),
           this.authService.setToken(response.jwt)
           )
-          : this.error = "Email or password incorrect"
+          : null
     },(error: any) => {
-      this.swal.fire("error","ERROR","Error retrieving data from database...try later", "")
+      error.status == 401 ? this.error = "Incorrect email or password" : this.swal.fire("error","Internal Server Error " + error.status)
       console.error(error)
     }) 
   }
@@ -74,7 +74,7 @@ export class LoginFormComponent implements OnInit{
         console.log(response)
         response.jwt ? ( 
           this.roleService.storeMail(email),
-          this.roleService.setUserType("customer"),
+          this.roleService.setUserType(response.role),
           this.authService.setToken(response.jwt) 
         ) : null 
         response.error ? this.error = response.error : null 

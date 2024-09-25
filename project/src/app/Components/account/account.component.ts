@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatabaseService } from '../../Services/database.service';
 import { RoleService } from '../../Services/role.service';
-import { Admin, APIResponse, Customer, Favorites, Reservation, Restaurant } from '../../Interfaces/general';
+import { Admin, APIResponse, Customer, Favorites, Reservation, Restaurant, Stats } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { RestaurantInfoComponent } from '../restaurant-info/restaurant-info.component';
 import { NavigationEnd, Router } from '@angular/router';
@@ -22,10 +22,13 @@ export class AccountComponent implements OnInit {
     
     reservations: Reservation[] = []
     user!: Customer | Admin 
-    restaurant!: Restaurant 
+    restaurant!: Restaurant
     _isOpened: boolean = false;
     favoriteRestaurants: Favorites[] = []
     RestaurantInfoComponent!: RestaurantInfoComponent;
+    reservationStats: Stats[] = [];
+    availableSeats: number = 0;
+    totalSeats: number = 0;
 
   ngOnInit(): void {
     if(this.roleService.role ==='customer'){
@@ -34,6 +37,8 @@ export class AccountComponent implements OnInit {
       this.getAccount()
     }else{
       this.getAdminRestaurant()
+      this.getAccount()
+      
     }
 
   }
@@ -41,11 +46,9 @@ export class AccountComponent implements OnInit {
 
 
   getAccount(){
-    const role = this.roleService.role
     this.roleService.getUser()
       .subscribe((response: APIResponse) => {
         response.success ? this.user = response.data : null
-        console.log(this.user)
       },(error : any) => {
         this.swal.fire("error","ERROR","Error retrieving account data... try later","")
         console.error(error)
@@ -77,13 +80,39 @@ export class AccountComponent implements OnInit {
       })
   }
   getAdminRestaurant(){
-    this.dbService.get("/api/v1/admin/restaurant")
+    this.dbService.get("/api/v1/restaurant/admin/me")
       .subscribe((response: APIResponse) => {
         response.success ? this.restaurant = response.data[0] : null
-        console.log(this.restaurant)
+        
+        this.getStats(+this.restaurant.id)
+        this.getAvailableSeats(+this.restaurant.id)
       }, (error: any) => {
         console.error(error),
         this.swal.fire("error", "ERROR", "Error retrieving data for admin restaurant...try later", "")
+      })
+  }
+
+  getStats(id: number){
+    this.dbService.get(`/api/v1/reservation/restaurant/${id}/stats`)  
+      .subscribe((response: APIResponse) => {
+        response.success ? this.reservationStats = response.data : null
+        console.log(this.reservationStats)
+      }, (error: any)=> {
+        console.error(error),
+        this.swal.fire("error", "Error retrieving data for statistics", "")
+      })
+  }
+
+  getAvailableSeats(id: number){
+    this.dbService.get(`/api/v1/reservation/restaurant/${id}/seats`)
+      .subscribe((response: APIResponse) => {
+        response.success ? (
+          this.availableSeats = response.data.available,
+          this.totalSeats = response.data.total
+        ) : null
+      }, (error: any) => {
+        console.error(error);
+        this.swal.fire("error", "ERROR","Error retrieving data for seats", "")
       })
   }
 

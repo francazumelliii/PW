@@ -34,7 +34,7 @@
     </ng-container>
   </main>
   <!-- FAVORITES RESTAURANTS-->
-  <ng-container *ngIf="favoriteRestaurants.length > 0 && !this._isOpened && roleService.role ==='customer'">
+  <ng-container *ngIf="(favoriteRestaurants.length > 0 && !this._isOpened) &&  roleService.role ==='customer' else adminStats  ">
     <div class="d-flex flex-column align-items-center">
       <h1 class="m-0">{{reservations.length > 0 ? 'YOUR FAVORITES' : 'FIND RESTAURANTS'}}</h1>
       <div class="container mt-0">
@@ -47,25 +47,37 @@
   <!-- ADMIN TEMPLATE -->
 
   <ng-template #adminTemplate>
-    <div class="col-8 d-flex flex-column column-gap-3">
-      <!-- ORDERS-->
-      <div class="py-4 shadow bg-white rounded">
-        <mat-expansion-panel (opened)="switchPanelStatus()" (closed)="switchPanelStatus()">
-          <mat-expansion-panel-header>
-            <mat-panel-title class="text-black font">
-              <h1 class="fs-1 my-2">My Restaurant</h1>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <!-- Admin's restaurant -->
-          <div class="d-flex flex-row">
-            <img [src]="restaurant.banner" class="restaurant-img">
-            <app-restaurant-info [role]="'ADMIN'" [restaurant]="restaurant"></app-restaurant-info>
-          </div>
-        </mat-expansion-panel>
+    <section class="d-flex flex-column  container-fluid p-0">
+      <div class="col-8 d-flex flex-column column-gap-3 w-100">
+        <!-- ORDERS-->
+        <div class="py-4 shadow bg-white rounded ">
+          <mat-expansion-panel (opened)="switchPanelStatus()" (closed)="switchPanelStatus()">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="text-black font">
+                <h1 class="fs-1 my-2">My Restaurant</h1>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <!-- Admin's restaurant -->
+            <div class="d-flex flex-row column-gap-2 container-fluid">
+              <img [src]="restaurant.banner" class="restaurant-img">
+              <app-restaurant-info [role]="'ADMIN'" [restaurant]="restaurant"></app-restaurant-info>
+            </div>
+          </mat-expansion-panel>
+        </div>
       </div>
-    </div>
   
   
-  
+    </section>
+  </ng-template>
+  <ng-template #adminStats>
+    <section class="container-fluid d-flex flex-row">
+      <div class="chart-container" style="width: 50%; height: 400px;" class="border">
+        <t-chart yAxisLabel="Restaurant Occupancy" xAxisLabel="Day Time Stats" [data]="reservationStats" ></t-chart>
+      </div>
+      <div class="chart-container" style="width: 50%; height: 400px;" class="border">
+        <t-chart yAxisLabel="Restaurant Occupancy" xAxisLabel="Day Time Stats" chartType="GAUGE"></t-chart>
+      </div> 
+    
+    </section>
   </ng-template>
 </section>

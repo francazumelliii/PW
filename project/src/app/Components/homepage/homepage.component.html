@@ -3,10 +3,20 @@
   <section class="jumbotron d-flex flex-column justify-content-center m-auto p-4 row-gap-3" >
       <div class="bg-secondary-subtle">
         <t-card-container 
-          [list]="showNearestRestaurants ? nearestRestaurantsList : restaurantsList" 
+          *ngIf="!showNearestRestaurants"
+          [list]="restaurantsList" 
           #cardContainer 
           (cardBtnClick)="handleCardBtnClick($event)"
           [circular]="circular">
+        </t-card-container>
+        <t-card-container
+          *ngIf="showNearestRestaurants" 
+          [list]="nearestRestaurantsList" 
+          #cardContainer 
+          (cardBtnClick)="handleCardBtnClick($event)"
+          [circular]="false"
+          [interval]="0"
+          >
         </t-card-container>
       </div>
     

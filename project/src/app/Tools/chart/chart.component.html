@@ -1,0 +1,33 @@
+
+    <ngx-charts-bar-vertical
+      *ngIf="chartType=='VERTICAL'"
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="data"
+      [gradient]="gradient"
+      [xAxis]="showXAxis"
+      [yAxis]="showYAxis"
+      [legend]="showLegend"
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      [barPadding]="barPadding"
+      (select)="onSelect($event)">
+    </ngx-charts-bar-vertical>
+    <ngx-charts-gauge
+      *ngIf="chartType=='GAUGE'"
+      [view]="view"
+      [scheme]="colorScheme"
+      [min]="0"
+      [max]="100"
+      [value]="100"
+      [units]="'%'"
+      [angleSpan]="240"
+      [startAngle]="-120"
+      [showAxis]="true"
+      [largeSegments]="10"
+      [smallSegments]="5"
+      [margin]="[10, 20, 10, 20]">
+    </ngx-charts-gauge>
+

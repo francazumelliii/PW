@@ -61,6 +61,14 @@ export class HomepageComponent implements OnInit {
     this.roleService.getRestaurantImages(id).subscribe((response: APIResponse) => {
       if (response.success) {
         this.images = response.data;
+        this.images = response.data.map((img: any) => {
+            return {
+              image: img.path,
+              thumbImage: img.path,
+              title: "",
+              alt : img.path
+            }
+        })
         this.cdr.detectChanges();
       }
     }, (error: any) => {

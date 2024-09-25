@@ -168,7 +168,10 @@ export interface Village{
   latitude: string, 
   longitude: string
 }
-
+export interface Stats{
+  name: string,
+  value: number
+}
 
 /*
 
