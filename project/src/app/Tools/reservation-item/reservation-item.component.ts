@@ -18,7 +18,7 @@ export class ReservationItemComponent {
   @Input() role: string = "CUSTOMER"
   _isDeletable:boolean = false;
   constructor(
-    public roleService: RoleService,
+    private roleService: RoleService,
     private swal: SweetalertService,
     private modalService: ModalService,
     private router: Router
@@ -28,7 +28,6 @@ export class ReservationItemComponent {
   ngOnInit(){
     const today = new Date()
     this._isDeletable = new Date(this.reservation.date) > today
-
   }
 
   openModal(){

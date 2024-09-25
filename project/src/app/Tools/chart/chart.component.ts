@@ -17,13 +17,13 @@ export class ChartComponent {
   @Input() yAxisLabel: string = 'Country';
   @Input() barPadding: number = 10;
   @Input() chartType: string = "VERTICAL"
-  @Input() maxGaugeValue: number = 100
 
+  @Input() percentage: number = 40;
   @Input() colorScheme: Color = {
     name: 'customScheme',
     selectable: true,
     group: ScaleType.Ordinal,
-    domain: ['#8fdbcd', '#ff8b6e', '#b66eff', '#AAAAAA']
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
   @Input() data: {name: string, value: any}[] = [];
   

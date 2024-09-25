@@ -1,18 +1,13 @@
 <li class=" list-group-item item">
     <div class="d-flex flex-row align-items-center ">
     <!--restaurant info-->
-    <div *ngIf="roleService.role === 'customer'"
-    class=" border-end px-2 d-flex flex-row align-items-center justify-content-center column-gap-2 col-4">
+    <div class=" border-end px-2 d-flex flex-row align-items-center justify-content-center column-gap-2 col-4">
         <img [src]="reservation.restaurant.img.path" class="img-fluid">
         <div class="d-flex flex-column justify-content-center aling-items-center ">
             <h3 class="m-0">{{reservation.restaurant.name}}</h3>
             <small class="m-0">{{reservation.restaurant.coords.village}}, {{reservation.restaurant.street}} - {{reservation.restaurant.street_number}}</small>
         </div>
     </div>
-    <div *ngIf="roleService.role==='admin'" class="d-flex flex-column align-items-start justify-content-center px-2 border-end col">
-            <h3 class="m-0 fw-light fs-6">Name Surname: </h3>
-            <small>{{reservation.customer.name}} {{reservation.customer.surname}}</small>
-        </div>
     <!-- reservation info -->
 
         <div class="d-flex flex-column align-items-start justify-content-center px-2 border-end col">

@@ -70,14 +70,12 @@
     </section>
   </ng-template>
   <ng-template #adminStats>
-    <section class="container-fluid d-flex flex-row align-items-center justify-content-center">
-      <div class="chart-container" style="width: 50%; height: 350px;" class="border d-flex flex-column row-gap-3">
-        <p class="text-center fw-bold stats-p">Restaurant Occupancy for day times</p>
+    <section class="container-fluid d-flex flex-row">
+      <div class="chart-container" style="width: 50%; height: 400px;" class="border">
         <t-chart yAxisLabel="Restaurant Occupancy" xAxisLabel="Day Time Stats" [data]="reservationStats" ></t-chart>
       </div>
-      <div class="chart-container" style="width: 50%; height: 350px;" class="border d-flex flex-column row-gap-5">
-        <p class="text-center fw-bold stats-p">Available Seats Now</p>
-        <t-chart yAxisLabel="Restaurant Occupancy" xAxisLabel="Day Time Stats" [data] = "seats" chartType="GAUGE" [maxGaugeValue]="totalSeats"></t-chart>
+      <div class="chart-container" style="width: 50%; height: 400px;" class="border">
+        <t-chart yAxisLabel="Restaurant Occupancy" xAxisLabel="Day Time Stats" chartType="GAUGE"></t-chart>
       </div> 
     
     </section>
