@@ -42,6 +42,8 @@ import { RestaurantInfoComponent } from './Components/restaurant-info/restaurant
 import { MenuButtonComponent } from './Tools/menu-button/menu-button.component';
 import { MenuComponent } from './Tools/menu/menu.component';
 import { UpdateModalComponent } from './Tools/update-modal/update-modal.component';
+import { ChartComponent } from './Tools/chart/chart.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -69,6 +71,8 @@ import { UpdateModalComponent } from './Tools/update-modal/update-modal.componen
     MenuComponent,
     UpdateModalComponent,
 
+    ChartComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -90,7 +94,8 @@ import { UpdateModalComponent } from './Tools/update-modal/update-modal.componen
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    NgImageSliderModule
+    NgImageSliderModule,
+    NgxChartsModule
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'en-US' }, ModalService],
   bootstrap: [AppComponent],

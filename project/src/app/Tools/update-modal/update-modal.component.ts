@@ -44,7 +44,8 @@ export class UpdateModalComponent {
   }
 
   getVillages(){
-    this.dbService.get(`/api/v1/villages?county=${this.restaurant[0].coords.county_code}`)
+    console.log()
+    this.dbService.get(`/api/v1/restaurant/${this.restaurant[0].id}/villages`)
     .subscribe((response: APIResponse) => {
       response.success ? this.villages = response.data : null
       console.log(response)
@@ -81,7 +82,7 @@ export class UpdateModalComponent {
       village: this.updateRestaurantForm.controls['village'].value
 
     }
-    this.dbService.patch(`/api/v1/restaurant?id=${this.restaurant[0].id}`, body)
+    this.dbService.patch(`/api/v1/restaurant/${this.restaurant[0].id}`, body)
       .subscribe((response: APIResponse) => {
         response.success ? this.swal.fire("success", "SUCCESS!", "Restaurant successfully updated!", "") : null
         this.modalService.close();
@@ -115,7 +116,7 @@ export class UpdateModalComponent {
   }
   
   getAllTurns() {
-    this.dbService.get("/api/v1/turns")
+    this.dbService.get("/api/v1/turn/all")
       .subscribe((response: APIResponse) => {
         response.success ? this.turns = response.data : null
         this.fillReservationForm();  
@@ -144,7 +145,7 @@ export class UpdateModalComponent {
       date: date,
       mail: mail
     }
-    this.dbService.patch(`/api/v1/restaurant/reservation?id=${this.reservation.id}`, body)
+    this.dbService.patch(`/api/v1/reservation/${this.reservation.id}`, body)
       .subscribe((response: APIResponse) => {
         response.success ? this.modalService.close() : null
         this.swal.fire("success", "SUCCESS!", "Reservation successfully updated!", "")

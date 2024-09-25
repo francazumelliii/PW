@@ -10,6 +10,7 @@ export class CardContainerComponent implements OnChanges {
   @Input() circular: boolean = true;
   @Input() width: string = "19.6rem";
   @Input() height: string = "11.025rem";
+  @Input() interval: number = 3000;
   @Output() cardBtnClick = new EventEmitter<any>();
 
   responsiveOptions: any[] = [

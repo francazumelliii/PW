@@ -48,15 +48,17 @@ export class SidebarComponent implements OnInit{
   list: List[] = []
   getList(){
     const role = this.roleService.role
-    this.dbService.get(`/api/v1/${role}/me/list`)
-      .subscribe((response: APIResponse) => {
-        response.success ? this.list = JSON.parse(response.data): null
-        console.log("LIST ", this.list)
-      },
-      (error : any ) => {
-        this.swal.fire("error","ERROR","Error retriving data for menu list...", ""),
-        console.error(error)
-      })
+    if(role){
+      this.dbService.get(`/api/v1/${role}/me/list`)
+        .subscribe((response: APIResponse) => {
+          response.success ? this.list = JSON.parse(response.data): null
+          console.log("LIST ", this.list)
+        },
+        (error : any ) => {
+          this.swal.fire("error","ERROR","Error retriving data for menu list...", ""),
+          console.error(error)
+        })
+    }
   }
 
 }
