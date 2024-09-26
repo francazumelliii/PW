@@ -1,4 +1,4 @@
-import { Component, Input, ComponentFactoryResolver, ViewChild, ViewContainerRef, OnDestroy, OnInit, AfterViewInit, ComponentRef } from '@angular/core';
+import { Component, Input, ComponentFactoryResolver, ViewChild, ViewContainerRef, OnDestroy, OnInit, AfterViewInit, ComponentRef, ChangeDetectorRef } from '@angular/core';
 import { ModalService } from '../../Services/modal.service';
 
 @Component({
@@ -16,7 +16,11 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public childComponentRef: ComponentRef<any> | null = null;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, private modalService: ModalService) {}
+  constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private modalService: ModalService,
+    private cdr: ChangeDetectorRef // Importa ChangeDetectorRef
+  ) {}
 
   ngOnInit() {}
 
@@ -33,6 +37,9 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit {
       Object.keys(this.childComponentInputs).forEach((key) => {
         instance[key] = this.childComponentInputs[key];
       });
+
+      // Forza il rilevamento delle modifiche dopo la creazione del componente
+      this.cdr.detectChanges();
     }
   }
 

@@ -8,6 +8,7 @@ import { RoleService } from '../../Services/role.service';
 import { APIResponse, List } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { SweetAlertUpdatableParameters } from 'sweetalert2';
+import { AuthenticationsComponent } from '../authentications/authentications.component';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -48,6 +49,7 @@ export class SidebarComponent implements OnInit{
   list: List[] = []
   getList(){
     const role = this.roleService.role
+    console.log("SIDEBAR COMPONENT", localStorage.getItem("token"))
     if(role){
       this.dbService.get(`/api/v1/${role}/me/list`)
         .subscribe((response: APIResponse) => {

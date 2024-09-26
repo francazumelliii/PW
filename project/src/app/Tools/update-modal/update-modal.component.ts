@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { AfterContentInit, Component, Input, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { APIResponse, Reservation, Restaurant, Turn, Village } from '../../Interfaces/general';
 import { SweetalertService } from '../../Services/sweetalert.service';
 import { DatabaseService } from '../../Services/database.service';
@@ -13,7 +13,7 @@ import { ApiService } from '../../Services/api.service';
   templateUrl: './update-modal.component.html',
   styleUrl: './update-modal.component.sass'
 })
-export class UpdateModalComponent {
+export class UpdateModalComponent implements AfterContentChecked{
   @Input() restaurant!: Restaurant[]
   @Input() reservation !: Reservation
   villages: Village[] = [];
@@ -28,13 +28,19 @@ export class UpdateModalComponent {
     private swal: SweetalertService,
     private dbService: DatabaseService,
     private modalService: ModalService,
+    private cdr: ChangeDetectorRef,
     private fcService: FormControlService
   ){
     this.updateRestaurantForm = this.fcService.updateRestaurantForm
     this.updateReservationForm = this.fcService.updateReservationForm
   }
 
-  ngOnInit(){
+  ngAfterContentChecked(): void {
+      this.cdr.detectChanges();
+  }
+
+  ngAfterContentInit(): void {
+    console.log("OPENED")
     if(this.restaurant != null ){
       this.getVillages()
       this.fillUpdateRestaurantForm()

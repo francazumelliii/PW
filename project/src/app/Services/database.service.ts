@@ -18,10 +18,8 @@ export class DatabaseService {
   }
   
   private get headers(): HttpHeaders {
-    if (!this.token) {
-      this.token = localStorage.getItem("token") || "";
-    }
-    return new HttpHeaders({ "Authorization": `Bearer ${this.token}` });
+    const token = localStorage.getItem("token") || "";
+    return new HttpHeaders({ "Authorization": `Bearer ${token}` });
   }
 
   public get(endpoint: string): Observable<any>{

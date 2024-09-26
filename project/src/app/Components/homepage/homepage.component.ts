@@ -139,6 +139,7 @@ export class HomepageComponent implements OnInit {
   }
   openModal() {
     this.modalService.open(UpdateModalComponent, {restaurant: this.restaurantsList}, "UPDATE")
+    this.cdr.detectChanges()
   }
   
   getRestaurantReservations(id: number){

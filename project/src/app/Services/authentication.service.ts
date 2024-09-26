@@ -38,9 +38,15 @@ export class AuthenticationService {
   setToken(token: string): void {
     localStorage.setItem("token", token);
     console.log("STORED: ", token);
-    this.router.navigate(['homepage'])
-    return
+    
+    if(localStorage.getItem("token") != null){
+
+      setTimeout(() => {
+        this.router.navigate(['homepage']);
+      }, 0);
+    }
   }
+  
 
   logOut() {
     localStorage.removeItem("token");
