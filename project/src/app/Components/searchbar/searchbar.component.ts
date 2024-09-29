@@ -68,8 +68,8 @@ export class SearchbarComponent {
 
   search() {
     const searchText = this.searchBar.nativeElement.value;
-    if (searchText.trim().length > 0) {
-      this.searchedText.emit(searchText);
-    }
+
+    this.searchedText.emit(searchText);
+
   }
 }
