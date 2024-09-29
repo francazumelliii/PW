@@ -121,6 +121,8 @@ export class HomepageComponent implements OnInit {
     if (event.length > 0) {
       this.searchRestaurants(event);
       this.handleSearchbarClear();
+    }else{
+      this.getAllRestaurants()
     }
   }
 
