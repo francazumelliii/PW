@@ -1,17 +1,30 @@
 
-$navbar-color: #4050B5
+$navbar-color: #E95758
+$navbar-color-darken:darken( #EF8485, 7%)
 $gray: #c9c9c9
 $light-gray: #ededed
 
 
+.navbar-item
+    color: $navbar-color
 
+.navbar-item:hover
+    color: darken($navbar-color, 5%)
+
+
+.navbar-color-darken
+    background-color: $navbar-color-darken !important
+
+.navbar-color
+    color: $navbar-color
     
     
 .router-active
     background-color: $light-gray 
     
 .example-container 
-    z-index: 10000
+    z-index: 30
+
     display: flex
     flex-direction: column
     position: absolute
@@ -24,6 +37,7 @@ $light-gray: #ededed
 .example-is-mobile .example-toolbar 
     position: fixed
     z-index: 2
+
 
 
 h1.example-app-name 
